@@ -18,10 +18,10 @@ const STATE_POLYGONS: Record<string, string> = {
 };
 
 const STATE_LABELS: Record<string, { x: number; y: number }> = {
-  MG: { x: 270, y: 215 }, GO: { x: 228, y: 195 }, TO: { x: 233, y: 140 },
-  RJ: { x: 280, y: 250 }, SP: { x: 230, y: 258 }, BA: { x: 290, y: 170 },
-  RS: { x: 200, y: 330 }, SC: { x: 215, y: 300 }, PR: { x: 210, y: 278 },
-  MS: { x: 170, y: 240 }, DF: { x: 240, y: 187 }, ES: { x: 300, y: 228 },
+  MG: { x: 260, y: 220 }, GO: { x: 215, y: 195 }, TO: { x: 225, y: 135 },
+  RJ: { x: 288, y: 250 }, SP: { x: 232, y: 258 }, BA: { x: 300, y: 165 },
+  RS: { x: 185, y: 345 }, SC: { x: 212, y: 310 }, PR: { x: 205, y: 285 },
+  MS: { x: 170, y: 240 }, DF: { x: 238, y: 188 }, ES: { x: 308, y: 225 },
 };
 
 const CityTooltip = ({ cities, stateCode, x, y }: { cities: MapCity[]; stateCode: string; x: number; y: number }) => {
@@ -58,7 +58,6 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
   const { isAdmin } = useAdmin();
   const [hoveredState, setHoveredState] = useState<string | null>(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
-  const [, setEditingState] = useState<string | null>(null);
   const activeStateCodes = states.map(s => s.stateCode);
   const getStateData = (code: string) => states.find(s => s.stateCode === code);
 
@@ -96,28 +95,26 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
   const allStateCodes = Object.keys(STATE_POLYGONS);
 
   return (
-    <div className="relative">
-      <div className="relative inline-block w-full max-w-md mx-auto">
-        <svg viewBox="130 130 230 250" className="w-full h-auto" style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.08))' }}>
+    <div className="relative flex flex-col items-center w-full">
+      <div className="relative inline-block w-full max-w-2xl">
+        <svg viewBox="140 90 220 280" className="w-full h-auto" style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.1))' }}>
           {allStateCodes.map((code) => {
             const isActive = activeStateCodes.includes(code);
             const isHovered = hoveredState === code;
-            const fillColor = isActive ? (isHovered ? 'hsl(200, 80%, 50%)' : 'hsl(200, 70%, 75%)') : 'hsl(210, 15%, 88%)';
+            const fillColor = isActive ? (isHovered ? 'hsl(200, 80%, 45%)' : 'hsl(200, 70%, 75%)') : 'hsl(210, 20%, 94%)';
             return (
               <polygon
                 key={code}
                 points={STATE_POLYGONS[code]}
                 fill={fillColor}
-                stroke="hsl(0, 0%, 100%)"
-                strokeWidth={1}
+                stroke="white"
+                strokeWidth={1.2}
                 strokeLinejoin="round"
-                strokeLinecap="round"
-                className={transition-all duration-200 ${isActive ? 'cursor-pointer' : ''} ${isAdmin && !isActive ? 'cursor-pointer hover:opacity-80' : ''}}
+                className={`transition-all duration-300 ${isActive || isAdmin ? 'cursor-pointer' : ''}`}
                 onMouseMove={(e) => handleMouseMove(e, code)}
                 onMouseLeave={() => setHoveredState(null)}
                 onClick={() => {
                   if (isAdmin && !isActive) addState(code);
-                  if (isAdmin && isActive) setEditingState(code);
                 }}
               />
             );
@@ -126,8 +123,8 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
             const label = STATE_LABELS[code];
             if (!label) return null;
             return (
-              <text key={label-${code}} x={label.x} y={label.y} textAnchor="middle" className="pointer-events-none select-none"
-                fill={activeStateCodes.includes(code) ? 'hsl(215, 30%, 12%)' : 'hsl(215, 15%, 60%)'} fontSize="7" fontWeight="600" fontFamily="Inter, sans-serif">
+              <text key={`label-${code}`} x={label.x} y={label.y} textAnchor="middle" className="pointer-events-none select-none"
+                fill={activeStateCodes.includes(code) ? 'hsl(215, 30%, 15%)' : 'hsl(215, 10%, 60%)'} fontSize="8" fontWeight="700" fontFamily="Inter, sans-serif">
                 {code}
               </text>
             );
@@ -137,32 +134,38 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
       </div>
 
       {isAdmin && (
-        <div className="mt-6 space-y-4">
-          <h4 className="text-sm font-display font-bold text-foreground">Gerenciar Estados e Cidades</h4>
-          <p className="text-xs text-muted-foreground">Clique em um estado cinza no mapa para adicioná-lo.</p>
-          {states.map((state) => (
-            <div key={state.id} className="glass-card rounded-lg p-4 space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-accent text-sm">{state.stateCode}</span>
-                  <input className="p-1.5 rounded border border-border bg-background text-foreground text-sm" value={state.stateName} onChange={(e) => updateState(state.id, { stateName: e.target.value })} placeholder="Nome do estado" />
-                </div>
-                <button onClick={() => removeState(state.id)} className="text-destructive text-xs hover:underline flex items-center gap-1"><Trash2 className="w-3 h-3" /> Remover</button>
-              </div>
-              <div className="pl-4 space-y-2">
-                {state.cities.map((city) => (
-                  <div key={city.id} className="flex items-start gap-2 bg-muted/30 rounded-lg p-2">
-                    <div className="flex-1 space-y-1">
-                      <input className="w-full p-1.5 rounded border border-border bg-background text-foreground text-xs" value={city.name} onChange={(e) => updateCity(state.id, city.id, { name: e.target.value })} placeholder="Nome da cidade" />
-                      <input className="w-full p-1.5 rounded border border-border bg-background text-foreground text-xs" value={city.imageUrl} onChange={(e) => updateCity(state.id, city.id, { imageUrl: e.target.value })} placeholder="URL da imagem da cidade" />
-                    </div>
-                    <button onClick={() => removeCity(state.id, city.id)} className="text-destructive p-1 hover:bg-destructive/10 rounded"><X className="w-3 h-3" /></button>
+        <div className="mt-8 w-full space-y-4">
+          <div className="flex flex-col gap-1">
+            <h4 className="text-lg font-display font-bold text-foreground">Painel de Gerenciamento</h4>
+            <p className="text-sm text-muted-foreground">Clique em um estado cinza no mapa para habilitá-lo ou use a lista abaixo.</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {states.map((state) => (
+              <div key={state.id} className="glass-card rounded-xl p-5 border border-border/50 hover:border-accent/30 transition-colors">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <span className="flex items-center justify-center w-10 h-10 rounded-full bg-accent text-accent-foreground font-bold">{state.stateCode}</span>
+                    <input className="bg-transparent font-bold text-foreground focus:outline-none focus:ring-1 focus:ring-accent rounded px-1" value={state.stateName} onChange={(e) => updateState(state.id, { stateName: e.target.value })} />
                   </div>
-                ))}
-                <button onClick={() => addCity(state.id)} className="text-xs text-accent hover:underline flex items-center gap-1"><Plus className="w-3 h-3" /> Adicionar cidade</button>
+                  <button onClick={() => removeState(state.id)} className="text-destructive hover:bg-destructive/10 p-2 rounded-lg transition-colors"><Trash2 className="w-4 h-4" /></button>
+                </div>
+                
+                <div className="space-y-3">
+                  {state.cities.map((city) => (
+                    <div key={city.id} className="bg-muted/30 rounded-lg p-3 relative group">
+                      <div className="space-y-2">
+                        <input className="w-full bg-background/50 p-2 rounded border border-border/50 text-xs focus:ring-1 focus:ring-accent outline-none" value={city.name} onChange={(e) => updateCity(state.id, city.id, { name: e.target.value })} placeholder="Nome da cidade" />
+                        <input className="w-full bg-background/50 p-2 rounded border border-border/50 text-xs focus:ring-1 focus:ring-accent outline-none" value={city.imageUrl} onChange={(e) => updateCity(state.id, city.id, { imageUrl: e.target.value })} placeholder="URL da imagem (https://...)" />
+                      </div>
+                      <button onClick={() => removeCity(state.id, city.id)} className="absolute -top-2 -right-2 bg-destructive text-white rounded-full p-1 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"><X className="w-3 h-3" /></button>
+                    </div>
+                  ))}
+                  <button onClick={() => addCity(state.id)} className="w-full py-2 border-2 border-dashed border-border hover:border-accent/50 hover:bg-accent/5 rounded-lg text-xs font-medium text-muted-foreground hover:text-accent transition-all flex items-center justify-center gap-2"><Plus className="w-4 h-4" /> Adicionar Cidade</button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
     </div>

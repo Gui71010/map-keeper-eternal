@@ -31,7 +31,7 @@ const RelatoriosCriadosPage = () => {
 
       <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.6 }}>
         {isAdmin ? <input className="text-xl font-display font-bold text-foreground mb-6 bg-transparent border-b border-border outline-none focus:border-accent block" value={content.filterByAnalystTitle} onChange={(e) => updateContent({ filterByAnalystTitle: e.target.value })} /> : <h3 className="text-xl font-display font-bold text-foreground mb-6">{content.filterByAnalystTitle}</h3>}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-5 gap-8">
           <button onClick={() => setSelectedAnalystId(null)} className={`flex items-center justify-center gap-3 px-6 py-5 rounded-2xl text-base font-semibold transition-all duration-300 ${!selectedAnalystId ? 'gradient-accent text-accent-foreground shadow-xl shadow-accent/20 scale-[1.02]' : 'glass-card text-foreground hover:shadow-xl hover:-translate-y-0.5'}`}>
             <div className="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center"><User className="w-6 h-6" /></div>
             <span className="text-lg">Todos</span>

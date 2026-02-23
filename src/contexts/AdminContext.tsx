@@ -183,9 +183,9 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           .from('site_content')
           .upsert({
             id: 'main',
-            content: newContent as unknown as Record<string, unknown>,
+            content: newContent as any,
             updated_at: new Date().toISOString(),
-          });
+          } as any);
 
         if (error) {
           console.error('Error saving content:', error);

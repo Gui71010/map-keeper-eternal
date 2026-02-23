@@ -164,7 +164,7 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
 
   return (
     <div className="relative">
-      <div className="relative inline-block w-full max-w-4xl mx-auto">
+      <div className="relative inline-block w-full max-w-[500px] mx-auto">
         <svg viewBox="0 0 400 400" className="w-full h-auto" style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.08))' }}>
           {allStateCodes.map((code) => {
             const isActive = activeStateCodes.includes(code);

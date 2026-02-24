@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, ImageIcon, MapPin, Crown, Palette, Briefcase, BarChart3, Globe, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
+import { Plus, ImageIcon, MapPin, Crown, Palette, Briefcase, BarChart3, Globe, ChevronLeft, ChevronRight, Trash2, Rocket } from 'lucide-react';
 import { useAdmin } from '@/contexts/AdminContext';
 import AnalystCard from '@/components/AnalystCard';
 import GalaxyParticles from '@/components/GalaxyParticles';
@@ -151,7 +151,7 @@ const NossaAreaPage = () => {
       {/* Nossos principais projetos */}
       <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55, duration: 0.6 }} className="relative">
         <SectionHeader
-          icon={Globe}
+          icon={Rocket}
           title="Nossos principais projetos"
           onAdd={isAdmin ? () => addProject({ id: Date.now().toString(), title: 'Novo Projeto', description: 'Descrição do projeto.', imageUrl: '' }) : undefined}
           addLabel="Adicionar Projeto"
@@ -164,7 +164,7 @@ const NossaAreaPage = () => {
               <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-primary blur-[100px]" />
             </div>
 
-            <div className="relative z-10 grid md:grid-cols-2 min-h-[400px]">
+            <div className="relative z-10 grid md:grid-cols-2 min-h-[520px]">
               {/* Image side */}
               <div className="relative overflow-hidden">
                 <AnimatePresence mode="wait">
@@ -174,13 +174,13 @@ const NossaAreaPage = () => {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -50 }}
                     transition={{ duration: 0.5 }}
-                    className="w-full h-full min-h-[300px] md:min-h-[400px]"
+                    className="w-full h-full min-h-[400px] md:min-h-[520px]"
                   >
                     {projects[currentProjectIdx]?.imageUrl ? (
-                      <img src={projects[currentProjectIdx].imageUrl} alt={projects[currentProjectIdx].title} className="w-full h-full object-cover" />
+                      <img src={projects[currentProjectIdx].imageUrl} alt={projects[currentProjectIdx].title} className="w-full h-full object-cover absolute inset-0" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-muted/10">
-                        <Globe className="w-20 h-20 text-accent/30" />
+                        <Rocket className="w-20 h-20 text-accent/30" />
                       </div>
                     )}
                   </motion.div>
@@ -240,6 +240,30 @@ const NossaAreaPage = () => {
                 )}
               </div>
             </div>
+
+            {/* Thumbnail strip */}
+            {projects.length > 1 && (
+              <div className="relative z-10 border-t border-primary-foreground/10 px-6 py-4">
+                <div className="flex gap-3 overflow-x-auto scrollbar-hide">
+                  {projects.map((project, i) => (
+                    <button
+                      key={project.id}
+                      onClick={() => setCurrentProjectIdx(i)}
+                      className={`shrink-0 rounded-lg overflow-hidden transition-all duration-300 ${i === currentProjectIdx ? 'ring-2 ring-accent scale-105 opacity-100' : 'opacity-50 hover:opacity-80'}`}
+                      style={{ width: '120px', height: '75px' }}
+                    >
+                      {project.imageUrl ? (
+                        <img src={project.imageUrl} alt={project.title} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full bg-muted/20 flex items-center justify-center">
+                          <Rocket className="w-5 h-5 text-accent/40" />
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </motion.section>

@@ -164,8 +164,8 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
 
   return (
     <div className="relative">
-      <div className="relative inline-block w-full max-w-[700px] mx-auto">
-        <svg viewBox="0 0 400 400" className="w-full h-auto" style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.08))' }}>
+      <div className="relative inline-block w-full mx-auto">
+        <svg viewBox="0 0 400 400" className="w-full h-auto" style={{ filter: 'drop-shadow(0 4px 20px rgba(0,200,200,0.15))' }}>
           {allStateCodes.map((code) => {
             const isActive = activeStateCodes.includes(code);
             const isHovered = hoveredState === code;

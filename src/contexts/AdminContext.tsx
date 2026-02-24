@@ -248,9 +248,15 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const removeReport = (id: string) =>
     setContent(prev => ({ ...prev, reports: prev.reports.filter((r) => r.id !== id) }));
 
+  const addProject = (project: Project) => setContent(prev => ({ ...prev, projects: [...prev.projects, project] }));
+  const updateProject = (id: string, data: Partial<Project>) =>
+    setContent(prev => ({ ...prev, projects: prev.projects.map((p) => (p.id === id ? { ...p, ...data } : p)) }));
+  const removeProject = (id: string) =>
+    setContent(prev => ({ ...prev, projects: prev.projects.filter((p) => p.id !== id) }));
+
   return (
     <AdminContext.Provider
-      value={{ isAdmin, login, logout, content, updateContent, addAnalyst, updateAnalyst, removeAnalyst, addReport, updateReport, removeReport }}
+      value={{ isAdmin, login, logout, content, updateContent, addAnalyst, updateAnalyst, removeAnalyst, addReport, updateReport, removeReport, addProject, updateProject, removeProject }}
     >
       {children}
     </AdminContext.Provider>

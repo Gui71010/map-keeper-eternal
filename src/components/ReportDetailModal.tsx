@@ -35,8 +35,8 @@ const ReportDetailModal = ({ report, creatorName, onClose, showMetrics = true, o
 
         <div className="p-6 md:p-8 grid md:grid-cols-2 gap-8 items-start">
           <div className="flex flex-col space-y-3">
-            <div className="bg-muted rounded-xl overflow-hidden relative" style={{ minHeight: '350px', maxHeight: '60vh' }}>
-              {images[imgIndex] ? <img src={images[imgIndex]} alt="" className="w-full h-full object-contain" style={{ maxHeight: '60vh' }} /> : <div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm" style={{ minHeight: '350px' }}>Sem imagem</div>}
+            <div className="bg-muted rounded-xl overflow-hidden relative flex items-center justify-center" style={{ minHeight: '400px' }}>
+              {images[imgIndex] ? <img src={images[imgIndex]} alt="" className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm" style={{ minHeight: '400px' }}>Sem imagem</div>}
               {images.length > 1 && (<><button onClick={prevImg} className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full gradient-navy flex items-center justify-center text-primary-foreground hover:opacity-80"><ChevronLeft className="w-5 h-5" /></button><button onClick={nextImg} className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full gradient-navy flex items-center justify-center text-primary-foreground hover:opacity-80"><ChevronRight className="w-5 h-5" /></button></>)}
             </div>
             {images.length > 1 && <div className="flex gap-2 justify-center">{images.map((_, i) => <button key={i} onClick={() => setImgIndex(i)} className={`w-2.5 h-2.5 rounded-full transition-all ${i === imgIndex ? 'bg-accent w-6' : 'bg-muted-foreground/30'}`} />)}</div>}

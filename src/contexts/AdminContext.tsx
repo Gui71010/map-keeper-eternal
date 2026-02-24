@@ -22,6 +22,13 @@ export interface Report {
   eligibleAreas?: string[];
 }
 
+export interface Project {
+  id: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+}
+
 export interface MapCity {
   id: string;
   name: string;
@@ -59,6 +66,7 @@ interface SiteContent {
   filterByAnalystTitle: string;
   ourAnalystsTitle: string;
   mapStates: MapState[];
+  projects: Project[];
 }
 
 interface AdminContextType {
@@ -73,6 +81,9 @@ interface AdminContextType {
   addReport: (report: Report) => void;
   updateReport: (id: string, data: Partial<Report>) => void;
   removeReport: (id: string) => void;
+  addProject: (project: Project) => void;
+  updateProject: (id: string, data: Partial<Project>) => void;
+  removeProject: (id: string) => void;
 }
 
 const DEFAULT_CONTENT: SiteContent = {
@@ -122,6 +133,10 @@ const DEFAULT_CONTENT: SiteContent = {
     { id: '2', name: 'Treinamento Corporativo', creatorId: '1', description: 'Acompanhamento de horas de treinamento e eficácia dos programas.', images: [], metrics: ['Horas Totais: 5.200', 'Participantes: 1.340'], link: '', eligibleAreas: [] },
     { id: '3', name: 'Indicadores de Saúde', creatorId: '2', description: 'Relatório de medicina ocupacional com indicadores de saúde dos colaboradores.', images: [], metrics: ['Exames Realizados: 3.800', 'Atestados: 420'], link: '', eligibleAreas: [] },
     { id: '4', name: 'Headcount Corporativo', creatorId: '4', description: 'Análise de headcount e movimentações de pessoal.', images: [], metrics: ['Headcount: 8.500', 'Turnover: 2.3%'], link: '', eligibleAreas: [] },
+  ],
+  projects: [
+    { id: '1', title: 'Dashboard de People Analytics', description: 'Painel centralizado com indicadores estratégicos de RH.', imageUrl: '' },
+    { id: '2', title: 'Automação de Relatórios', description: 'Sistema automatizado de geração e distribuição de relatórios.', imageUrl: '' },
   ],
 };
 
@@ -233,9 +248,15 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const removeReport = (id: string) =>
     setContent(prev => ({ ...prev, reports: prev.reports.filter((r) => r.id !== id) }));
 
+  const addProject = (project: Project) => setContent(prev => ({ ...prev, projects: [...prev.projects, project] }));
+  const updateProject = (id: string, data: Partial<Project>) =>
+    setContent(prev => ({ ...prev, projects: prev.projects.map((p) => (p.id === id ? { ...p, ...data } : p)) }));
+  const removeProject = (id: string) =>
+    setContent(prev => ({ ...prev, projects: prev.projects.filter((p) => p.id !== id) }));
+
   return (
     <AdminContext.Provider
-      value={{ isAdmin, login, logout, content, updateContent, addAnalyst, updateAnalyst, removeAnalyst, addReport, updateReport, removeReport }}
+      value={{ isAdmin, login, logout, content, updateContent, addAnalyst, updateAnalyst, removeAnalyst, addReport, updateReport, removeReport, addProject, updateProject, removeProject }}
     >
       {children}
     </AdminContext.Provider>

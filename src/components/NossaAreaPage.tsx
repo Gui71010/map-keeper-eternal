@@ -7,8 +7,10 @@ import GalaxyParticles from '@/components/GalaxyParticles';
 import BrazilMap from '@/components/BrazilMap';
 
 const NossaAreaPage = () => {
-  const { content, isAdmin, updateContent, addAnalyst } = useAdmin();
+  const { content, isAdmin, updateContent, addAnalyst, addProject, updateProject, removeProject } = useAdmin();
   const [selectedAnalyst, setSelectedAnalyst] = useState<string | null>(null);
+  const [currentProjectIdx, setCurrentProjectIdx] = useState(0);
+  const projectTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const managerAnalysts = content.analysts.filter((a) => a.type === 'manager');
   const biAnalysts = content.analysts.filter((a) => a.type === 'bi');
   const adminAnalysts = content.analysts.filter((a) => a.type === 'admin');

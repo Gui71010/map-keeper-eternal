@@ -81,6 +81,9 @@ interface AdminContextType {
   addReport: (report: Report) => void;
   updateReport: (id: string, data: Partial<Report>) => void;
   removeReport: (id: string) => void;
+  addProject: (project: Project) => void;
+  updateProject: (id: string, data: Partial<Project>) => void;
+  removeProject: (id: string) => void;
 }
 
 const DEFAULT_CONTENT: SiteContent = {

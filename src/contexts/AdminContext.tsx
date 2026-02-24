@@ -22,6 +22,13 @@ export interface Report {
   eligibleAreas?: string[];
 }
 
+export interface Project {
+  id: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+}
+
 export interface MapCity {
   id: string;
   name: string;

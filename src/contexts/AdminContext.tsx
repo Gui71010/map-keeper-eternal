@@ -134,6 +134,10 @@ const DEFAULT_CONTENT: SiteContent = {
     { id: '3', name: 'Indicadores de Saúde', creatorId: '2', description: 'Relatório de medicina ocupacional com indicadores de saúde dos colaboradores.', images: [], metrics: ['Exames Realizados: 3.800', 'Atestados: 420'], link: '', eligibleAreas: [] },
     { id: '4', name: 'Headcount Corporativo', creatorId: '4', description: 'Análise de headcount e movimentações de pessoal.', images: [], metrics: ['Headcount: 8.500', 'Turnover: 2.3%'], link: '', eligibleAreas: [] },
   ],
+  projects: [
+    { id: '1', title: 'Dashboard de People Analytics', description: 'Painel centralizado com indicadores estratégicos de RH.', imageUrl: '' },
+    { id: '2', title: 'Automação de Relatórios', description: 'Sistema automatizado de geração e distribuição de relatórios.', imageUrl: '' },
+  ],
 };
 
 const ADMIN_PASSWORD = 'Guisantos88';

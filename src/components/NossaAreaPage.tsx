@@ -16,6 +16,23 @@ const NossaAreaPage = () => {
   const adminAnalysts = content.analysts.filter((a) => a.type === 'admin');
   const designAnalysts = content.analysts.filter((a) => a.type === 'design');
   const orgImage = content.orgChartUrl || '';
+  const projects = content.projects || [];
+
+  useEffect(() => {
+    if (projects.length <= 1) return;
+    projectTimerRef.current = setInterval(() => {
+      setCurrentProjectIdx(prev => (prev + 1) % projects.length);
+    }, 5000);
+    return () => { if (projectTimerRef.current) clearInterval(projectTimerRef.current); };
+  }, [projects.length]);
+
+  const goToProject = (dir: 'prev' | 'next') => {
+    if (projectTimerRef.current) clearInterval(projectTimerRef.current);
+    setCurrentProjectIdx(prev => {
+      if (dir === 'next') return (prev + 1) % projects.length;
+      return (prev - 1 + projects.length) % projects.length;
+    });
+  };
 
   const SectionHeader = ({ icon: Icon, title, editKey, onAdd, addLabel }: { icon: any; title: string; editKey?: keyof typeof content; onAdd?: () => void; addLabel?: string }) => (
     <div className="flex items-center justify-between mb-8">
@@ -70,7 +87,7 @@ const NossaAreaPage = () => {
         <div className="absolute inset-0 rounded-2xl gradient-accent opacity-[0.15]" />
         <div className="relative glass-card rounded-2xl p-10 md:p-14 border-2 border-accent/20">
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-xl gradient-accent flex items-center justify-center"><MapPin className="w-6 h-6 text-primary-foreground" /></div>
+            <div className="w-12 h-12 rounded-xl gradient-accent flex items-center justify-center"><Globe className="w-6 h-6 text-primary-foreground" /></div>
             {isAdmin ? <input className="text-3xl md:text-4xl font-display font-bold text-foreground bg-transparent border-b border-border outline-none focus:border-accent" value={content.aboutUsTitle} onChange={(e) => updateContent({ aboutUsTitle: e.target.value })} /> : <h3 className="text-3xl md:text-4xl font-display font-bold text-foreground">{content.aboutUsTitle}</h3>}
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
@@ -129,6 +146,102 @@ const NossaAreaPage = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {designAnalysts.map((analyst, i) => <AnalystCard key={analyst.id} analyst={analyst} index={i} isSelected={selectedAnalyst === analyst.id} onClick={() => setSelectedAnalyst(selectedAnalyst === analyst.id ? null : analyst.id)} showDetails editable showClickHint />)}
         </div>
+      </motion.section>
+
+      {/* Nossos principais projetos */}
+      <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55, duration: 0.6 }} className="relative">
+        <SectionHeader
+          icon={Globe}
+          title="Nossos principais projetos"
+          onAdd={isAdmin ? () => addProject({ id: Date.now().toString(), title: 'Novo Projeto', description: 'Descrição do projeto.', imageUrl: '' }) : undefined}
+          addLabel="Adicionar Projeto"
+        />
+
+        {projects.length > 0 && (
+          <div className="relative overflow-hidden rounded-2xl" style={{ background: 'linear-gradient(135deg, hsl(215, 50%, 12%), hsl(215, 40%, 18%))' }}>
+            <div className="absolute inset-0 opacity-20">
+              <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-accent blur-[150px]" />
+              <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-primary blur-[100px]" />
+            </div>
+
+            <div className="relative z-10 grid md:grid-cols-2 min-h-[400px]">
+              {/* Image side */}
+              <div className="relative overflow-hidden">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentProjectIdx}
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -50 }}
+                    transition={{ duration: 0.5 }}
+                    className="w-full h-full min-h-[300px] md:min-h-[400px]"
+                  >
+                    {projects[currentProjectIdx]?.imageUrl ? (
+                      <img src={projects[currentProjectIdx].imageUrl} alt={projects[currentProjectIdx].title} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-muted/10">
+                        <Globe className="w-20 h-20 text-accent/30" />
+                      </div>
+                    )}
+                  </motion.div>
+                </AnimatePresence>
+
+                {/* Navigation arrows */}
+                {projects.length > 1 && (
+                  <>
+                    <button onClick={() => goToProject('prev')} className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border-2 border-primary-foreground/30 flex items-center justify-center text-primary-foreground/70 hover:border-accent hover:text-accent transition-all backdrop-blur-sm bg-foreground/10">
+                      <ChevronLeft className="w-6 h-6" />
+                    </button>
+                    <button onClick={() => goToProject('next')} className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border-2 border-primary-foreground/30 flex items-center justify-center text-primary-foreground/70 hover:border-accent hover:text-accent transition-all backdrop-blur-sm bg-foreground/10">
+                      <ChevronRight className="w-6 h-6" />
+                    </button>
+                  </>
+                )}
+              </div>
+
+              {/* Text side */}
+              <div className="p-8 md:p-12 flex flex-col justify-center">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentProjectIdx}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <div className="w-10 h-1 bg-accent rounded-full mb-6" />
+                    {isAdmin ? (
+                      <input className="text-3xl md:text-4xl font-display font-bold text-primary-foreground mb-4 bg-transparent border-b border-primary-foreground/20 w-full outline-none focus:border-accent" value={projects[currentProjectIdx]?.title || ''} onChange={(e) => updateProject(projects[currentProjectIdx].id, { title: e.target.value })} />
+                    ) : (
+                      <h3 className="text-3xl md:text-4xl font-display font-bold text-primary-foreground mb-4">{projects[currentProjectIdx]?.title}</h3>
+                    )}
+                    {isAdmin ? (
+                      <textarea className="text-primary-foreground/70 text-lg leading-relaxed bg-transparent border border-primary-foreground/10 rounded-lg p-3 w-full min-h-[100px] outline-none focus:border-accent" value={projects[currentProjectIdx]?.description || ''} onChange={(e) => updateProject(projects[currentProjectIdx].id, { description: e.target.value })} />
+                    ) : (
+                      <p className="text-primary-foreground/70 text-lg leading-relaxed">{projects[currentProjectIdx]?.description}</p>
+                    )}
+                    {isAdmin && (
+                      <div className="mt-4 space-y-2">
+                        <label className="text-xs text-primary-foreground/50">URL da imagem</label>
+                        <input className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-sm outline-none focus:border-accent" value={projects[currentProjectIdx]?.imageUrl || ''} onChange={(e) => updateProject(projects[currentProjectIdx].id, { imageUrl: e.target.value })} placeholder="Cole a URL da imagem" />
+                        <button onClick={() => removeProject(projects[currentProjectIdx].id)} className="text-destructive text-xs hover:underline flex items-center gap-1 mt-2"><Trash2 className="w-3 h-3" /> Remover projeto</button>
+                      </div>
+                    )}
+                  </motion.div>
+                </AnimatePresence>
+
+                {/* Progress dots */}
+                {projects.length > 1 && (
+                  <div className="flex gap-2 mt-8">
+                    {projects.map((_, i) => (
+                      <button key={i} onClick={() => setCurrentProjectIdx(i)} className={`h-1.5 rounded-full transition-all duration-300 ${i === currentProjectIdx ? 'w-8 bg-accent' : 'w-3 bg-primary-foreground/20'}`} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </motion.section>
     </div>
   );

@@ -66,6 +66,7 @@ interface SiteContent {
   filterByAnalystTitle: string;
   ourAnalystsTitle: string;
   mapStates: MapState[];
+  projects: Project[];
 }
 
 interface AdminContextType {

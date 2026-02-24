@@ -170,8 +170,8 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
             const isActive = activeStateCodes.includes(code);
             const isHovered = hoveredState === code;
             const fillColor = isActive
-              ? (isHovered ? 'hsl(200, 80%, 50%)' : 'hsl(200, 70%, 75%)')
-              : 'hsl(210, 15%, 88%)';
+              ? (isHovered ? 'hsl(174, 72%, 46%)' : 'hsl(200, 70%, 65%)')
+              : 'hsl(215, 20%, 82%)';
 
             const commonProps = {
               key: code,

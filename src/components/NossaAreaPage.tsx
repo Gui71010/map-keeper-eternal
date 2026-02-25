@@ -90,7 +90,7 @@ const NossaAreaPage = () => {
             <div className="w-12 h-12 rounded-xl gradient-accent flex items-center justify-center"><Globe className="w-6 h-6 text-primary-foreground" /></div>
             {isAdmin ? <input className="text-3xl md:text-4xl font-display font-bold text-foreground bg-transparent border-b border-border outline-none focus:border-accent" value={content.aboutUsTitle} onChange={(e) => updateContent({ aboutUsTitle: e.target.value })} /> : <h3 className="text-3xl md:text-4xl font-display font-bold text-foreground">{content.aboutUsTitle}</h3>}
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
             <div>
               {isAdmin ? <textarea className="text-foreground/80 leading-relaxed text-lg bg-transparent border border-border rounded-lg p-3 w-full min-h-[300px] outline-none focus:border-accent whitespace-pre-wrap" value={content.aboutUsText} onChange={(e) => updateContent({ aboutUsText: e.target.value })} /> : <div className="text-foreground/80 leading-relaxed text-lg whitespace-pre-wrap">{content.aboutUsText}</div>}
             </div>
@@ -100,6 +100,47 @@ const NossaAreaPage = () => {
                 <h4 className="font-display font-bold text-foreground text-lg">Nossas Localidades</h4>
               </div>
               <BrazilMap states={content.mapStates} onUpdateStates={(newStates) => updateContent({ mapStates: newStates })} />
+            </div>
+            {/* Animated stats decoration */}
+            <div className="flex flex-col gap-6 items-center justify-center">
+              {[
+                { label: 'Estados Atendidos', value: content.mapStates?.filter((s: any) => s.active).length || 0, icon: '📍' },
+                { label: 'Analistas na Equipe', value: content.analysts?.length || 0, icon: '👥' },
+                { label: 'Projetos Ativos', value: projects.length, icon: '🚀' },
+              ].map((stat, i) => (
+                <motion.div
+                  key={stat.label}
+                  initial={{ opacity: 0, x: 30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.4 + i * 0.15, duration: 0.5 }}
+                  className="w-full glass-card rounded-xl p-5 border border-accent/10 relative overflow-hidden group hover:border-accent/30 transition-all"
+                >
+                  <motion.div
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    style={{ background: 'radial-gradient(circle at 50% 50%, hsl(var(--accent) / 0.08), transparent 70%)' }}
+                  />
+                  <div className="relative flex items-center gap-4">
+                    <motion.span
+                      className="text-3xl"
+                      animate={{ y: [0, -4, 0] }}
+                      transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
+                    >
+                      {stat.icon}
+                    </motion.span>
+                    <div>
+                      <motion.p
+                        className="text-3xl font-display font-bold text-accent"
+                        initial={{ scale: 0.5 }}
+                        animate={{ scale: 1 }}
+                        transition={{ delay: 0.6 + i * 0.15, type: 'spring' }}
+                      >
+                        {stat.value}
+                      </motion.p>
+                      <p className="text-foreground/60 text-sm font-medium">{stat.label}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
             </div>
           </div>
         </div>
@@ -164,7 +205,7 @@ const NossaAreaPage = () => {
               <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-primary blur-[100px]" />
             </div>
 
-            <div className="relative z-10 grid md:grid-cols-2 min-h-[620px]">
+            <div className="relative z-10 grid md:grid-cols-2 min-h-[700px]">
               {/* Image side */}
               <div className="relative overflow-hidden">
                 <AnimatePresence mode="wait">
@@ -174,7 +215,7 @@ const NossaAreaPage = () => {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -50 }}
                     transition={{ duration: 0.5 }}
-                    className="w-full h-full min-h-[500px] md:min-h-[620px] relative"
+                    className="w-full h-full min-h-[550px] md:min-h-[700px] relative"
                   >
                     {projects[currentProjectIdx]?.imageUrl ? (
                       <img src={projects[currentProjectIdx].imageUrl} alt={projects[currentProjectIdx].title} className="w-full h-full object-contain absolute inset-0 bg-foreground/5" />

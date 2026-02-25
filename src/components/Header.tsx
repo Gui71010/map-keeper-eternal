@@ -35,21 +35,21 @@ const Header = ({ activeTab, onTabChange }: HeaderProps) => {
 
   return (
     <header className="sticky top-0 z-50 gradient-navy galaxy-bg border-b border-navy-light/50">
-      <div className="relative z-10 w-full px-6 py-4">
+      <div className="relative z-10 w-full px-8 py-5">
         <div className="flex items-center justify-between">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-3"
           >
-            <div className="w-10 h-10 rounded-lg gradient-accent flex items-center justify-center">
-              <span className="font-display font-bold text-primary-foreground text-lg">BI</span>
+            <div className="w-11 h-11 rounded-lg gradient-accent flex items-center justify-center">
+              <span className="font-display font-bold text-primary-foreground text-xl">BI</span>
             </div>
             <div>
-              <h1 className="font-display font-bold text-primary-foreground text-lg leading-tight">
+              <h1 className="font-display font-bold text-primary-foreground text-xl leading-tight">
                 Diretoria de Pessoas
               </h1>
-              <p className="text-primary-foreground/60 text-xs">Business Intelligence</p>
+              <p className="text-primary-foreground/60 text-sm">Business Intelligence</p>
             </div>
           </motion.div>
 

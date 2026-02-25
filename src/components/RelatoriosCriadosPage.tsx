@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, User } from 'lucide-react';
+import { Plus, User, Search } from 'lucide-react';
 import { useAdmin } from '@/contexts/AdminContext';
 import ReportCard from '@/components/ReportCard';
 import ReportDetailModal from '@/components/ReportDetailModal';
@@ -10,8 +10,11 @@ const RelatoriosCriadosPage = () => {
   const { content, isAdmin, updateContent, updateAnalyst, addReport } = useAdmin();
   const [selectedAnalystId, setSelectedAnalystId] = useState<string | null>(null);
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const biAnalysts = content.analysts.filter((a) => a.type === 'bi');
-  const filteredReports = selectedAnalystId ? content.reports.filter((r) => r.creatorId === selectedAnalystId) : content.reports;
+  const filteredReports = content.reports
+    .filter((r) => !selectedAnalystId || r.creatorId === selectedAnalystId)
+    .filter((r) => !searchQuery || r.name.toLowerCase().includes(searchQuery.toLowerCase()));
   const getCreatorName = (id: string) => content.analysts.find((a) => a.id === id)?.name || 'Desconhecido';
   const selectedReport = content.reports.find((r) => r.id === selectedReportId);
   const navigateReport = (direction: 'prev' | 'next') => { const idx = filteredReports.findIndex((r) => r.id === selectedReportId); if (idx === -1) return; const newIdx = direction === 'next' ? idx + 1 : idx - 1; if (newIdx >= 0 && newIdx < filteredReports.length) setSelectedReportId(filteredReports[newIdx].id); };
@@ -51,6 +54,18 @@ const RelatoriosCriadosPage = () => {
           ))}
         </div>
       </motion.section>
+
+      {/* Search filter */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.4 }} className="relative">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+        <input
+          type="text"
+          placeholder="Buscar relatório pelo nome..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-border bg-background text-foreground placeholder:text-muted-foreground outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 transition-all text-base"
+        />
+      </motion.div>
 
       <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.6 }}>
         <div className="flex items-center justify-between mb-6">

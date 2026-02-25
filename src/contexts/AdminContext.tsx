@@ -29,6 +29,13 @@ export interface Project {
   imageUrl: string;
 }
 
+export interface AreaReportCard {
+  id: string;
+  area: string;
+  count: number;
+  icon: string;
+}
+
 export interface MapCity {
   id: string;
   name: string;
@@ -67,6 +74,7 @@ interface SiteContent {
   ourAnalystsTitle: string;
   mapStates: MapState[];
   projects: Project[];
+  areaReportCards: AreaReportCard[];
 }
 
 interface AdminContextType {
@@ -84,6 +92,9 @@ interface AdminContextType {
   addProject: (project: Project) => void;
   updateProject: (id: string, data: Partial<Project>) => void;
   removeProject: (id: string) => void;
+  addAreaReportCard: (card: AreaReportCard) => void;
+  updateAreaReportCard: (id: string, data: Partial<AreaReportCard>) => void;
+  removeAreaReportCard: (id: string) => void;
 }
 
 const DEFAULT_CONTENT: SiteContent = {
@@ -137,6 +148,12 @@ const DEFAULT_CONTENT: SiteContent = {
   projects: [
     { id: '1', title: 'Dashboard de People Analytics', description: 'Painel centralizado com indicadores estratégicos de RH.', imageUrl: '' },
     { id: '2', title: 'Automação de Relatórios', description: 'Sistema automatizado de geração e distribuição de relatórios.', imageUrl: '' },
+  ],
+  areaReportCards: [
+    { id: '1', area: 'Treinamento', count: 5, icon: '📚' },
+    { id: '2', area: 'Recrutamento', count: 8, icon: '🎯' },
+    { id: '3', area: 'Corporativo', count: 6, icon: '🏢' },
+    { id: '4', area: 'Medicina', count: 4, icon: '🏥' },
   ],
 };
 
@@ -254,9 +271,15 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const removeProject = (id: string) =>
     setContent(prev => ({ ...prev, projects: prev.projects.filter((p) => p.id !== id) }));
 
+  const addAreaReportCard = (card: AreaReportCard) => setContent(prev => ({ ...prev, areaReportCards: [...(prev.areaReportCards || []), card] }));
+  const updateAreaReportCard = (id: string, data: Partial<AreaReportCard>) =>
+    setContent(prev => ({ ...prev, areaReportCards: (prev.areaReportCards || []).map((c) => (c.id === id ? { ...c, ...data } : c)) }));
+  const removeAreaReportCard = (id: string) =>
+    setContent(prev => ({ ...prev, areaReportCards: (prev.areaReportCards || []).filter((c) => c.id !== id) }));
+
   return (
     <AdminContext.Provider
-      value={{ isAdmin, login, logout, content, updateContent, addAnalyst, updateAnalyst, removeAnalyst, addReport, updateReport, removeReport, addProject, updateProject, removeProject }}
+      value={{ isAdmin, login, logout, content, updateContent, addAnalyst, updateAnalyst, removeAnalyst, addReport, updateReport, removeReport, addProject, updateProject, removeProject, addAreaReportCard, updateAreaReportCard, removeAreaReportCard }}
     >
       {children}
     </AdminContext.Provider>

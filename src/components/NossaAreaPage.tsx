@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, ImageIcon, MapPin, Crown, Palette, Briefcase, BarChart3, Globe, ChevronLeft, ChevronRight, Trash2, Rocket } from 'lucide-react';
+import { Plus, ImageIcon, MapPin, Crown, Palette, Briefcase, BarChart3, Globe, ChevronLeft, ChevronRight, Trash2, Rocket, FileText } from 'lucide-react';
 import { useAdmin } from '@/contexts/AdminContext';
 import AnalystCard from '@/components/AnalystCard';
 import GalaxyParticles from '@/components/GalaxyParticles';
 import BrazilMap from '@/components/BrazilMap';
 
 const NossaAreaPage = () => {
-  const { content, isAdmin, updateContent, addAnalyst, addProject, updateProject, removeProject } = useAdmin();
+  const { content, isAdmin, updateContent, addAnalyst, addProject, updateProject, removeProject, addAreaReportCard, updateAreaReportCard, removeAreaReportCard } = useAdmin();
   const [selectedAnalyst, setSelectedAnalyst] = useState<string | null>(null);
   const [currentProjectIdx, setCurrentProjectIdx] = useState(0);
   const projectTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -17,6 +17,7 @@ const NossaAreaPage = () => {
   const designAnalysts = content.analysts.filter((a) => a.type === 'design');
   const orgImage = content.orgChartUrl || '';
   const projects = content.projects || [];
+  const areaReportCards = content.areaReportCards || [];
 
   useEffect(() => {
     if (projects.length <= 1) return;
@@ -101,46 +102,57 @@ const NossaAreaPage = () => {
               </div>
               <BrazilMap states={content.mapStates} onUpdateStates={(newStates) => updateContent({ mapStates: newStates })} />
             </div>
-            {/* Animated stats decoration */}
-            <div className="flex flex-col gap-6 items-center justify-center">
-              {[
-                { label: 'Estados Atendidos', value: content.mapStates?.filter((s: any) => s.active).length || 0, icon: '📍' },
-                { label: 'Analistas na Equipe', value: content.analysts?.length || 0, icon: '👥' },
-                { label: 'Projetos Ativos', value: projects.length, icon: '🚀' },
-              ].map((stat, i) => (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, x: 30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.4 + i * 0.15, duration: 0.5 }}
-                  className="w-full glass-card rounded-xl p-5 border border-accent/10 relative overflow-hidden group hover:border-accent/30 transition-all"
-                >
+            {/* Relatórios por Área */}
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg gradient-accent flex items-center justify-center"><FileText className="w-4 h-4 text-primary-foreground" /></div>
+                  <h4 className="font-display font-bold text-foreground text-lg">Relatórios por Área</h4>
+                </div>
+                {isAdmin && (
+                  <button onClick={() => addAreaReportCard({ id: Date.now().toString(), area: 'Nova Área', count: 0, icon: '📊' })} className="px-3 py-1.5 rounded-lg gradient-accent text-accent-foreground text-xs font-medium hover:opacity-90 transition flex items-center gap-1">
+                    <Plus className="w-3 h-3" /> Adicionar
+                  </button>
+                )}
+              </div>
+              <div className="grid grid-cols-1 gap-3">
+                {areaReportCards.map((card, i) => (
                   <motion.div
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                    style={{ background: 'radial-gradient(circle at 50% 50%, hsl(var(--accent) / 0.08), transparent 70%)' }}
-                  />
-                  <div className="relative flex items-center gap-4">
-                    <motion.span
-                      className="text-3xl"
-                      animate={{ y: [0, -4, 0] }}
-                      transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
-                    >
-                      {stat.icon}
-                    </motion.span>
-                    <div>
-                      <motion.p
-                        className="text-3xl font-display font-bold text-accent"
-                        initial={{ scale: 0.5 }}
-                        animate={{ scale: 1 }}
-                        transition={{ delay: 0.6 + i * 0.15, type: 'spring' }}
-                      >
-                        {stat.value}
-                      </motion.p>
-                      <p className="text-foreground/60 text-sm font-medium">{stat.label}</p>
+                    key={card.id}
+                    initial={{ opacity: 0, x: 30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 + i * 0.1, duration: 0.4 }}
+                    className="glass-card rounded-xl p-4 border border-accent/10 relative overflow-hidden group hover:border-accent/30 hover:shadow-lg hover:shadow-accent/5 transition-all duration-300"
+                  >
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: 'radial-gradient(circle at 50% 50%, hsl(var(--accent) / 0.08), transparent 70%)' }} />
+                    <div className="relative flex items-center gap-4">
+                      {isAdmin ? (
+                        <input className="text-2xl w-10 bg-transparent border-b border-border text-center outline-none focus:border-accent" value={card.icon} onChange={(e) => updateAreaReportCard(card.id, { icon: e.target.value })} />
+                      ) : (
+                        <span className="text-2xl">{card.icon}</span>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        {isAdmin ? (
+                          <input className="font-display font-semibold text-foreground text-sm bg-transparent border-b border-border w-full outline-none focus:border-accent" value={card.area} onChange={(e) => updateAreaReportCard(card.id, { area: e.target.value })} />
+                        ) : (
+                          <p className="font-display font-semibold text-foreground text-sm truncate">{card.area}</p>
+                        )}
+                        <div className="flex items-baseline gap-1 mt-0.5">
+                          {isAdmin ? (
+                            <input type="number" className="text-xl font-display font-bold text-accent w-16 bg-transparent border-b border-border outline-none focus:border-accent" value={card.count} onChange={(e) => updateAreaReportCard(card.id, { count: parseInt(e.target.value) || 0 })} />
+                          ) : (
+                            <span className="text-xl font-display font-bold text-accent">{card.count}</span>
+                          )}
+                          <span className="text-foreground/50 text-xs">relatórios</span>
+                        </div>
+                      </div>
+                      {isAdmin && (
+                        <button onClick={() => removeAreaReportCard(card.id)} className="text-destructive/60 hover:text-destructive transition"><Trash2 className="w-3.5 h-3.5" /></button>
+                      )}
                     </div>
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -205,9 +217,9 @@ const NossaAreaPage = () => {
               <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-primary blur-[100px]" />
             </div>
 
-            <div className="relative z-10 grid md:grid-cols-2 min-h-[700px]">
+            <div className="relative z-10 grid md:grid-cols-2 min-h-[750px]">
               {/* Image side */}
-              <div className="relative overflow-hidden">
+              <div className="relative overflow-hidden flex items-center justify-center p-6">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={currentProjectIdx}
@@ -215,12 +227,12 @@ const NossaAreaPage = () => {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -50 }}
                     transition={{ duration: 0.5 }}
-                    className="w-full h-full min-h-[550px] md:min-h-[700px] relative"
+                    className="w-full h-full flex items-center justify-center"
                   >
                     {projects[currentProjectIdx]?.imageUrl ? (
-                      <img src={projects[currentProjectIdx].imageUrl} alt={projects[currentProjectIdx].title} className="w-full h-full object-contain absolute inset-0 bg-foreground/5" />
+                      <img src={projects[currentProjectIdx].imageUrl} alt={projects[currentProjectIdx].title} className="max-w-full max-h-[680px] object-contain rounded-2xl shadow-2xl" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-muted/10">
+                      <div className="w-full h-[680px] flex items-center justify-center bg-muted/10 rounded-2xl">
                         <Rocket className="w-20 h-20 text-accent/30" />
                       </div>
                     )}

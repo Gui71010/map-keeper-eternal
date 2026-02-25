@@ -164,7 +164,7 @@ const NossaAreaPage = () => {
               <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-primary blur-[100px]" />
             </div>
 
-            <div className="relative z-10 grid md:grid-cols-2 min-h-[520px]">
+            <div className="relative z-10 grid md:grid-cols-2 min-h-[620px]">
               {/* Image side */}
               <div className="relative overflow-hidden">
                 <AnimatePresence mode="wait">
@@ -174,10 +174,10 @@ const NossaAreaPage = () => {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -50 }}
                     transition={{ duration: 0.5 }}
-                    className="w-full h-full min-h-[400px] md:min-h-[520px]"
+                    className="w-full h-full min-h-[500px] md:min-h-[620px] relative"
                   >
                     {projects[currentProjectIdx]?.imageUrl ? (
-                      <img src={projects[currentProjectIdx].imageUrl} alt={projects[currentProjectIdx].title} className="w-full h-full object-cover absolute inset-0" />
+                      <img src={projects[currentProjectIdx].imageUrl} alt={projects[currentProjectIdx].title} className="w-full h-full object-contain absolute inset-0 bg-foreground/5" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-muted/10">
                         <Rocket className="w-20 h-20 text-accent/30" />
@@ -244,7 +244,7 @@ const NossaAreaPage = () => {
             {/* Thumbnail strip */}
             {projects.length > 1 && (
               <div className="relative z-10 border-t border-primary-foreground/10 px-6 py-4">
-                <div className="flex gap-3 overflow-x-auto scrollbar-hide">
+                <div className="flex gap-3 overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                   {projects.map((project, i) => (
                     <button
                       key={project.id}

@@ -29,7 +29,7 @@ const Index = () => {
     <AdminProvider>
       <div className="min-h-screen bg-background">
         <Header activeTab={activeTab} onTabChange={setActiveTab} />
-        <main className="w-full px-6 lg:px-10 py-10">
+        <main className="w-full max-w-[1600px] mx-auto px-6 lg:px-12 py-10">
           <AnimatePresence mode="wait">
             <motion.div key={activeTab} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3 }}>
               {renderPage()}

@@ -29,7 +29,7 @@ const Index = () => {
     <AdminProvider>
       <div className="min-h-screen bg-background">
         <Header activeTab={activeTab} onTabChange={setActiveTab} />
-        <main className="w-full max-w-[1600px] mx-auto px-6 lg:px-12 py-10">
+        <main className="w-full px-6 lg:px-10 py-10">
           <AnimatePresence mode="wait">
             <motion.div key={activeTab} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3 }}>
               {renderPage()}
@@ -40,7 +40,7 @@ const Index = () => {
           <div className="relative z-10 px-6 lg:px-10 flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-primary-foreground/50 text-sm">© {new Date().getFullYear()} AeC - Diretoria de Pessoas — People Analytics</p>
             <div className="flex flex-col items-end gap-1">
-              <p className="text-accent text-sm font-medium">Desenvolvido por Guilherme Santiago</p>
+              <p className="text-sm font-medium"><span className="text-primary-foreground/50">Desenvolvido por</span>{' '}<span className="text-accent font-semibold border-b border-accent/30 pb-0.5">Guilherme Santiago</span></p>
               <div className="flex items-center gap-4 text-primary-foreground/50 text-xs">
                 <a href="https://wa.me/5538988690984" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-accent transition-colors"><WhatsAppIcon className="w-3.5 h-3.5" /><span>(38) 98869-0984</span></a>
                 <a href="mailto:m.guilherme.santiago@aec.com.br" className="flex items-center gap-1.5 hover:text-accent transition-colors"><Mail className="w-3.5 h-3.5" /><span>m.guilherme.santiago@aec.com.br</span></a>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, Trash2, ExternalLink } from 'lucide-react';
 import { Report, useAdmin } from '@/contexts/AdminContext';
 

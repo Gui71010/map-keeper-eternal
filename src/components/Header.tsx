@@ -15,6 +15,7 @@ const tabs = [
   { id: 'area', label: 'Nossa Área' },
   { id: 'portfolio', label: 'Relatórios Criados' },
   { id: 'faq', label: 'FAQ dos Relatórios' },
+  { id: 'feedback', label: 'Sugestões e Elogios' },
 ];
 
 const Header = ({ activeTab, onTabChange }: HeaderProps) => {

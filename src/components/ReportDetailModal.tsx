@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, Trash2, ExternalLink } from 'lucide-react';
 import { Report, useAdmin } from '@/contexts/AdminContext';
 
@@ -27,17 +27,33 @@ const ReportDetailModal = ({ report, creatorName, onClose, showMetrics = true, o
       {onNavigate && hasPrev && <button onClick={(e) => { e.stopPropagation(); onNavigate('prev'); }} className="fixed left-2 md:left-6 top-1/2 -translate-y-1/2 z-[110] w-12 h-12 rounded-full gradient-navy flex items-center justify-center text-primary-foreground hover:opacity-80 shadow-2xl border border-navy-light/30 transition-all hover:scale-110"><ChevronLeft className="w-6 h-6" /></button>}
       {onNavigate && hasNext && <button onClick={(e) => { e.stopPropagation(); onNavigate('next'); }} className="fixed right-2 md:right-6 top-1/2 -translate-y-1/2 z-[110] w-12 h-12 rounded-full gradient-navy flex items-center justify-center text-primary-foreground hover:opacity-80 shadow-2xl border border-navy-light/30 transition-all hover:scale-110"><ChevronRight className="w-6 h-6" /></button>}
 
-      <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} onClick={(e) => e.stopPropagation()} className="glass-card rounded-2xl w-full max-w-7xl h-[92vh] overflow-y-auto relative mx-8">
+      <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} onClick={(e) => e.stopPropagation()} className="glass-card rounded-2xl w-full max-w-[90vw] xl:max-w-7xl h-[92vh] overflow-y-auto relative mx-4">
         <div className="flex items-center justify-between p-6 border-b border-border sticky top-0 bg-card/95 backdrop-blur-sm z-10">
           {isAdmin ? <input className="text-2xl md:text-3xl font-display font-bold text-foreground bg-transparent border-b border-border w-full outline-none focus:border-accent" value={report.name} onChange={(e) => updateReport(report.id, { name: e.target.value })} /> : <h3 className="text-2xl md:text-3xl font-display font-bold text-foreground">{report.name}</h3>}
           <button onClick={onClose} className="shrink-0 ml-4 p-2 rounded-lg hover:bg-muted transition-colors"><X className="w-6 h-6" /></button>
         </div>
 
-        <div className="p-6 md:p-8 grid md:grid-cols-2 gap-8 items-start">
+        <div className="p-6 md:p-8 grid md:grid-cols-[1.4fr_1fr] gap-8 items-start">
           <div className="flex flex-col space-y-3">
-            <div className="bg-muted rounded-xl overflow-hidden relative flex items-center justify-center" style={{ minHeight: '550px', maxHeight: '75vh' }}>
-              {images[imgIndex] ? <img src={images[imgIndex]} alt="" className="w-full h-full object-contain absolute inset-0 bg-muted" style={{ minHeight: '550px' }} /> : <div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm" style={{ minHeight: '550px' }}>Sem imagem</div>}
-              {images.length > 1 && (<><button onClick={prevImg} className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full gradient-navy flex items-center justify-center text-primary-foreground hover:opacity-80"><ChevronLeft className="w-5 h-5" /></button><button onClick={nextImg} className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full gradient-navy flex items-center justify-center text-primary-foreground hover:opacity-80"><ChevronRight className="w-5 h-5" /></button></>)}
+            <div className="bg-muted/30 rounded-xl overflow-hidden relative flex items-center justify-center" style={{ minHeight: '600px', maxHeight: '78vh' }}>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={imgIndex}
+                  initial={{ opacity: 0, rotateY: 90 }}
+                  animate={{ opacity: 1, rotateY: 0 }}
+                  exit={{ opacity: 0, rotateY: -90 }}
+                  transition={{ duration: 0.4, ease: 'easeInOut' }}
+                  className="w-full h-full absolute inset-0 flex items-center justify-center"
+                  style={{ perspective: '1200px' }}
+                >
+                  {images[imgIndex] ? <img src={images[imgIndex]} alt="" className="max-w-full max-h-full object-contain" style={{ minHeight: '600px' }} /> : <div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm" style={{ minHeight: '600px' }}>Sem imagem</div>}
+                </motion.div>
+              </AnimatePresence>
+              {images.length > 1 && (
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                  {images.map((_, i) => <button key={i} onClick={() => setImgIndex(i)} className={`w-2.5 h-2.5 rounded-full transition-all ${i === imgIndex ? 'bg-accent w-6' : 'bg-foreground/30'}`} />)}
+                </div>
+              )}
             </div>
             {images.length > 1 && <div className="flex gap-2 justify-center">{images.map((_, i) => <button key={i} onClick={() => setImgIndex(i)} className={`w-2.5 h-2.5 rounded-full transition-all ${i === imgIndex ? 'bg-accent w-6' : 'bg-muted-foreground/30'}`} />)}</div>}
             {isAdmin && <div className="space-y-2"><label className="text-xs text-muted-foreground">URLs das imagens (uma por linha)</label><textarea className="w-full p-2 rounded-lg border border-border bg-background text-foreground text-sm min-h-[80px]" value={report.images.join('\n')} onChange={(e) => updateReport(report.id, { images: e.target.value.split('\n').filter(Boolean) })} placeholder="Cole as URLs das imagens, uma por linha" /></div>}

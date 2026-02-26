@@ -6,6 +6,7 @@ import Header from '@/components/Header';
 import NossaAreaPage from '@/components/NossaAreaPage';
 import RelatoriosCriadosPage from '@/components/RelatoriosCriadosPage';
 import FaqRelatoriosPage from '@/components/FaqRelatoriosPage';
+import FeedbackPage from '@/components/FeedbackPage';
 
 const WhatsAppIcon = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
@@ -21,15 +22,16 @@ const Index = () => {
       case 'area': return <NossaAreaPage />;
       case 'portfolio': return <RelatoriosCriadosPage />;
       case 'faq': return <FaqRelatoriosPage />;
+      case 'feedback': return <FeedbackPage />;
       default: return <NossaAreaPage />;
     }
   };
 
   return (
     <AdminProvider>
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background galaxy-bg">
         <Header activeTab={activeTab} onTabChange={setActiveTab} />
-        <main className="w-full px-6 lg:px-10 py-10">
+        <main className="w-full px-6 lg:px-10 py-10 relative z-10">
           <AnimatePresence mode="wait">
             <motion.div key={activeTab} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3 }}>
               {renderPage()}

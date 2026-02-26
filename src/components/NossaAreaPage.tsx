@@ -220,20 +220,21 @@ const NossaAreaPage = () => {
 
             <div className="relative z-10 grid md:grid-cols-2 min-h-[750px]">
               {/* Image side */}
-              <div className="relative overflow-hidden flex items-center justify-center p-6">
+              <div className="relative overflow-hidden flex items-center justify-center p-4">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={currentProjectIdx}
-                    initial={{ opacity: 0, x: 50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -50 }}
-                    transition={{ duration: 0.5 }}
+                    initial={{ opacity: 0, rotateY: 90 }}
+                    animate={{ opacity: 1, rotateY: 0 }}
+                    exit={{ opacity: 0, rotateY: -90 }}
+                    transition={{ duration: 0.5, ease: 'easeInOut' }}
                     className="w-full h-full flex items-center justify-center"
+                    style={{ perspective: '1200px' }}
                   >
                     {projects[currentProjectIdx]?.imageUrl ? (
-                      <img src={projects[currentProjectIdx].imageUrl} alt={projects[currentProjectIdx].title} className="max-w-full max-h-[680px] object-contain rounded-2xl shadow-2xl" />
+                      <img src={projects[currentProjectIdx].imageUrl} alt={projects[currentProjectIdx].title} className="max-w-full max-h-[700px] object-contain rounded-2xl shadow-2xl" />
                     ) : (
-                      <div className="w-full h-[680px] flex items-center justify-center bg-muted/10 rounded-2xl">
+                      <div className="w-full h-[700px] flex items-center justify-center bg-muted/10 rounded-2xl">
                         <Rocket className="w-20 h-20 text-accent/30" />
                       </div>
                     )}

@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      feedback_relatorios: {
+        Row: {
+          comentario: string
+          created_at: string
+          id: number
+          matricula: string
+          nome_relatorio: string
+          tipo: string
+        }
+        Insert: {
+          comentario: string
+          created_at?: string
+          id?: never
+          matricula: string
+          nome_relatorio: string
+          tipo: string
+        }
+        Update: {
+          comentario?: string
+          created_at?: string
+          id?: never
+          matricula?: string
+          nome_relatorio?: string
+          tipo?: string
+        }
+        Relationships: []
+      }
+      feedback_site: {
+        Row: {
+          comentario: string
+          created_at: string
+          id: number
+          matricula: string
+          tipo: string
+        }
+        Insert: {
+          comentario: string
+          created_at?: string
+          id?: never
+          matricula: string
+          tipo: string
+        }
+        Update: {
+          comentario?: string
+          created_at?: string
+          id?: never
+          matricula?: string
+          tipo?: string
+        }
+        Relationships: []
+      }
       site_content: {
         Row: {
           content: Json | null

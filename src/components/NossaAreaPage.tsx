@@ -325,6 +325,72 @@ const NossaAreaPage = () => {
           </div>
         )}
       </motion.section>
+
+      {/* Tratativa de Requisições RQ */}
+      <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.6 }} className="relative">
+        <div className="relative overflow-hidden rounded-2xl border-2 border-accent/20" style={{ background: 'linear-gradient(135deg, hsl(215, 50%, 8%), hsl(215, 40%, 14%))' }}>
+          <GalaxyParticles />
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-0 left-0 w-72 h-72 rounded-full bg-amber-500 blur-[120px]" />
+            <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full bg-emerald-500 blur-[150px]" />
+          </div>
+          <div className="relative z-10 p-10 md:p-14">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-amber-500 to-emerald-500 flex items-center justify-center shadow-lg">
+                <DollarSign className="w-7 h-7 text-white" />
+              </div>
+              <div className="flex-1">
+                {isAdmin ? (
+                  <input className="text-3xl md:text-4xl font-display font-bold text-primary-foreground bg-transparent border-b border-primary-foreground/20 w-full outline-none focus:border-accent" value={content.rqTitle} onChange={(e) => updateContent({ rqTitle: e.target.value })} />
+                ) : (
+                  <h3 className="text-3xl md:text-4xl font-display font-bold text-primary-foreground">{content.rqTitle}</h3>
+                )}
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-[1.5fr_1fr] gap-10 items-start">
+              <div>
+                {isAdmin ? (
+                  <textarea className="text-primary-foreground/80 leading-relaxed text-lg bg-transparent border border-primary-foreground/10 rounded-lg p-4 w-full min-h-[150px] outline-none focus:border-accent" value={content.rqDescription} onChange={(e) => updateContent({ rqDescription: e.target.value })} />
+                ) : (
+                  <p className="text-primary-foreground/80 leading-relaxed text-lg">{content.rqDescription}</p>
+                )}
+                <div className="flex flex-wrap gap-3 mt-6">
+                  {['Controle Orçamentário', 'Solicitações de Compra', 'Aprovações Financeiras', 'Gestão de Despesas'].map((tag) => (
+                    <span key={tag} className="px-4 py-2 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-sm font-medium">{tag}</span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h4 className="text-lg font-display font-bold text-primary-foreground/80 mb-4">Analistas Responsáveis</h4>
+                {adminAnalysts.map((analyst, i) => (
+                  <motion.div
+                    key={analyst.id}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.7 + i * 0.1 }}
+                    className="flex items-center gap-4 p-4 rounded-xl border-2 border-transparent hover:border-amber-500/30 transition-all duration-300 bg-white/5 hover:bg-white/10"
+                    style={{ transition: 'all 0.3s ease' }}
+                  >
+                    <div className="w-12 h-12 rounded-full overflow-hidden bg-muted flex items-center justify-center shrink-0 ring-2 ring-amber-500/20">
+                      {analyst.photo ? (
+                        <img src={analyst.photo} alt={analyst.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <User className="w-6 h-6 text-muted-foreground" />
+                      )}
+                    </div>
+                    <div>
+                      <p className="font-display font-semibold text-primary-foreground">{analyst.name}</p>
+                      <p className="text-primary-foreground/50 text-sm">{analyst.role}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.section>
     </div>
   );
 };

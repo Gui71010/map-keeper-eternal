@@ -36,6 +36,21 @@ export interface AreaReportCard {
   icon: string;
 }
 
+export interface RqCategory {
+  id: string;
+  label: string;
+  description: string;
+  callPath: string;
+  responsibleAnalystIds: string[];
+}
+
+export interface RqReport {
+  id: string;
+  name: string;
+  description: string;
+  imageUrl: string;
+}
+
 export interface MapCity {
   id: string;
   name: string;

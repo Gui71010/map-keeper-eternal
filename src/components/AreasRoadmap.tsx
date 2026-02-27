@@ -9,6 +9,8 @@ const areas = [
     icon: GraduationCap,
     color: 'from-blue-500 to-cyan-400',
     shadowColor: 'shadow-blue-500/20',
+    borderColor: 'border-blue-500/50',
+    glowColor: 'hsl(210, 100%, 55%)',
     description: 'Acompanhamento de horas de treinamento, eficácia dos programas e desenvolvimento de pessoas em todas as unidades.',
   },
   {
@@ -17,6 +19,8 @@ const areas = [
     icon: HeartPulse,
     color: 'from-emerald-500 to-teal-400',
     shadowColor: 'shadow-emerald-500/20',
+    borderColor: 'border-emerald-500/50',
+    glowColor: 'hsl(160, 80%, 45%)',
     description: 'Indicadores de saúde ocupacional, gestão de atestados, exames periódicos e bem-estar dos colaboradores.',
   },
   {
@@ -25,6 +29,8 @@ const areas = [
     icon: Building2,
     color: 'from-violet-500 to-purple-400',
     shadowColor: 'shadow-violet-500/20',
+    borderColor: 'border-violet-500/50',
+    glowColor: 'hsl(270, 70%, 55%)',
     description: 'Análise de headcount, movimentações de pessoal, turnover e indicadores estratégicos da diretoria.',
   },
   {
@@ -33,6 +39,8 @@ const areas = [
     icon: Users,
     color: 'from-amber-500 to-orange-400',
     shadowColor: 'shadow-amber-500/20',
+    borderColor: 'border-amber-500/50',
+    glowColor: 'hsl(35, 90%, 55%)',
     description: 'Funil admissional completo, métricas de seleção, tempo de contratação e análise de candidatos.',
   },
 ];
@@ -83,10 +91,14 @@ const AreasRoadmap = () => {
                 <motion.div
                   animate={{
                     y: isHovered ? -8 : 0,
-                    scale: isHovered ? 1.03 : 1,
                   }}
                   transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                  className={`glass-card rounded-2xl p-6 border border-border/50 transition-all duration-300 h-full ${isHovered ? `shadow-2xl ${area.shadowColor} border-accent/30` : 'hover:shadow-lg'}`}
+                  className={`glass-card rounded-2xl p-6 border-2 transition-all duration-300 h-full ${
+                    isHovered
+                      ? `${area.shadowColor} shadow-2xl ${area.borderColor}`
+                      : 'border-border/50 hover:shadow-lg'
+                  }`}
+                  style={isHovered ? { boxShadow: `0 0 25px ${area.glowColor}30, 0 0 50px ${area.glowColor}15` } : {}}
                 >
                   <div className={`w-14 h-14 rounded-2xl bg-gradient-to-r ${area.color} flex items-center justify-center mb-4 shadow-lg transition-transform duration-300 ${isHovered ? 'scale-110' : ''}`}>
                     <Icon className="w-7 h-7 text-white" />

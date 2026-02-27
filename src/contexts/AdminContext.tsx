@@ -92,6 +92,8 @@ interface SiteContent {
   areaReportCards: AreaReportCard[];
   rqTitle: string;
   rqDescription: string;
+  rqCategories: RqCategory[];
+  rqReports: RqReport[];
 }
 
 interface AdminContextType {

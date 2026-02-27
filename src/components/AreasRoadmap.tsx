@@ -8,9 +8,8 @@ const areas = [
     name: 'Treinamento',
     icon: GraduationCap,
     color: 'from-blue-500 to-cyan-400',
-    shadowColor: 'shadow-blue-500/20',
-    borderColor: 'border-blue-500/50',
     glowColor: 'hsl(210, 100%, 55%)',
+    borderHover: 'border-blue-500/50',
     description: 'Acompanhamento de horas de treinamento, eficácia dos programas e desenvolvimento de pessoas em todas as unidades.',
   },
   {
@@ -18,9 +17,8 @@ const areas = [
     name: 'Medicina',
     icon: HeartPulse,
     color: 'from-emerald-500 to-teal-400',
-    shadowColor: 'shadow-emerald-500/20',
-    borderColor: 'border-emerald-500/50',
     glowColor: 'hsl(160, 80%, 45%)',
+    borderHover: 'border-emerald-500/50',
     description: 'Indicadores de saúde ocupacional, gestão de atestados, exames periódicos e bem-estar dos colaboradores.',
   },
   {
@@ -28,9 +26,8 @@ const areas = [
     name: 'Corporativo',
     icon: Building2,
     color: 'from-violet-500 to-purple-400',
-    shadowColor: 'shadow-violet-500/20',
-    borderColor: 'border-violet-500/50',
     glowColor: 'hsl(270, 70%, 55%)',
+    borderHover: 'border-violet-500/50',
     description: 'Análise de headcount, movimentações de pessoal, turnover e indicadores estratégicos da diretoria.',
   },
   {
@@ -38,9 +35,8 @@ const areas = [
     name: 'Recrutamento',
     icon: Users,
     color: 'from-amber-500 to-orange-400',
-    shadowColor: 'shadow-amber-500/20',
-    borderColor: 'border-amber-500/50',
     glowColor: 'hsl(35, 90%, 55%)',
+    borderHover: 'border-amber-500/50',
     description: 'Funil admissional completo, métricas de seleção, tempo de contratação e análise de candidatos.',
   },
 ];
@@ -71,11 +67,8 @@ const AreasRoadmap = () => {
             const isHovered = hoveredId === area.id;
 
             return (
-              <motion.div
+              <div
                 key={area.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 + i * 0.1, duration: 0.5 }}
                 onMouseEnter={() => setHoveredId(area.id)}
                 onMouseLeave={() => setHoveredId(null)}
                 className="relative group"
@@ -93,10 +86,10 @@ const AreasRoadmap = () => {
                     y: isHovered ? -8 : 0,
                   }}
                   transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                  className={`glass-card rounded-2xl p-6 border-2 transition-all duration-300 h-full ${
+                  className={`glass-card rounded-2xl p-6 border-2 transition-colors duration-300 h-full ${
                     isHovered
-                      ? `${area.shadowColor} shadow-2xl ${area.borderColor}`
-                      : 'border-border/50 hover:shadow-lg'
+                      ? `${area.borderHover}`
+                      : 'border-border/50'
                   }`}
                   style={isHovered ? { boxShadow: `0 0 25px ${area.glowColor}30, 0 0 50px ${area.glowColor}15` } : {}}
                 >
@@ -122,7 +115,7 @@ const AreasRoadmap = () => {
                     <p className="text-accent text-xs font-medium mt-2">Passe o mouse para saber mais →</p>
                   )}
                 </motion.div>
-              </motion.div>
+              </div>
             );
           })}
         </div>

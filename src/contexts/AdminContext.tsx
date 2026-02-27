@@ -157,6 +157,8 @@ const DEFAULT_CONTENT: SiteContent = {
     { id: '3', area: 'Corporativo', count: 6, icon: '🏢' },
     { id: '4', area: 'Medicina', count: 4, icon: '🏥' },
   ],
+  rqTitle: 'Tratativa de Requisições (RQ)',
+  rqDescription: 'Os Analistas Administrativos são responsáveis pela gestão e tratativa das requisições financeiras e operacionais da diretoria. Esse processo garante o controle orçamentário, acompanhamento de despesas, solicitações de compra e aprovações, assegurando que todos os recursos sejam alocados de forma eficiente e transparente.',
 };
 
 const ADMIN_PASSWORD = 'Guisantos88';

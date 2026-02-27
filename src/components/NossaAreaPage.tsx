@@ -337,6 +337,7 @@ const NossaAreaPage = () => {
             <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full bg-emerald-500 blur-[150px]" />
           </div>
           <div className="relative z-10 p-10 md:p-14">
+            {/* Title */}
             <div className="flex items-center gap-4 mb-8">
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-amber-500 to-emerald-500 flex items-center justify-center shadow-lg">
                 <DollarSign className="w-7 h-7 text-white" />
@@ -350,30 +351,28 @@ const NossaAreaPage = () => {
               </div>
             </div>
 
-            <div className="grid md:grid-cols-[1.5fr_1fr] gap-10 items-start">
+            {/* Description + Analysts */}
+            <div className="grid md:grid-cols-[1.5fr_1fr] gap-10 items-start mb-10">
               <div>
                 {isAdmin ? (
                   <textarea className="text-primary-foreground/80 leading-relaxed text-lg bg-transparent border border-primary-foreground/10 rounded-lg p-4 w-full min-h-[150px] outline-none focus:border-accent" value={content.rqDescription} onChange={(e) => updateContent({ rqDescription: e.target.value })} />
                 ) : (
                   <p className="text-primary-foreground/80 leading-relaxed text-lg">{content.rqDescription}</p>
                 )}
-                <div className="flex flex-wrap gap-3 mt-6">
-                  {['Controle Orçamentário', 'Solicitações de Compra', 'Aprovações Financeiras', 'Gestão de Despesas'].map((tag) => (
-                    <span key={tag} className="px-4 py-2 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-sm font-medium">{tag}</span>
-                  ))}
-                </div>
               </div>
 
               <div className="space-y-4">
                 <h4 className="text-lg font-display font-bold text-primary-foreground/80 mb-4">Analistas Responsáveis</h4>
                 {adminAnalysts.map((analyst, i) => (
-                  <motion.div
+                  <motion.button
                     key={analyst.id}
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.7 + i * 0.1 }}
-                    className="flex items-center gap-4 p-4 rounded-xl border-2 border-transparent hover:border-amber-500/30 transition-all duration-300 bg-white/5 hover:bg-white/10"
-                    style={{ transition: 'all 0.3s ease' }}
+                    onClick={() => setSelectedRqAnalyst(selectedRqAnalyst === analyst.id ? null : analyst.id)}
+                    className={`w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all duration-300 bg-white/5 ${
+                      selectedRqAnalyst === analyst.id ? 'border-amber-500/60 bg-amber-500/10 shadow-lg shadow-amber-500/10' : 'border-transparent hover:border-amber-500/30 hover:bg-white/10'
+                    }`}
                   >
                     <div className="w-12 h-12 rounded-full overflow-hidden bg-muted flex items-center justify-center shrink-0 ring-2 ring-amber-500/20">
                       {analyst.photo ? (
@@ -382,9 +381,156 @@ const NossaAreaPage = () => {
                         <User className="w-6 h-6 text-muted-foreground" />
                       )}
                     </div>
-                    <div>
+                    <div className="text-left">
                       <p className="font-display font-semibold text-primary-foreground">{analyst.name}</p>
                       <p className="text-primary-foreground/50 text-sm">{analyst.role}</p>
+                    </div>
+                  </motion.button>
+                ))}
+                {selectedRqAnalyst && (
+                  <button onClick={() => setSelectedRqAnalyst(null)} className="text-amber-400 text-xs hover:underline">Limpar filtro</button>
+                )}
+              </div>
+            </div>
+
+            {/* RQ Category Buttons */}
+            <div className="mb-10">
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="text-lg font-display font-bold text-primary-foreground/80">Categorias de Requisição</h4>
+                {isAdmin && (
+                  <button onClick={() => addRqCategory({ id: Date.now().toString(), label: 'Nova Categoria', description: 'Descrição da categoria.', callPath: 'ServiceNow > Caminho', responsibleAnalystIds: [] })} className="px-3 py-1.5 rounded-lg bg-amber-500/20 text-amber-400 text-xs font-medium hover:bg-amber-500/30 transition flex items-center gap-1">
+                    <Plus className="w-3 h-3" /> Adicionar
+                  </button>
+                )}
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {(content.rqCategories || [])
+                  .filter(cat => !selectedRqAnalyst || (cat.responsibleAnalystIds || []).includes(selectedRqAnalyst))
+                  .map((cat) => (
+                  <div key={cat.id}>
+                    <button
+                      onClick={() => setExpandedRqCategory(expandedRqCategory === cat.id ? null : cat.id)}
+                      className={`w-full px-5 py-3 rounded-xl text-left font-medium transition-all duration-300 flex items-center justify-between border-2 ${
+                        expandedRqCategory === cat.id
+                          ? 'bg-amber-500/15 border-amber-500/40 text-amber-300'
+                          : 'bg-amber-500/5 border-amber-500/20 text-amber-400 hover:bg-amber-500/10 hover:border-amber-500/30'
+                      }`}
+                    >
+                      <span className="text-sm">{cat.label}</span>
+                      <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${expandedRqCategory === cat.id ? 'rotate-180' : ''}`} />
+                    </button>
+                    <AnimatePresence>
+                      {expandedRqCategory === cat.id && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.3 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="mt-2 p-4 rounded-xl bg-white/5 border border-primary-foreground/10 space-y-3">
+                            {isAdmin ? (
+                              <>
+                                <div>
+                                  <label className="text-xs text-primary-foreground/50">Nome</label>
+                                  <input className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-sm outline-none focus:border-accent" value={cat.label} onChange={(e) => updateRqCategory(cat.id, { label: e.target.value })} />
+                                </div>
+                                <div>
+                                  <label className="text-xs text-primary-foreground/50">Descrição</label>
+                                  <textarea className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-sm outline-none focus:border-accent min-h-[60px]" value={cat.description} onChange={(e) => updateRqCategory(cat.id, { description: e.target.value })} />
+                                </div>
+                                <div>
+                                  <label className="text-xs text-primary-foreground/50">Caminho do Chamado</label>
+                                  <input className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-sm outline-none focus:border-accent" value={cat.callPath} onChange={(e) => updateRqCategory(cat.id, { callPath: e.target.value })} />
+                                </div>
+                                <div>
+                                  <label className="text-xs text-primary-foreground/50">Analistas Responsáveis</label>
+                                  <div className="flex flex-wrap gap-2 mt-1">
+                                    {adminAnalysts.map(a => (
+                                      <button
+                                        key={a.id}
+                                        onClick={() => {
+                                          const ids = cat.responsibleAnalystIds || [];
+                                          updateRqCategory(cat.id, {
+                                            responsibleAnalystIds: ids.includes(a.id) ? ids.filter(i => i !== a.id) : [...ids, a.id]
+                                          });
+                                        }}
+                                        className={`px-3 py-1 rounded-full text-xs border transition-all ${
+                                          (cat.responsibleAnalystIds || []).includes(a.id)
+                                            ? 'bg-amber-500/20 border-amber-500/40 text-amber-300'
+                                            : 'border-primary-foreground/20 text-primary-foreground/50 hover:border-amber-500/30'
+                                        }`}
+                                      >
+                                        {a.name}
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                                <button onClick={() => removeRqCategory(cat.id)} className="text-destructive text-xs hover:underline flex items-center gap-1"><Trash2 className="w-3 h-3" /> Remover</button>
+                              </>
+                            ) : (
+                              <>
+                                <p className="text-primary-foreground/70 text-sm leading-relaxed">{cat.description}</p>
+                                <div className="flex items-center gap-2 pt-2 border-t border-primary-foreground/10">
+                                  <span className="text-xs text-primary-foreground/40">📋 Caminho:</span>
+                                  <span className="text-xs text-amber-400 font-medium">{cat.callPath}</span>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* RQ Reports */}
+            <div>
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-amber-500 to-emerald-500 flex items-center justify-center">
+                    <FileText className="w-4 h-4 text-white" />
+                  </div>
+                  <h4 className="text-lg font-display font-bold text-primary-foreground/80">Relatórios de RQ</h4>
+                </div>
+                {isAdmin && (
+                  <button onClick={() => addRqReport({ id: Date.now().toString(), name: 'Novo Relatório', description: 'Descrição do relatório.', imageUrl: '' })} className="px-3 py-1.5 rounded-lg bg-amber-500/20 text-amber-400 text-xs font-medium hover:bg-amber-500/30 transition flex items-center gap-1">
+                    <Plus className="w-3 h-3" /> Adicionar
+                  </button>
+                )}
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {(content.rqReports || []).map((report, i) => (
+                  <motion.div
+                    key={report.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.8 + i * 0.15 }}
+                    className="flex gap-4 p-4 rounded-xl bg-white/5 border-2 border-transparent hover:border-amber-500/30 transition-all duration-300"
+                  >
+                    <div className="w-32 h-24 rounded-lg overflow-hidden bg-muted/10 shrink-0 flex items-center justify-center">
+                      {report.imageUrl ? (
+                        <img src={report.imageUrl} alt={report.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <FileText className="w-8 h-8 text-amber-500/30" />
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      {isAdmin ? (
+                        <>
+                          <input className="font-display font-bold text-primary-foreground text-sm bg-transparent border-b border-primary-foreground/20 w-full outline-none focus:border-accent mb-1" value={report.name} onChange={(e) => updateRqReport(report.id, { name: e.target.value })} />
+                          <textarea className="text-primary-foreground/60 text-xs leading-relaxed bg-transparent border border-primary-foreground/10 rounded p-1 w-full min-h-[40px] outline-none focus:border-accent" value={report.description} onChange={(e) => updateRqReport(report.id, { description: e.target.value })} />
+                          <input className="w-full p-1 rounded border border-primary-foreground/10 bg-transparent text-primary-foreground text-xs outline-none focus:border-accent mt-1" value={report.imageUrl} onChange={(e) => updateRqReport(report.id, { imageUrl: e.target.value })} placeholder="URL da imagem" />
+                          <button onClick={() => removeRqReport(report.id)} className="text-destructive text-xs hover:underline flex items-center gap-1 mt-1"><Trash2 className="w-3 h-3" /> Remover</button>
+                        </>
+                      ) : (
+                        <>
+                          <h5 className="font-display font-bold text-primary-foreground text-sm mb-1">{report.name}</h5>
+                          <p className="text-primary-foreground/60 text-xs leading-relaxed">{report.description}</p>
+                        </>
+                      )}
                     </div>
                   </motion.div>
                 ))}

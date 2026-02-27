@@ -23,13 +23,16 @@ const AnalystCard = ({ analyst, index, isSelected, onClick, showDetails, editabl
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 + index * 0.08 }}
         onClick={onClick}
-        className={`glass-card rounded-xl transition-all duration-300 cursor-pointer hover:-translate-y-1 hover:shadow-xl ${
+        className={`glass-card rounded-xl transition-all duration-300 cursor-pointer hover:-translate-y-1 hover:shadow-xl border-2 ${
           size === 'large' ? 'p-8' : 'p-6'
         } ${
           isSelected ? 'ring-2 ring-accent shadow-xl shadow-accent/10' : ''
         } ${
-          analyst.type === 'manager' ? 'border-2 border-accent/30 bg-gradient-to-br from-card/90 to-accent/5' : ''
+          analyst.type === 'manager'
+            ? 'border-accent/30 bg-gradient-to-br from-card/90 to-accent/5 hover:border-accent/60 hover:shadow-accent/20'
+            : 'border-transparent hover:border-accent/40 hover:shadow-accent/10'
         }`}
+        style={{ transition: 'all 0.3s ease' }}
       >
         <div className={`flex items-center gap-4 ${size === 'large' ? 'flex-col text-center sm:flex-row sm:text-left' : ''}`}>
           <div className={`relative rounded-full overflow-hidden shrink-0 bg-muted flex items-center justify-center ${

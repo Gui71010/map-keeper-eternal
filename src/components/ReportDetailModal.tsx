@@ -23,7 +23,7 @@ const ReportDetailModal = ({ report, creatorName, onClose, showMetrics = true, o
   const biAnalysts = content.analysts.filter(a => a.type === 'bi');
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 bg-foreground/60 backdrop-blur-sm" onClick={onClose}>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-md" onClick={onClose}>
       {onNavigate && hasPrev && <button onClick={(e) => { e.stopPropagation(); onNavigate('prev'); }} className="fixed left-2 md:left-6 top-1/2 -translate-y-1/2 z-[110] w-12 h-12 rounded-full gradient-navy flex items-center justify-center text-primary-foreground hover:opacity-80 shadow-2xl border border-navy-light/30 transition-all hover:scale-110"><ChevronLeft className="w-6 h-6" /></button>}
       {onNavigate && hasNext && <button onClick={(e) => { e.stopPropagation(); onNavigate('next'); }} className="fixed right-2 md:right-6 top-1/2 -translate-y-1/2 z-[110] w-12 h-12 rounded-full gradient-navy flex items-center justify-center text-primary-foreground hover:opacity-80 shadow-2xl border border-navy-light/30 transition-all hover:scale-110"><ChevronRight className="w-6 h-6" /></button>}
 

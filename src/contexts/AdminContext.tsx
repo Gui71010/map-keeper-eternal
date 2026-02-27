@@ -114,6 +114,12 @@ interface AdminContextType {
   addAreaReportCard: (card: AreaReportCard) => void;
   updateAreaReportCard: (id: string, data: Partial<AreaReportCard>) => void;
   removeAreaReportCard: (id: string) => void;
+  addRqCategory: (cat: RqCategory) => void;
+  updateRqCategory: (id: string, data: Partial<RqCategory>) => void;
+  removeRqCategory: (id: string) => void;
+  addRqReport: (report: RqReport) => void;
+  updateRqReport: (id: string, data: Partial<RqReport>) => void;
+  removeRqReport: (id: string) => void;
 }
 
 const DEFAULT_CONTENT: SiteContent = {

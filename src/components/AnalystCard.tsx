@@ -23,7 +23,7 @@ const AnalystCard = ({ analyst, index, isSelected, onClick, showDetails, editabl
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 + index * 0.08 }}
         onClick={onClick}
-        className={`glass-card rounded-xl transition-all duration-300 cursor-pointer hover:-translate-y-1 hover:shadow-xl border-2 ${
+        className={`glass-card rounded-xl transition-all duration-300 cursor-pointer hover:shadow-xl border-2 ${
           size === 'large' ? 'p-8' : 'p-6'
         } ${
           isSelected ? 'ring-2 ring-accent shadow-xl shadow-accent/10' : ''

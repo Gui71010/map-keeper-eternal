@@ -75,6 +75,8 @@ interface SiteContent {
   mapStates: MapState[];
   projects: Project[];
   areaReportCards: AreaReportCard[];
+  rqTitle: string;
+  rqDescription: string;
 }
 
 interface AdminContextType {

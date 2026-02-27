@@ -182,6 +182,16 @@ const DEFAULT_CONTENT: SiteContent = {
   ],
   rqTitle: 'Tratativa de Requisições (RQ)',
   rqDescription: 'Os Analistas Administrativos são responsáveis pela gestão e tratativa das requisições financeiras e operacionais da diretoria. Esse processo garante o controle orçamentário, acompanhamento de despesas, solicitações de compra e aprovações, assegurando que todos os recursos sejam alocados de forma eficiente e transparente.',
+  rqCategories: [
+    { id: '1', label: 'Controle Orçamentário', description: 'Acompanhamento e controle do orçamento da diretoria, garantindo que os gastos estejam dentro do planejado.', callPath: 'ServiceNow > Diretoria de Pessoas > Controle Orçamentário', responsibleAnalystIds: ['5'] },
+    { id: '2', label: 'Solicitações de Compra', description: 'Gestão de todas as solicitações de compra de materiais e serviços da diretoria.', callPath: 'ServiceNow > Diretoria de Pessoas > Solicitação de Compra', responsibleAnalystIds: ['5'] },
+    { id: '3', label: 'Aprovações Financeiras', description: 'Processo de aprovação de despesas e investimentos conforme alçadas definidas.', callPath: 'ServiceNow > Diretoria de Pessoas > Aprovação Financeira', responsibleAnalystIds: ['6'] },
+    { id: '4', label: 'Gestão de Despesas', description: 'Controle e acompanhamento de todas as despesas operacionais da diretoria.', callPath: 'ServiceNow > Diretoria de Pessoas > Gestão de Despesas', responsibleAnalystIds: ['6'] },
+  ],
+  rqReports: [
+    { id: '1', name: 'Relatório de Requisições', description: 'Painel completo com todas as requisições financeiras, status de aprovação e histórico de movimentações.', imageUrl: '' },
+    { id: '2', name: 'Dashboard Orçamentário', description: 'Visão consolidada do orçamento da diretoria com comparativo planejado vs realizado.', imageUrl: '' },
+  ],
 };
 
 const ADMIN_PASSWORD = 'Guisantos88';

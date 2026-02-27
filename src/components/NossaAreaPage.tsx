@@ -8,7 +8,7 @@ import BrazilMap from '@/components/BrazilMap';
 import AreasRoadmap from '@/components/AreasRoadmap';
 
 const NossaAreaPage = () => {
-  const { content, isAdmin, updateContent, addAnalyst, addProject, updateProject, removeProject, addAreaReportCard, updateAreaReportCard, removeAreaReportCard } = useAdmin();
+  const { content, isAdmin, updateContent, addAnalyst, addProject, updateProject, removeProject, addAreaReportCard, updateAreaReportCard, removeAreaReportCard, addRqCategory, updateRqCategory, removeRqCategory, addRqReport, updateRqReport, removeRqReport } = useAdmin();
   const [selectedAnalyst, setSelectedAnalyst] = useState<string | null>(null);
   const [currentProjectIdx, setCurrentProjectIdx] = useState(0);
   const projectTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);

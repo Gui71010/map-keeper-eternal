@@ -314,9 +314,21 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const removeAreaReportCard = (id: string) =>
     setContent(prev => ({ ...prev, areaReportCards: (prev.areaReportCards || []).filter((c) => c.id !== id) }));
 
+  const addRqCategory = (cat: RqCategory) => setContent(prev => ({ ...prev, rqCategories: [...(prev.rqCategories || []), cat] }));
+  const updateRqCategory = (id: string, data: Partial<RqCategory>) =>
+    setContent(prev => ({ ...prev, rqCategories: (prev.rqCategories || []).map((c) => (c.id === id ? { ...c, ...data } : c)) }));
+  const removeRqCategory = (id: string) =>
+    setContent(prev => ({ ...prev, rqCategories: (prev.rqCategories || []).filter((c) => c.id !== id) }));
+
+  const addRqReport = (report: RqReport) => setContent(prev => ({ ...prev, rqReports: [...(prev.rqReports || []), report] }));
+  const updateRqReport = (id: string, data: Partial<RqReport>) =>
+    setContent(prev => ({ ...prev, rqReports: (prev.rqReports || []).map((r) => (r.id === id ? { ...r, ...data } : r)) }));
+  const removeRqReport = (id: string) =>
+    setContent(prev => ({ ...prev, rqReports: (prev.rqReports || []).filter((r) => r.id !== id) }));
+
   return (
     <AdminContext.Provider
-      value={{ isAdmin, login, logout, content, updateContent, addAnalyst, updateAnalyst, removeAnalyst, addReport, updateReport, removeReport, addProject, updateProject, removeProject, addAreaReportCard, updateAreaReportCard, removeAreaReportCard }}
+      value={{ isAdmin, login, logout, content, updateContent, addAnalyst, updateAnalyst, removeAnalyst, addReport, updateReport, removeReport, addProject, updateProject, removeProject, addAreaReportCard, updateAreaReportCard, removeAreaReportCard, addRqCategory, updateRqCategory, removeRqCategory, addRqReport, updateRqReport, removeRqReport }}
     >
       {children}
     </AdminContext.Provider>

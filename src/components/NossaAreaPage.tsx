@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, ImageIcon, MapPin, Crown, Palette, Briefcase, BarChart3, Globe, ChevronLeft, ChevronRight, Trash2, Rocket, FileText, DollarSign, User, ChevronDown } from 'lucide-react';
+import { Plus, ImageIcon, MapPin, Crown, Palette, Briefcase, BarChart3, Globe, ChevronLeft, ChevronRight, Trash2, Rocket, FileText, DollarSign, User, ChevronDown, Mail, Phone, MessageCircle, Plane } from 'lucide-react';
 import { useAdmin } from '@/contexts/AdminContext';
 import AnalystCard from '@/components/AnalystCard';
 import GalaxyParticles from '@/components/GalaxyParticles';
@@ -11,7 +11,6 @@ const NossaAreaPage = () => {
   const { content, isAdmin, updateContent, addAnalyst, addProject, updateProject, removeProject, addAreaReportCard, updateAreaReportCard, removeAreaReportCard, addRqCategory, updateRqCategory, removeRqCategory, addRqReport, updateRqReport, removeRqReport } = useAdmin();
   const [selectedAnalyst, setSelectedAnalyst] = useState<string | null>(null);
   const [currentProjectIdx, setCurrentProjectIdx] = useState(0);
-  const [selectedRqAnalyst, setSelectedRqAnalyst] = useState<string | null>(null);
   const [expandedRqCategory, setExpandedRqCategory] = useState<string | null>(null);
   const projectTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const managerAnalysts = content.analysts.filter((a) => a.type === 'manager');
@@ -364,17 +363,14 @@ const NossaAreaPage = () => {
               <div className="space-y-4">
                 <h4 className="text-lg font-display font-bold text-primary-foreground/80 mb-4">Analistas Responsáveis</h4>
                 {adminAnalysts.map((analyst, i) => (
-                  <motion.button
+                  <motion.div
                     key={analyst.id}
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.7 + i * 0.1 }}
-                    onClick={() => setSelectedRqAnalyst(selectedRqAnalyst === analyst.id ? null : analyst.id)}
-                    className={`w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all duration-300 bg-white/5 ${
-                      selectedRqAnalyst === analyst.id ? 'border-amber-500/60 bg-amber-500/10 shadow-lg shadow-amber-500/10' : 'border-transparent hover:border-amber-500/30 hover:bg-white/10'
-                    }`}
+                    className="w-full flex items-center gap-4 p-4 rounded-xl border-2 border-transparent bg-white/5 hover:border-accent/30 transition-all duration-300"
                   >
-                    <div className="w-12 h-12 rounded-full overflow-hidden bg-muted flex items-center justify-center shrink-0 ring-2 ring-amber-500/20">
+                    <div className="w-12 h-12 rounded-full overflow-hidden bg-muted flex items-center justify-center shrink-0 ring-2 ring-accent/20">
                       {analyst.photo ? (
                         <img src={analyst.photo} alt={analyst.name} className="w-full h-full object-cover" />
                       ) : (
@@ -385,11 +381,8 @@ const NossaAreaPage = () => {
                       <p className="font-display font-semibold text-primary-foreground">{analyst.name}</p>
                       <p className="text-primary-foreground/50 text-sm">{analyst.role}</p>
                     </div>
-                  </motion.button>
+                  </motion.div>
                 ))}
-                {selectedRqAnalyst && (
-                  <button onClick={() => setSelectedRqAnalyst(null)} className="text-amber-400 text-xs hover:underline">Limpar filtro</button>
-                )}
               </div>
             </div>
 
@@ -398,22 +391,20 @@ const NossaAreaPage = () => {
               <div className="flex items-center justify-between mb-4">
                 <h4 className="text-lg font-display font-bold text-primary-foreground/80">Categorias de Requisição</h4>
                 {isAdmin && (
-                  <button onClick={() => addRqCategory({ id: Date.now().toString(), label: 'Nova Categoria', description: 'Descrição da categoria.', callPath: 'ServiceNow > Caminho', responsibleAnalystIds: [] })} className="px-3 py-1.5 rounded-lg bg-amber-500/20 text-amber-400 text-xs font-medium hover:bg-amber-500/30 transition flex items-center gap-1">
+                  <button onClick={() => addRqCategory({ id: Date.now().toString(), label: 'Nova Categoria', description: 'Descrição da categoria.', callPath: 'ServiceNow > Caminho', responsibleAnalystIds: [] })} className="px-3 py-1.5 rounded-lg bg-accent/20 text-accent text-xs font-medium hover:bg-accent/30 transition flex items-center gap-1">
                     <Plus className="w-3 h-3" /> Adicionar
                   </button>
                 )}
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {(content.rqCategories || [])
-                  .filter(cat => !selectedRqAnalyst || (cat.responsibleAnalystIds || []).includes(selectedRqAnalyst))
-                  .map((cat) => (
+                {(content.rqCategories || []).map((cat) => (
                   <div key={cat.id}>
                     <button
                       onClick={() => setExpandedRqCategory(expandedRqCategory === cat.id ? null : cat.id)}
                       className={`w-full px-5 py-3 rounded-xl text-left font-medium transition-all duration-300 flex items-center justify-between border-2 ${
                         expandedRqCategory === cat.id
-                          ? 'bg-amber-500/15 border-amber-500/40 text-amber-300'
-                          : 'bg-amber-500/5 border-amber-500/20 text-amber-400 hover:bg-amber-500/10 hover:border-amber-500/30'
+                          ? 'bg-accent/15 border-accent/40 text-accent'
+                          : 'bg-accent/5 border-accent/20 text-accent hover:bg-accent/10 hover:border-accent/30'
                       }`}
                     >
                       <span className="text-sm">{cat.label}</span>
@@ -443,29 +434,6 @@ const NossaAreaPage = () => {
                                   <label className="text-xs text-primary-foreground/50">Caminho do Chamado</label>
                                   <input className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-sm outline-none focus:border-accent" value={cat.callPath} onChange={(e) => updateRqCategory(cat.id, { callPath: e.target.value })} />
                                 </div>
-                                <div>
-                                  <label className="text-xs text-primary-foreground/50">Analistas Responsáveis</label>
-                                  <div className="flex flex-wrap gap-2 mt-1">
-                                    {adminAnalysts.map(a => (
-                                      <button
-                                        key={a.id}
-                                        onClick={() => {
-                                          const ids = cat.responsibleAnalystIds || [];
-                                          updateRqCategory(cat.id, {
-                                            responsibleAnalystIds: ids.includes(a.id) ? ids.filter(i => i !== a.id) : [...ids, a.id]
-                                          });
-                                        }}
-                                        className={`px-3 py-1 rounded-full text-xs border transition-all ${
-                                          (cat.responsibleAnalystIds || []).includes(a.id)
-                                            ? 'bg-amber-500/20 border-amber-500/40 text-amber-300'
-                                            : 'border-primary-foreground/20 text-primary-foreground/50 hover:border-amber-500/30'
-                                        }`}
-                                      >
-                                        {a.name}
-                                      </button>
-                                    ))}
-                                  </div>
-                                </div>
                                 <button onClick={() => removeRqCategory(cat.id)} className="text-destructive text-xs hover:underline flex items-center gap-1"><Trash2 className="w-3 h-3" /> Remover</button>
                               </>
                             ) : (
@@ -473,7 +441,7 @@ const NossaAreaPage = () => {
                                 <p className="text-primary-foreground/70 text-sm leading-relaxed">{cat.description}</p>
                                 <div className="flex items-center gap-2 pt-2 border-t border-primary-foreground/10">
                                   <span className="text-xs text-primary-foreground/40">📋 Caminho:</span>
-                                  <span className="text-xs text-amber-400 font-medium">{cat.callPath}</span>
+                                  <span className="text-xs text-accent font-medium">{cat.callPath}</span>
                                 </div>
                               </>
                             )}
@@ -486,17 +454,78 @@ const NossaAreaPage = () => {
               </div>
             </div>
 
+            {/* Travel Contact Section */}
+            <div className="mb-10 p-6 rounded-2xl bg-white/5 border-2 border-primary/20">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-primary to-accent flex items-center justify-center shadow-lg">
+                  <Plane className="w-5 h-5 text-primary-foreground" />
+                </div>
+                {isAdmin ? (
+                  <input className="text-xl font-display font-bold text-primary-foreground bg-transparent border-b border-primary-foreground/20 flex-1 outline-none focus:border-accent" value={content.rqTravelTitle || 'Solicitações de Viagens'} onChange={(e) => updateContent({ rqTravelTitle: e.target.value })} />
+                ) : (
+                  <h4 className="text-xl font-display font-bold text-primary-foreground">{content.rqTravelTitle || 'Solicitações de Viagens'}</h4>
+                )}
+              </div>
+              {isAdmin ? (
+                <textarea className="text-primary-foreground/70 text-sm leading-relaxed bg-transparent border border-primary-foreground/10 rounded-lg p-3 w-full min-h-[60px] outline-none focus:border-accent mb-4" value={content.rqTravelDescription || ''} onChange={(e) => updateContent({ rqTravelDescription: e.target.value })} />
+              ) : (
+                <p className="text-primary-foreground/70 text-sm leading-relaxed mb-4">{content.rqTravelDescription || ''}</p>
+              )}
+              <div className="flex items-center gap-3 mb-4">
+                {isAdmin ? (
+                  <input className="text-lg font-display font-semibold text-accent bg-transparent border-b border-primary-foreground/20 outline-none focus:border-accent" value={content.rqTravelContactName || ''} onChange={(e) => updateContent({ rqTravelContactName: e.target.value })} placeholder="Nome do contato" />
+                ) : (
+                  <span className="text-lg font-display font-semibold text-accent">{content.rqTravelContactName || ''}</span>
+                )}
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-primary-foreground/10">
+                  <Mail className="w-5 h-5 text-accent shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-primary-foreground/40 text-xs">E-mail</p>
+                    {isAdmin ? (
+                      <input className="text-primary-foreground text-sm bg-transparent border-b border-primary-foreground/10 w-full outline-none focus:border-accent" value={content.rqTravelContactEmail || ''} onChange={(e) => updateContent({ rqTravelContactEmail: e.target.value })} />
+                    ) : (
+                      <a href={`mailto:${content.rqTravelContactEmail}`} className="text-primary-foreground text-sm hover:text-accent transition-colors truncate block">{content.rqTravelContactEmail || ''}</a>
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-primary-foreground/10">
+                  <MessageCircle className="w-5 h-5 text-accent shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-primary-foreground/40 text-xs">Teams</p>
+                    {isAdmin ? (
+                      <input className="text-primary-foreground text-sm bg-transparent border-b border-primary-foreground/10 w-full outline-none focus:border-accent" value={content.rqTravelContactTeams || ''} onChange={(e) => updateContent({ rqTravelContactTeams: e.target.value })} />
+                    ) : (
+                      <span className="text-primary-foreground text-sm truncate block">{content.rqTravelContactTeams || ''}</span>
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-primary-foreground/10">
+                  <Phone className="w-5 h-5 text-accent shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-primary-foreground/40 text-xs">WhatsApp</p>
+                    {isAdmin ? (
+                      <input className="text-primary-foreground text-sm bg-transparent border-b border-primary-foreground/10 w-full outline-none focus:border-accent" value={content.rqTravelContactWhatsapp || ''} onChange={(e) => updateContent({ rqTravelContactWhatsapp: e.target.value })} />
+                    ) : (
+                      <a href={`https://wa.me/${(content.rqTravelContactWhatsapp || '').replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="text-primary-foreground text-sm hover:text-accent transition-colors truncate block">{content.rqTravelContactWhatsapp || ''}</a>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* RQ Reports */}
             <div>
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-amber-500 to-emerald-500 flex items-center justify-center">
-                    <FileText className="w-4 h-4 text-white" />
+                  <div className="w-8 h-8 rounded-lg gradient-accent flex items-center justify-center">
+                    <FileText className="w-4 h-4 text-primary-foreground" />
                   </div>
                   <h4 className="text-lg font-display font-bold text-primary-foreground/80">Relatórios de RQ</h4>
                 </div>
                 {isAdmin && (
-                  <button onClick={() => addRqReport({ id: Date.now().toString(), name: 'Novo Relatório', description: 'Descrição do relatório.', imageUrl: '' })} className="px-3 py-1.5 rounded-lg bg-amber-500/20 text-amber-400 text-xs font-medium hover:bg-amber-500/30 transition flex items-center gap-1">
+                  <button onClick={() => addRqReport({ id: Date.now().toString(), name: 'Novo Relatório', description: 'Descrição do relatório.', imageUrl: '' })} className="px-3 py-1.5 rounded-lg bg-accent/20 text-accent text-xs font-medium hover:bg-accent/30 transition flex items-center gap-1">
                     <Plus className="w-3 h-3" /> Adicionar
                   </button>
                 )}
@@ -508,13 +537,13 @@ const NossaAreaPage = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.8 + i * 0.15 }}
-                    className="flex gap-4 p-4 rounded-xl bg-white/5 border-2 border-transparent hover:border-amber-500/30 transition-all duration-300"
+                    className="flex gap-4 p-4 rounded-xl bg-white/5 border-2 border-transparent hover:border-accent/30 transition-all duration-300"
                   >
                     <div className="w-32 h-24 rounded-lg overflow-hidden bg-muted/10 shrink-0 flex items-center justify-center">
                       {report.imageUrl ? (
                         <img src={report.imageUrl} alt={report.name} className="w-full h-full object-cover" />
                       ) : (
-                        <FileText className="w-8 h-8 text-amber-500/30" />
+                        <FileText className="w-8 h-8 text-accent/30" />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">

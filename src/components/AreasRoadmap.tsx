@@ -9,7 +9,7 @@ const areas = [
     icon: GraduationCap,
     color: 'from-blue-500 to-cyan-400',
     glowColor: 'hsl(210, 100%, 55%)',
-    borderHover: 'border-blue-500/50',
+    borderColor: 'border-blue-400',
     description: 'Acompanhamento de horas de treinamento, eficácia dos programas e desenvolvimento de pessoas em todas as unidades.',
   },
   {
@@ -18,7 +18,7 @@ const areas = [
     icon: HeartPulse,
     color: 'from-emerald-500 to-teal-400',
     glowColor: 'hsl(160, 80%, 45%)',
-    borderHover: 'border-emerald-500/50',
+    borderColor: 'border-emerald-400',
     description: 'Indicadores de saúde ocupacional, gestão de atestados, exames periódicos e bem-estar dos colaboradores.',
   },
   {
@@ -27,7 +27,7 @@ const areas = [
     icon: Building2,
     color: 'from-violet-500 to-purple-400',
     glowColor: 'hsl(270, 70%, 55%)',
-    borderHover: 'border-violet-500/50',
+    borderColor: 'border-violet-400',
     description: 'Análise de headcount, movimentações de pessoal, turnover e indicadores estratégicos da diretoria.',
   },
   {
@@ -36,7 +36,7 @@ const areas = [
     icon: Users,
     color: 'from-amber-500 to-orange-400',
     glowColor: 'hsl(35, 90%, 55%)',
-    borderHover: 'border-amber-500/50',
+    borderColor: 'border-amber-400',
     description: 'Funil admissional completo, métricas de seleção, tempo de contratação e análise de candidatos.',
   },
 ];
@@ -62,7 +62,7 @@ const AreasRoadmap = () => {
         <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-accent/30 to-transparent -translate-y-1/2 z-0" />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
-          {areas.map((area, i) => {
+          {areas.map((area) => {
             const Icon = area.icon;
             const isHovered = hoveredId === area.id;
 
@@ -75,23 +75,22 @@ const AreasRoadmap = () => {
               >
                 {/* Connector dot on timeline */}
                 <div className="hidden lg:block absolute -top-[1px] left-1/2 -translate-x-1/2 -translate-y-[calc(50%+1rem)]">
-                  <motion.div
-                    animate={{ scale: isHovered ? 1.5 : 1 }}
-                    className={`w-3 h-3 rounded-full bg-gradient-to-r ${area.color} shadow-lg`}
+                  <div
+                    className={`w-3 h-3 rounded-full bg-gradient-to-r ${area.color} shadow-lg transition-transform duration-300 ${isHovered ? 'scale-150' : 'scale-100'}`}
                   />
                 </div>
 
-                <motion.div
-                  animate={{
-                    y: isHovered ? -8 : 0,
-                  }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                  className={`glass-card rounded-2xl p-6 border-2 transition-colors duration-300 h-full ${
+                <div
+                  className={`glass-card rounded-2xl p-6 border-2 transition-all duration-300 h-full ${
                     isHovered
-                      ? `${area.borderHover}`
+                      ? `${area.borderColor} shadow-lg`
                       : 'border-border/50'
                   }`}
-                  style={isHovered ? { boxShadow: `0 0 25px ${area.glowColor}30, 0 0 50px ${area.glowColor}15` } : {}}
+                  style={{
+                    transform: isHovered ? 'translateY(-8px)' : 'translateY(0)',
+                    boxShadow: isHovered ? `0 0 30px ${area.glowColor}40, 0 0 60px ${area.glowColor}20, 0 8px 32px rgba(0,0,0,0.3)` : '',
+                    transition: 'all 0.3s ease',
+                  }}
                 >
                   <div className={`w-14 h-14 rounded-2xl bg-gradient-to-r ${area.color} flex items-center justify-center mb-4 shadow-lg transition-transform duration-300 ${isHovered ? 'scale-110' : ''}`}>
                     <Icon className="w-7 h-7 text-white" />
@@ -99,22 +98,20 @@ const AreasRoadmap = () => {
 
                   <h4 className="text-lg font-display font-bold text-foreground mb-2">{area.name}</h4>
 
-                  <motion.div
-                    initial={false}
-                    animate={{
-                      height: isHovered ? 'auto' : 0,
+                  <div
+                    className="overflow-hidden transition-all duration-300"
+                    style={{
+                      maxHeight: isHovered ? '200px' : '0px',
                       opacity: isHovered ? 1 : 0,
                     }}
-                    transition={{ duration: 0.3 }}
-                    className="overflow-hidden"
                   >
                     <p className="text-muted-foreground text-sm leading-relaxed">{area.description}</p>
-                  </motion.div>
+                  </div>
 
                   {!isHovered && (
                     <p className="text-accent text-xs font-medium mt-2">Passe o mouse para saber mais →</p>
                   )}
-                </motion.div>
+                </div>
               </div>
             );
           })}

@@ -11,7 +11,7 @@ const NossaAreaPage = () => {
   const { content, isAdmin, updateContent, addAnalyst, addProject, updateProject, removeProject, addAreaReportCard, updateAreaReportCard, removeAreaReportCard, addRqCategory, updateRqCategory, removeRqCategory, addRqReport, updateRqReport, removeRqReport } = useAdmin();
   const [selectedAnalyst, setSelectedAnalyst] = useState<string | null>(null);
   const [currentProjectIdx, setCurrentProjectIdx] = useState(0);
-  const [selectedRqAnalyst, setSelectedRqAnalyst] = useState<string | null>(null);
+  const [expandedRqCategory, setExpandedRqCategory] = useState<string | null>(null);
   const [expandedRqCategory, setExpandedRqCategory] = useState<string | null>(null);
   const projectTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const managerAnalysts = content.analysts.filter((a) => a.type === 'manager');

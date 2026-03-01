@@ -32,6 +32,7 @@ const Index = () => {
     <AdminProvider>
       <div className="min-h-screen bg-background galaxy-bg tech-bg">
         <SpaceDecorations />
+        <Header activeTab={activeTab} onTabChange={setActiveTab} />
         <main className="w-full px-6 lg:px-10 py-10 relative z-10">
           <AnimatePresence mode="wait">
             <motion.div key={activeTab} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3 }}>

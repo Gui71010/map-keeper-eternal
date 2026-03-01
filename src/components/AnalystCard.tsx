@@ -29,10 +29,13 @@ const AnalystCard = ({ analyst, index, isSelected, onClick, showDetails, editabl
           isSelected ? 'ring-2 ring-accent shadow-xl shadow-accent/10' : ''
         } ${
           analyst.type === 'manager'
-            ? 'border-accent/30 bg-gradient-to-br from-card/90 to-accent/5 hover:border-accent/60 hover:shadow-accent/20'
-            : 'border-transparent hover:border-accent/40 hover:shadow-accent/10'
+            ? 'border-accent/30 bg-gradient-to-br from-card/90 to-accent/5 hover:border-accent hover:shadow-accent/20 hover:shadow-lg'
+            : 'border-transparent hover:border-accent/50 hover:shadow-accent/10 hover:shadow-lg'
         }`}
-        style={{ transition: 'all 0.3s ease' }}
+        style={{
+          transition: 'all 0.3s ease',
+          ...(isSelected ? {} : {}),
+        }}
       >
         <div className={`flex items-center gap-4 ${size === 'large' ? 'flex-col text-center sm:flex-row sm:text-left' : ''}`}>
           <div className={`relative rounded-full overflow-hidden shrink-0 bg-muted flex items-center justify-center ${

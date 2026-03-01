@@ -12,7 +12,6 @@ const NossaAreaPage = () => {
   const [selectedAnalyst, setSelectedAnalyst] = useState<string | null>(null);
   const [currentProjectIdx, setCurrentProjectIdx] = useState(0);
   const [expandedRqCategory, setExpandedRqCategory] = useState<string | null>(null);
-  const [expandedRqCategory, setExpandedRqCategory] = useState<string | null>(null);
   const projectTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const managerAnalysts = content.analysts.filter((a) => a.type === 'manager');
   const biAnalysts = content.analysts.filter((a) => a.type === 'bi');

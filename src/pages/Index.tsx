@@ -7,6 +7,7 @@ import NossaAreaPage from '@/components/NossaAreaPage';
 import RelatoriosCriadosPage from '@/components/RelatoriosCriadosPage';
 import FaqRelatoriosPage from '@/components/FaqRelatoriosPage';
 import FeedbackPage from '@/components/FeedbackPage';
+import SpaceDecorations from '@/components/SpaceDecorations';
 
 const WhatsAppIcon = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" fill="currentColor" className={className}>

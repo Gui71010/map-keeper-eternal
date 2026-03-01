@@ -94,6 +94,12 @@ interface SiteContent {
   rqDescription: string;
   rqCategories: RqCategory[];
   rqReports: RqReport[];
+  rqTravelTitle: string;
+  rqTravelDescription: string;
+  rqTravelContactName: string;
+  rqTravelContactEmail: string;
+  rqTravelContactTeams: string;
+  rqTravelContactWhatsapp: string;
 }
 
 interface AdminContextType {

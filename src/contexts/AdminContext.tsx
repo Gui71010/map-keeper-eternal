@@ -198,6 +198,12 @@ const DEFAULT_CONTENT: SiteContent = {
     { id: '1', name: 'Relatório de Requisições', description: 'Painel completo com todas as requisições financeiras, status de aprovação e histórico de movimentações.', imageUrl: '' },
     { id: '2', name: 'Dashboard Orçamentário', description: 'Visão consolidada do orçamento da diretoria com comparativo planejado vs realizado.', imageUrl: '' },
   ],
+  rqTravelTitle: 'Solicitações de Viagens',
+  rqTravelDescription: 'Para solicitações relacionadas a viagens corporativas, entre em contato diretamente com a Ana Laura pelos canais abaixo:',
+  rqTravelContactName: 'Ana Laura',
+  rqTravelContactEmail: 'ana.laura@aec.com.br',
+  rqTravelContactTeams: 'ana.laura@aec.com.br',
+  rqTravelContactWhatsapp: '(31) 99999-9999',
 };
 
 const ADMIN_PASSWORD = 'Guisantos88';

@@ -30,7 +30,7 @@ const Index = () => {
 
   return (
     <AdminProvider>
-      <div className="min-h-screen bg-background galaxy-bg tech-bg">
+      <div className="min-h-screen bg-background galaxy-bg">
         <SpaceDecorations />
         <Header activeTab={activeTab} onTabChange={setActiveTab} />
         <main className="w-full px-6 lg:px-10 py-10 relative z-10">

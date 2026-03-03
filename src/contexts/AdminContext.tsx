@@ -9,6 +9,9 @@ export interface Analyst {
   photo: string;
   bio: string;
   type?: 'bi' | 'admin' | 'design' | 'manager';
+  age?: string;
+  attributions?: string[];
+  skills?: string[];
 }
 
 export interface Report {

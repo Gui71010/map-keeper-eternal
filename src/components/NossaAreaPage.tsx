@@ -189,8 +189,7 @@ const NossaAreaPage = () => {
         </div>
       </motion.section>
 
-      {/* Areas Roadmap */}
-      <AreasRoadmap />
+      {/* Areas Roadmap moved above */}
 
       {/* Admin: Add analysts */}
       {isAdmin && (

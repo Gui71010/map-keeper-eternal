@@ -72,19 +72,47 @@ const NossaAreaPage = () => {
         </div>
       </motion.section>
 
-      {/* Organograma */}
-      {(orgImage || isAdmin) && (
-        <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.6 }} className="glass-card rounded-2xl p-4 overflow-hidden">
-          {isAdmin ? <input className="text-2xl font-display font-bold text-foreground mb-4 px-4 pt-2 bg-transparent border-b border-border w-full outline-none focus:border-accent" value={content.orgChartTitle} onChange={(e) => updateContent({ orgChartTitle: e.target.value })} /> : <h3 className="text-2xl font-display font-bold text-foreground mb-4 px-4 pt-2">{content.orgChartTitle}</h3>}
-          {orgImage && <img src={orgImage} alt="Hierarquia do Setor" className="w-full rounded-xl" />}
-          {isAdmin && (
-            <div className="px-4 pb-4 pt-3 space-y-2">
-              <label className="text-xs text-muted-foreground flex items-center gap-1"><ImageIcon className="w-3 h-3" /> URL da imagem do organograma</label>
-              <input className="w-full p-2 rounded-lg border border-border bg-background text-foreground text-sm" value={content.orgChartUrl} onChange={(e) => updateContent({ orgChartUrl: e.target.value })} placeholder="Cole a URL da nova imagem do organograma" />
+      {/* Organograma Interativo */}
+      <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.6 }} className="relative overflow-hidden rounded-2xl border-2 border-accent/15" style={{ background: 'linear-gradient(160deg, hsl(222, 40%, 8% / 0.85), hsl(215, 35%, 6% / 0.9))' }}>
+        <GalaxyParticles />
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 right-1/4 w-72 h-72 rounded-full bg-accent/4 blur-[120px]" />
+          <div className="absolute bottom-0 left-1/3 w-64 h-64 rounded-full bg-primary/3 blur-[100px]" />
+        </div>
+        <div className="relative z-10 p-8 md:p-12">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-12 h-12 rounded-xl gradient-accent flex items-center justify-center shadow-lg shadow-accent/20">
+              <Crown className="w-6 h-6 text-primary-foreground" />
             </div>
+            {isAdmin ? <input className="text-3xl md:text-4xl font-display font-bold text-foreground bg-transparent border-b border-border outline-none focus:border-accent" value={content.orgChartTitle} onChange={(e) => updateContent({ orgChartTitle: e.target.value })} /> : <h3 className="text-3xl md:text-4xl font-display font-bold text-foreground">{content.orgChartTitle}</h3>}
+          </div>
+          <p className="text-muted-foreground text-lg mb-6 max-w-2xl">Estrutura organizacional da equipe de People Analytics — Diretoria de Pessoas</p>
+          <OrgChart
+            manager={managerAnalysts[0]}
+            biAnalysts={biAnalysts}
+            adminAnalysts={adminAnalysts}
+            designAnalysts={designAnalysts}
+            onAnalystClick={(id) => setSelectedAnalyst(selectedAnalyst === id ? null : id)}
+          />
+        </div>
+      </motion.section>
+
+      {/* Analyst detail modals - triggered from OrgChart */}
+      {content.analysts.map((analyst, i) => (
+        <div key={analyst.id} style={{ display: 'contents' }}>
+          {selectedAnalyst === analyst.id && (
+            <AnalystCard
+              analyst={analyst}
+              index={i}
+              isSelected={true}
+              onClick={() => setSelectedAnalyst(null)}
+              showDetails
+              editable
+              size="normal"
+            />
           )}
-        </motion.section>
-      )}
+        </div>
+      ))}
 
       {/* O que fazemos + Mapa */}
       <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.6 }} className="relative">

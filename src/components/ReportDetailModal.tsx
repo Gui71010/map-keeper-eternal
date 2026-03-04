@@ -74,13 +74,13 @@ const ReportDetailModal = ({ report, creatorName, onClose, showMetrics = true, o
             {isAdmin ? <div><label className="text-xs text-muted-foreground">Descrição</label><textarea className="w-full p-2 rounded-lg border border-border bg-background text-foreground text-sm min-h-[100px]" value={report.description} onChange={(e) => updateReport(report.id, { description: e.target.value })} /></div> : <div><span className="text-xs text-muted-foreground">Descrição</span><p className="text-foreground leading-relaxed text-base mt-1">{report.description}</p></div>}
 
             <div>
-              <span className="text-xs text-muted-foreground block mb-1">Áreas elegíveis à visualização</span>
+              <span className="text-sm text-muted-foreground font-medium block mb-2">Áreas elegíveis à visualização</span>
               {isAdmin ? (
-                <textarea className="w-full p-2 rounded-lg border border-border bg-background text-foreground text-sm min-h-[60px]" value={(report.eligibleAreas || []).join('\n')} onChange={(e) => updateReport(report.id, { eligibleAreas: e.target.value.split('\n').filter(Boolean) })} placeholder="Uma área por linha" />
+                <textarea className="w-full p-3 rounded-xl border border-border bg-background text-foreground text-sm min-h-[80px]" value={(report.eligibleAreas || []).join('\n')} onChange={(e) => updateReport(report.id, { eligibleAreas: e.target.value.split('\n').filter(Boolean) })} placeholder="Uma área por linha" />
               ) : (
                 (report.eligibleAreas && report.eligibleAreas.length > 0) ? (
-                  <div className="flex flex-wrap gap-2">{report.eligibleAreas.map((area, i) => <span key={i} className="px-3 py-1 rounded-full bg-accent/10 text-accent border border-accent/20 text-xs font-medium">{area}</span>)}</div>
-                ) : <p className="text-muted-foreground text-sm">Todas as áreas</p>
+                  <div className="flex flex-wrap gap-2.5">{report.eligibleAreas.map((area, i) => <span key={i} className="px-4 py-2 rounded-xl bg-accent/15 text-accent border border-accent/25 text-sm font-semibold">{area}</span>)}</div>
+                ) : <p className="text-muted-foreground text-base">Todas as áreas</p>
               )}
             </div>
 

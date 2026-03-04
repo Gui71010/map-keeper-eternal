@@ -6,6 +6,7 @@ import AnalystCard from '@/components/AnalystCard';
 import GalaxyParticles from '@/components/GalaxyParticles';
 import BrazilMap from '@/components/BrazilMap';
 import AreasRoadmap from '@/components/AreasRoadmap';
+import OrgChart from '@/components/OrgChart';
 
 const NossaAreaPage = () => {
   const { content, isAdmin, updateContent, addAnalyst, addProject, updateProject, removeProject, addAreaReportCard, updateAreaReportCard, removeAreaReportCard, addRqCategory, updateRqCategory, removeRqCategory, addRqReport, updateRqReport, removeRqReport } = useAdmin();

@@ -6,6 +6,7 @@ import AnalystCard from '@/components/AnalystCard';
 import GalaxyParticles from '@/components/GalaxyParticles';
 import BrazilMap from '@/components/BrazilMap';
 import AreasRoadmap from '@/components/AreasRoadmap';
+import OrgChart from '@/components/OrgChart';
 
 const NossaAreaPage = () => {
   const { content, isAdmin, updateContent, addAnalyst, addProject, updateProject, removeProject, addAreaReportCard, updateAreaReportCard, removeAreaReportCard, addRqCategory, updateRqCategory, removeRqCategory, addRqReport, updateRqReport, removeRqReport } = useAdmin();
@@ -71,19 +72,47 @@ const NossaAreaPage = () => {
         </div>
       </motion.section>
 
-      {/* Organograma */}
-      {(orgImage || isAdmin) && (
-        <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.6 }} className="glass-card rounded-2xl p-4 overflow-hidden">
-          {isAdmin ? <input className="text-2xl font-display font-bold text-foreground mb-4 px-4 pt-2 bg-transparent border-b border-border w-full outline-none focus:border-accent" value={content.orgChartTitle} onChange={(e) => updateContent({ orgChartTitle: e.target.value })} /> : <h3 className="text-2xl font-display font-bold text-foreground mb-4 px-4 pt-2">{content.orgChartTitle}</h3>}
-          {orgImage && <img src={orgImage} alt="Hierarquia do Setor" className="w-full rounded-xl" />}
-          {isAdmin && (
-            <div className="px-4 pb-4 pt-3 space-y-2">
-              <label className="text-xs text-muted-foreground flex items-center gap-1"><ImageIcon className="w-3 h-3" /> URL da imagem do organograma</label>
-              <input className="w-full p-2 rounded-lg border border-border bg-background text-foreground text-sm" value={content.orgChartUrl} onChange={(e) => updateContent({ orgChartUrl: e.target.value })} placeholder="Cole a URL da nova imagem do organograma" />
+      {/* Organograma Interativo */}
+      <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.6 }} className="relative overflow-hidden rounded-2xl border-2 border-accent/15" style={{ background: 'linear-gradient(160deg, hsl(222, 40%, 8% / 0.85), hsl(215, 35%, 6% / 0.9))' }}>
+        <GalaxyParticles />
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 right-1/4 w-72 h-72 rounded-full bg-accent/4 blur-[120px]" />
+          <div className="absolute bottom-0 left-1/3 w-64 h-64 rounded-full bg-primary/3 blur-[100px]" />
+        </div>
+        <div className="relative z-10 p-8 md:p-12">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-12 h-12 rounded-xl gradient-accent flex items-center justify-center shadow-lg shadow-accent/20">
+              <Crown className="w-6 h-6 text-primary-foreground" />
             </div>
+            {isAdmin ? <input className="text-3xl md:text-4xl font-display font-bold text-foreground bg-transparent border-b border-border outline-none focus:border-accent" value={content.orgChartTitle} onChange={(e) => updateContent({ orgChartTitle: e.target.value })} /> : <h3 className="text-3xl md:text-4xl font-display font-bold text-foreground">{content.orgChartTitle}</h3>}
+          </div>
+          <p className="text-muted-foreground text-lg mb-6 max-w-2xl">Estrutura organizacional da equipe de People Analytics — Diretoria de Pessoas</p>
+          <OrgChart
+            manager={managerAnalysts[0]}
+            biAnalysts={biAnalysts}
+            adminAnalysts={adminAnalysts}
+            designAnalysts={designAnalysts}
+            onAnalystClick={(id) => setSelectedAnalyst(selectedAnalyst === id ? null : id)}
+          />
+        </div>
+      </motion.section>
+
+      {/* Analyst detail modals - triggered from OrgChart */}
+      {content.analysts.map((analyst, i) => (
+        <div key={analyst.id} style={{ display: 'contents' }}>
+          {selectedAnalyst === analyst.id && (
+            <AnalystCard
+              analyst={analyst}
+              index={i}
+              isSelected={true}
+              onClick={() => setSelectedAnalyst(null)}
+              showDetails
+              editable
+              size="normal"
+            />
           )}
-        </motion.section>
-      )}
+        </div>
+      ))}
 
       {/* O que fazemos + Mapa */}
       <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.6 }} className="relative">
@@ -163,48 +192,15 @@ const NossaAreaPage = () => {
       {/* Areas Roadmap */}
       <AreasRoadmap />
 
-      {/* Intro text */}
-      <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.28, duration: 0.6 }} className="text-center py-8">
-        <div className="relative inline-block">
-          <div className="absolute -inset-4 gradient-accent opacity-10 rounded-2xl blur-xl" />
-          <div className="relative">
-            {isAdmin ? <textarea className="text-xl md:text-2xl text-foreground font-display font-semibold bg-transparent border border-border rounded-lg p-4 w-full max-w-3xl mx-auto min-h-[60px] outline-none focus:border-accent text-center" value={content.analystIntroText} onChange={(e) => updateContent({ analystIntroText: e.target.value })} /> : <p className="text-xl md:text-2xl text-foreground font-display font-semibold max-w-3xl mx-auto">{content.analystIntroText}</p>}
-            <div className="w-24 h-1 gradient-accent rounded-full mx-auto mt-4" />
-          </div>
-        </div>
-      </motion.section>
-
-      {/* Manager */}
-      <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.29, duration: 0.6 }}>
-        <SectionHeader icon={Crown} title={content.managerTitle} editKey="managerTitle" onAdd={isAdmin ? () => addAnalyst({ id: Date.now().toString(), name: 'Novo Gerente', role: 'Gerente', area: 'People Analytics', photo: '', bio: 'Descrição.', type: 'manager' }) : undefined} />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {managerAnalysts.map((analyst, i) => <AnalystCard key={analyst.id} analyst={analyst} index={i} isSelected={selectedAnalyst === analyst.id} onClick={() => setSelectedAnalyst(selectedAnalyst === analyst.id ? null : analyst.id)} showDetails editable showClickHint size="large" />)}
-        </div>
-      </motion.section>
-
-      {/* BI Analysts */}
-      <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.6 }}>
-        <SectionHeader icon={BarChart3} title={content.biAnalystsTitle} editKey="biAnalystsTitle" onAdd={isAdmin ? () => addAnalyst({ id: Date.now().toString(), name: 'Novo Analista', role: 'Analista de BI', area: 'Nova Área', photo: '', bio: 'Descrição.', type: 'bi' }) : undefined} />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {biAnalysts.map((analyst, i) => <AnalystCard key={analyst.id} analyst={analyst} index={i} isSelected={selectedAnalyst === analyst.id} onClick={() => setSelectedAnalyst(selectedAnalyst === analyst.id ? null : analyst.id)} showDetails editable showClickHint />)}
-        </div>
-      </motion.section>
-
-      {/* Admin Analysts */}
-      <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.6 }}>
-        <SectionHeader icon={Briefcase} title={content.adminAnalystsTitle} editKey="adminAnalystsTitle" onAdd={isAdmin ? () => addAnalyst({ id: Date.now().toString(), name: 'Novo Analista Admin', role: 'Analista Administrativo', area: 'Administrativo', photo: '', bio: 'Descrição.', type: 'admin' }) : undefined} />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {adminAnalysts.map((analyst, i) => <AnalystCard key={analyst.id} analyst={analyst} index={i} isSelected={selectedAnalyst === analyst.id} onClick={() => setSelectedAnalyst(selectedAnalyst === analyst.id ? null : analyst.id)} showDetails editable showClickHint />)}
-        </div>
-      </motion.section>
-
-      {/* Design Analysts */}
-      <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.6 }}>
-        <SectionHeader icon={Palette} title={content.designAnalystsTitle} editKey="designAnalystsTitle" onAdd={isAdmin ? () => addAnalyst({ id: Date.now().toString(), name: 'Novo Designer', role: 'Analista de Design Gráfico', area: 'Design', photo: '', bio: 'Descrição.', type: 'design' }) : undefined} />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {designAnalysts.map((analyst, i) => <AnalystCard key={analyst.id} analyst={analyst} index={i} isSelected={selectedAnalyst === analyst.id} onClick={() => setSelectedAnalyst(selectedAnalyst === analyst.id ? null : analyst.id)} showDetails editable showClickHint />)}
-        </div>
-      </motion.section>
+      {/* Admin: Add analysts */}
+      {isAdmin && (
+        <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.6 }} className="flex flex-wrap gap-3">
+          <button onClick={() => addAnalyst({ id: Date.now().toString(), name: 'Novo Gerente', role: 'Gerente', area: 'People Analytics', photo: '', bio: 'Descrição.', type: 'manager' })} className="px-4 py-2 rounded-lg gradient-accent text-accent-foreground text-sm font-medium hover:opacity-90 transition flex items-center gap-2"><Plus className="w-4 h-4" /> Gerente</button>
+          <button onClick={() => addAnalyst({ id: Date.now().toString(), name: 'Novo Analista BI', role: 'Analista de BI', area: 'Nova Área', photo: '', bio: 'Descrição.', type: 'bi' })} className="px-4 py-2 rounded-lg gradient-accent text-accent-foreground text-sm font-medium hover:opacity-90 transition flex items-center gap-2"><Plus className="w-4 h-4" /> Analista BI</button>
+          <button onClick={() => addAnalyst({ id: Date.now().toString(), name: 'Novo Admin', role: 'Analista Administrativo', area: 'Administrativo', photo: '', bio: 'Descrição.', type: 'admin' })} className="px-4 py-2 rounded-lg gradient-accent text-accent-foreground text-sm font-medium hover:opacity-90 transition flex items-center gap-2"><Plus className="w-4 h-4" /> Analista Admin</button>
+          <button onClick={() => addAnalyst({ id: Date.now().toString(), name: 'Novo Designer', role: 'Designer', area: 'Design', photo: '', bio: 'Descrição.', type: 'design' })} className="px-4 py-2 rounded-lg gradient-accent text-accent-foreground text-sm font-medium hover:opacity-90 transition flex items-center gap-2"><Plus className="w-4 h-4" /> Designer</button>
+        </motion.section>
+      )}
 
       {/* Nossos principais projetos */}
       <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55, duration: 0.6 }} className="relative">

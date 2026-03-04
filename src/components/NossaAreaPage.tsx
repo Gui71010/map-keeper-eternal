@@ -192,48 +192,15 @@ const NossaAreaPage = () => {
       {/* Areas Roadmap */}
       <AreasRoadmap />
 
-      {/* Intro text */}
-      <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.28, duration: 0.6 }} className="text-center py-8">
-        <div className="relative inline-block">
-          <div className="absolute -inset-4 gradient-accent opacity-10 rounded-2xl blur-xl" />
-          <div className="relative">
-            {isAdmin ? <textarea className="text-xl md:text-2xl text-foreground font-display font-semibold bg-transparent border border-border rounded-lg p-4 w-full max-w-3xl mx-auto min-h-[60px] outline-none focus:border-accent text-center" value={content.analystIntroText} onChange={(e) => updateContent({ analystIntroText: e.target.value })} /> : <p className="text-xl md:text-2xl text-foreground font-display font-semibold max-w-3xl mx-auto">{content.analystIntroText}</p>}
-            <div className="w-24 h-1 gradient-accent rounded-full mx-auto mt-4" />
-          </div>
-        </div>
-      </motion.section>
-
-      {/* Manager */}
-      <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.29, duration: 0.6 }}>
-        <SectionHeader icon={Crown} title={content.managerTitle} editKey="managerTitle" onAdd={isAdmin ? () => addAnalyst({ id: Date.now().toString(), name: 'Novo Gerente', role: 'Gerente', area: 'People Analytics', photo: '', bio: 'Descrição.', type: 'manager' }) : undefined} />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {managerAnalysts.map((analyst, i) => <AnalystCard key={analyst.id} analyst={analyst} index={i} isSelected={selectedAnalyst === analyst.id} onClick={() => setSelectedAnalyst(selectedAnalyst === analyst.id ? null : analyst.id)} showDetails editable showClickHint size="large" />)}
-        </div>
-      </motion.section>
-
-      {/* BI Analysts */}
-      <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.6 }}>
-        <SectionHeader icon={BarChart3} title={content.biAnalystsTitle} editKey="biAnalystsTitle" onAdd={isAdmin ? () => addAnalyst({ id: Date.now().toString(), name: 'Novo Analista', role: 'Analista de BI', area: 'Nova Área', photo: '', bio: 'Descrição.', type: 'bi' }) : undefined} />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {biAnalysts.map((analyst, i) => <AnalystCard key={analyst.id} analyst={analyst} index={i} isSelected={selectedAnalyst === analyst.id} onClick={() => setSelectedAnalyst(selectedAnalyst === analyst.id ? null : analyst.id)} showDetails editable showClickHint />)}
-        </div>
-      </motion.section>
-
-      {/* Admin Analysts */}
-      <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.6 }}>
-        <SectionHeader icon={Briefcase} title={content.adminAnalystsTitle} editKey="adminAnalystsTitle" onAdd={isAdmin ? () => addAnalyst({ id: Date.now().toString(), name: 'Novo Analista Admin', role: 'Analista Administrativo', area: 'Administrativo', photo: '', bio: 'Descrição.', type: 'admin' }) : undefined} />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {adminAnalysts.map((analyst, i) => <AnalystCard key={analyst.id} analyst={analyst} index={i} isSelected={selectedAnalyst === analyst.id} onClick={() => setSelectedAnalyst(selectedAnalyst === analyst.id ? null : analyst.id)} showDetails editable showClickHint />)}
-        </div>
-      </motion.section>
-
-      {/* Design Analysts */}
-      <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.6 }}>
-        <SectionHeader icon={Palette} title={content.designAnalystsTitle} editKey="designAnalystsTitle" onAdd={isAdmin ? () => addAnalyst({ id: Date.now().toString(), name: 'Novo Designer', role: 'Analista de Design Gráfico', area: 'Design', photo: '', bio: 'Descrição.', type: 'design' }) : undefined} />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {designAnalysts.map((analyst, i) => <AnalystCard key={analyst.id} analyst={analyst} index={i} isSelected={selectedAnalyst === analyst.id} onClick={() => setSelectedAnalyst(selectedAnalyst === analyst.id ? null : analyst.id)} showDetails editable showClickHint />)}
-        </div>
-      </motion.section>
+      {/* Admin: Add analysts */}
+      {isAdmin && (
+        <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.6 }} className="flex flex-wrap gap-3">
+          <button onClick={() => addAnalyst({ id: Date.now().toString(), name: 'Novo Gerente', role: 'Gerente', area: 'People Analytics', photo: '', bio: 'Descrição.', type: 'manager' })} className="px-4 py-2 rounded-lg gradient-accent text-accent-foreground text-sm font-medium hover:opacity-90 transition flex items-center gap-2"><Plus className="w-4 h-4" /> Gerente</button>
+          <button onClick={() => addAnalyst({ id: Date.now().toString(), name: 'Novo Analista BI', role: 'Analista de BI', area: 'Nova Área', photo: '', bio: 'Descrição.', type: 'bi' })} className="px-4 py-2 rounded-lg gradient-accent text-accent-foreground text-sm font-medium hover:opacity-90 transition flex items-center gap-2"><Plus className="w-4 h-4" /> Analista BI</button>
+          <button onClick={() => addAnalyst({ id: Date.now().toString(), name: 'Novo Admin', role: 'Analista Administrativo', area: 'Administrativo', photo: '', bio: 'Descrição.', type: 'admin' })} className="px-4 py-2 rounded-lg gradient-accent text-accent-foreground text-sm font-medium hover:opacity-90 transition flex items-center gap-2"><Plus className="w-4 h-4" /> Analista Admin</button>
+          <button onClick={() => addAnalyst({ id: Date.now().toString(), name: 'Novo Designer', role: 'Designer', area: 'Design', photo: '', bio: 'Descrição.', type: 'design' })} className="px-4 py-2 rounded-lg gradient-accent text-accent-foreground text-sm font-medium hover:opacity-90 transition flex items-center gap-2"><Plus className="w-4 h-4" /> Designer</button>
+        </motion.section>
+      )}
 
       {/* Nossos principais projetos */}
       <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55, duration: 0.6 }} className="relative">

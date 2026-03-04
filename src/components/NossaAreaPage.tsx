@@ -72,6 +72,9 @@ const NossaAreaPage = () => {
         </div>
       </motion.section>
 
+      {/* Nossas Áreas de Atuação */}
+      <AreasRoadmap />
+
       {/* Organograma Interativo */}
       <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.6 }} className="relative overflow-hidden rounded-2xl border-2 border-accent/15" style={{ background: 'linear-gradient(160deg, hsl(222, 40%, 8% / 0.85), hsl(215, 35%, 6% / 0.9))' }}>
         <GalaxyParticles />

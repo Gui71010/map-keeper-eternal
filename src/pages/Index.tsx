@@ -5,7 +5,6 @@ import { AdminProvider } from '@/contexts/AdminContext';
 import Header from '@/components/Header';
 import NossaAreaPage from '@/components/NossaAreaPage';
 import RelatoriosCriadosPage from '@/components/RelatoriosCriadosPage';
-import FaqRelatoriosPage from '@/components/FaqRelatoriosPage';
 import FeedbackPage from '@/components/FeedbackPage';
 import SpaceDecorations from '@/components/SpaceDecorations';
 

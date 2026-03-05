@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, User, Search } from 'lucide-react';
+import { Plus, User, Search, FileText, BarChart3 } from 'lucide-react';
 import { useAdmin } from '@/contexts/AdminContext';
 import ReportCard from '@/components/ReportCard';
 import ReportDetailModal from '@/components/ReportDetailModal';
@@ -22,16 +22,54 @@ const RelatoriosCriadosPage = () => {
 
   return (
     <div className="space-y-12">
+      {/* Hero */}
       <motion.section initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="relative overflow-hidden rounded-2xl gradient-navy p-10 md:p-16">
         <GalaxyParticles />
         <div className="absolute inset-0 opacity-10"><div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-accent blur-[120px]" /></div>
         <div className="relative z-10 max-w-3xl">
-          {isAdmin ? <input className="text-4xl md:text-5xl font-display font-bold text-primary-foreground mb-4 bg-transparent border-b border-primary-foreground/20 w-full outline-none focus:border-accent" value={content.portfolioTitle} onChange={(e) => updateContent({ portfolioTitle: e.target.value })} /> : <h2 className="text-4xl md:text-5xl font-display font-bold text-primary-foreground mb-4">{content.portfolioTitle}</h2>}
-          {isAdmin ? <input className="text-accent text-sm font-medium mb-4 bg-transparent border-b border-primary-foreground/20 w-full outline-none focus:border-accent block" value={content.portfolioSubtitle} onChange={(e) => updateContent({ portfolioSubtitle: e.target.value })} /> : <p className="text-accent text-sm font-medium mb-4">{content.portfolioSubtitle}</p>}
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-14 h-14 rounded-2xl gradient-accent flex items-center justify-center shadow-lg shadow-accent/20">
+              <FileText className="w-7 h-7 text-primary-foreground" />
+            </div>
+            {isAdmin ? <input className="text-4xl md:text-5xl font-display font-bold text-primary-foreground bg-transparent border-b border-primary-foreground/20 w-full outline-none focus:border-accent" value={content.portfolioTitle} onChange={(e) => updateContent({ portfolioTitle: e.target.value })} /> : <h2 className="text-4xl md:text-5xl font-display font-bold text-primary-foreground">{content.portfolioTitle}</h2>}
+          </div>
+          {isAdmin ? <input className="text-accent text-lg font-medium mb-4 bg-transparent border-b border-primary-foreground/20 w-full outline-none focus:border-accent block" value={content.portfolioSubtitle} onChange={(e) => updateContent({ portfolioSubtitle: e.target.value })} /> : <p className="text-accent text-lg font-medium mb-4">{content.portfolioSubtitle}</p>}
           {isAdmin ? <textarea className="text-primary-foreground/80 leading-relaxed text-lg bg-transparent border border-primary-foreground/10 rounded-lg p-3 w-full min-h-[80px] outline-none focus:border-accent" value={content.portfolioDescription} onChange={(e) => updateContent({ portfolioDescription: e.target.value })} /> : <p className="text-primary-foreground/80 leading-relaxed text-lg">{content.portfolioDescription}</p>}
         </div>
       </motion.section>
 
+      {/* Stats */}
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.5 }} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="glass-card rounded-2xl p-6 border border-accent/15 flex items-center gap-4">
+          <div className="w-14 h-14 rounded-xl bg-accent/15 flex items-center justify-center">
+            <FileText className="w-7 h-7 text-accent" />
+          </div>
+          <div>
+            <p className="text-3xl font-display font-bold text-accent">{content.reports.length}</p>
+            <p className="text-muted-foreground text-sm">Relatórios criados</p>
+          </div>
+        </div>
+        <div className="glass-card rounded-2xl p-6 border border-accent/15 flex items-center gap-4">
+          <div className="w-14 h-14 rounded-xl bg-primary/15 flex items-center justify-center">
+            <User className="w-7 h-7 text-primary" />
+          </div>
+          <div>
+            <p className="text-3xl font-display font-bold text-primary">{biAnalysts.length}</p>
+            <p className="text-muted-foreground text-sm">Analistas</p>
+          </div>
+        </div>
+        <div className="glass-card rounded-2xl p-6 border border-accent/15 flex items-center gap-4">
+          <div className="w-14 h-14 rounded-xl bg-emerald-500/15 flex items-center justify-center">
+            <BarChart3 className="w-7 h-7 text-emerald-400" />
+          </div>
+          <div>
+            <p className="text-3xl font-display font-bold text-emerald-400">{new Set(content.reports.flatMap(r => r.eligibleAreas || [])).size}</p>
+            <p className="text-muted-foreground text-sm">Áreas atendidas</p>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Analyst filter */}
       <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.6 }}>
         {isAdmin ? <input className="text-xl font-display font-bold text-foreground mb-6 bg-transparent border-b border-border outline-none focus:border-accent block" value={content.filterByAnalystTitle} onChange={(e) => updateContent({ filterByAnalystTitle: e.target.value })} /> : <h3 className="text-xl font-display font-bold text-foreground mb-6">{content.filterByAnalystTitle}</h3>}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
@@ -57,22 +95,23 @@ const RelatoriosCriadosPage = () => {
 
       {/* Search filter */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.4 }} className="relative">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+        <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-6 h-6 text-muted-foreground" />
         <input
           type="text"
           placeholder="Buscar relatório pelo nome..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-border bg-background text-foreground placeholder:text-muted-foreground outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 transition-all text-base"
+          className="w-full pl-14 pr-6 py-4 rounded-2xl border-2 border-border bg-background text-foreground placeholder:text-muted-foreground outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 transition-all text-lg"
         />
       </motion.div>
 
+      {/* Reports grid */}
       <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.6 }}>
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-display font-bold text-foreground">{filteredReports.length} relatório{filteredReports.length !== 1 ? 's' : ''}</h3>
-          {isAdmin && <button onClick={() => addReport({ id: Date.now().toString(), name: 'Novo Relatório', creatorId: biAnalysts[0]?.id || '', description: 'Descrição do relatório.', images: [], metrics: [], link: '', eligibleAreas: [] })} className="px-4 py-2 rounded-lg gradient-accent text-accent-foreground text-sm font-medium hover:opacity-90 transition flex items-center gap-2"><Plus className="w-4 h-4" /> Adicionar</button>}
+        <div className="flex items-center justify-between mb-8">
+          <h3 className="text-2xl font-display font-bold text-foreground">{filteredReports.length} relatório{filteredReports.length !== 1 ? 's' : ''}</h3>
+          {isAdmin && <button onClick={() => addReport({ id: Date.now().toString(), name: 'Novo Relatório', creatorId: biAnalysts[0]?.id || '', description: 'Descrição do relatório.', images: [], metrics: [], link: '', eligibleAreas: [] })} className="px-5 py-3 rounded-xl gradient-accent text-accent-foreground text-base font-medium hover:opacity-90 transition flex items-center gap-2 shadow-lg"><Plus className="w-5 h-5" /> Adicionar</button>}
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           <AnimatePresence>{filteredReports.map((report, i) => <ReportCard key={report.id} report={report} creatorName={getCreatorName(report.creatorId)} index={i} onClick={() => setSelectedReportId(report.id)} />)}</AnimatePresence>
         </div>
       </motion.section>

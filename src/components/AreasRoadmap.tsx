@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { GraduationCap, HeartPulse, Building2, Users } from 'lucide-react';
+import { GraduationCap, HeartPulse, Building2, Users, ClipboardList } from 'lucide-react';
 
 const areas = [
   {
@@ -39,6 +39,15 @@ const areas = [
     borderColor: 'border-amber-400',
     description: 'Funil admissional completo, métricas de seleção, tempo de contratação e análise de candidatos.',
   },
+  {
+    id: 'administrativo',
+    name: 'Administrativo',
+    icon: ClipboardList,
+    color: 'from-rose-500 to-pink-400',
+    glowColor: 'hsl(350, 80%, 55%)',
+    borderColor: 'border-rose-400',
+    description: 'Gestão de processos internos, controle de documentação, suporte operacional e indicadores administrativos da diretoria.',
+  },
 ];
 
 const AreasRoadmap = () => {
@@ -61,7 +70,7 @@ const AreasRoadmap = () => {
       <div className="relative">
         <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-accent/30 to-transparent -translate-y-1/2 z-0" />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5 relative z-10">
           {areas.map((area) => {
             const Icon = area.icon;
             const isHovered = hoveredId === area.id;

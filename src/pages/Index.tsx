@@ -21,7 +21,6 @@ const Index = () => {
     switch (activeTab) {
       case 'area': return <NossaAreaPage />;
       case 'portfolio': return <RelatoriosCriadosPage />;
-      case 'faq': return <FaqRelatoriosPage />;
       case 'feedback': return <FeedbackPage />;
       default: return <NossaAreaPage />;
     }

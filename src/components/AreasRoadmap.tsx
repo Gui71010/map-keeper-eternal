@@ -9,7 +9,7 @@ const areas = [
     icon: GraduationCap,
     color: 'from-blue-500 to-cyan-400',
     glowColor: 'hsl(210, 100%, 55%)',
-    borderColor: 'border-blue-400',
+    borderColor: 'border-blue-400/60',
     description: 'Acompanhamento de horas de treinamento, eficácia dos programas e desenvolvimento de pessoas em todas as unidades.',
   },
   {
@@ -18,7 +18,7 @@ const areas = [
     icon: HeartPulse,
     color: 'from-emerald-500 to-teal-400',
     glowColor: 'hsl(160, 80%, 45%)',
-    borderColor: 'border-emerald-400',
+    borderColor: 'border-emerald-400/60',
     description: 'Indicadores de saúde ocupacional, gestão de atestados, exames periódicos e bem-estar dos colaboradores.',
   },
   {
@@ -27,7 +27,7 @@ const areas = [
     icon: Building2,
     color: 'from-violet-500 to-purple-400',
     glowColor: 'hsl(270, 70%, 55%)',
-    borderColor: 'border-violet-400',
+    borderColor: 'border-violet-400/60',
     description: 'Análise de headcount, movimentações de pessoal, turnover e indicadores estratégicos da diretoria.',
   },
   {
@@ -36,7 +36,7 @@ const areas = [
     icon: Users,
     color: 'from-amber-500 to-orange-400',
     glowColor: 'hsl(35, 90%, 55%)',
-    borderColor: 'border-amber-400',
+    borderColor: 'border-amber-400/60',
     description: 'Funil admissional completo, métricas de seleção, tempo de contratação e análise de candidatos.',
   },
   {
@@ -45,7 +45,7 @@ const areas = [
     icon: ClipboardList,
     color: 'from-rose-500 to-pink-400',
     glowColor: 'hsl(350, 80%, 55%)',
-    borderColor: 'border-rose-400',
+    borderColor: 'border-rose-400/60',
     description: 'Gestão de processos internos, controle de documentação, suporte operacional e indicadores administrativos da diretoria.',
   },
 ];
@@ -92,12 +92,13 @@ const AreasRoadmap = () => {
                 <div
                   className={`glass-card rounded-2xl p-6 border-2 transition-all duration-300 h-full ${
                     isHovered
-                      ? `${area.borderColor} shadow-lg`
+                      ? `${area.borderColor}`
                       : 'border-border/50'
                   }`}
                   style={{
-                    transform: isHovered ? 'translateY(-8px)' : 'translateY(0)',
-                    boxShadow: isHovered ? `0 0 30px ${area.glowColor}40, 0 0 60px ${area.glowColor}20, 0 8px 32px rgba(0,0,0,0.3)` : '',
+                    boxShadow: isHovered
+                      ? `0 0 25px ${area.glowColor}30, 0 0 50px ${area.glowColor}15, inset 0 0 30px ${area.glowColor}08`
+                      : 'none',
                     transition: 'all 0.3s ease',
                   }}
                 >
@@ -107,19 +108,9 @@ const AreasRoadmap = () => {
 
                   <h4 className="text-lg font-display font-bold text-foreground mb-2">{area.name}</h4>
 
-                  <div
-                    className="overflow-hidden transition-all duration-300"
-                    style={{
-                      maxHeight: isHovered ? '200px' : '0px',
-                      opacity: isHovered ? 1 : 0,
-                    }}
-                  >
-                    <p className="text-muted-foreground text-sm leading-relaxed">{area.description}</p>
-                  </div>
-
-                  {!isHovered && (
-                    <p className="text-accent text-xs font-medium mt-2">Passe o mouse para saber mais →</p>
-                  )}
+                  <p className={`text-muted-foreground text-sm leading-relaxed transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-60'}`}>
+                    {area.description}
+                  </p>
                 </div>
               </div>
             );

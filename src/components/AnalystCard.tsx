@@ -117,36 +117,40 @@ const AnalystCard = ({ analyst, index, isSelected, onClick, showDetails, editabl
               <div className="h-1.5 w-full gradient-accent rounded-t-3xl" />
 
               <div className="p-8 md:p-10">
-                {/* Profile Header */}
-                <div className="flex flex-col sm:flex-row items-center gap-8 mb-8">
-                  <div className="relative">
-                    <div className="w-36 h-36 rounded-2xl overflow-hidden bg-muted flex items-center justify-center shrink-0 shadow-2xl ring-4 ring-accent/20 border-2 border-accent/10">
+                {/* Profile Header - horizontal layout */}
+                <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-8">
+                  <div className="relative shrink-0">
+                    <div className="w-48 h-48 md:w-56 md:h-56 rounded-2xl overflow-hidden bg-muted flex items-center justify-center shadow-2xl ring-4 ring-accent/20 border-2 border-accent/10">
                       {analyst.photo ? (
                         <img src={analyst.photo} alt={analyst.name} className="w-full h-full object-cover" />
                       ) : (
-                        <User className="w-16 h-16 text-muted-foreground" />
+                        <User className="w-20 h-20 text-muted-foreground" />
                       )}
                     </div>
                     {analyst.type === 'manager' && (
-                      <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full gradient-accent flex items-center justify-center shadow-lg">
-                        <Shield className="w-4 h-4 text-primary-foreground" />
+                      <div className="absolute -top-3 -right-3 w-10 h-10 rounded-full gradient-accent flex items-center justify-center shadow-lg">
+                        <Shield className="w-5 h-5 text-primary-foreground" />
                       </div>
                     )}
                   </div>
-                  <div className="text-center sm:text-left flex-1">
+                  <div className="text-center md:text-left flex-1 md:py-4">
                     <h3 className="text-3xl md:text-4xl font-display font-bold text-foreground leading-tight">{analyst.name}</h3>
-                    <p className="text-lg text-muted-foreground mt-1.5">{analyst.role}</p>
-                    <div className="flex flex-wrap items-center gap-3 mt-3 justify-center sm:justify-start">
-                      <span className="inline-block px-5 py-1.5 rounded-full font-semibold bg-accent/15 text-accent border border-accent/25 text-sm">
+                    <p className="text-lg text-muted-foreground mt-2">{analyst.role}</p>
+                    <div className="flex flex-wrap items-center gap-3 mt-4 justify-center md:justify-start">
+                      <span className="inline-block px-5 py-2 rounded-full font-semibold bg-accent/15 text-accent border border-accent/25 text-sm">
                         {analyst.area}
                       </span>
                       {analyst.age && (
-                        <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-muted/50 border border-border/50">
+                        <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-muted/50 border border-border/50">
                           <Calendar className="w-4 h-4 text-accent" />
                           <span className="text-foreground text-sm font-medium">{analyst.age} anos</span>
                         </div>
                       )}
                     </div>
+                    {/* Bio inline next to photo */}
+                    {analyst.bio && !isAdmin && (
+                      <p className="text-foreground/80 leading-relaxed text-base mt-5">{analyst.bio}</p>
+                    )}
                   </div>
                 </div>
 

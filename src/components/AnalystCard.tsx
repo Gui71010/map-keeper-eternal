@@ -227,10 +227,6 @@ const AnalystCard = ({ analyst, index, isSelected, onClick, showDetails, editabl
                   </div>
                 ) : (
                   <div className="space-y-6">
-                    {/* Bio */}
-                    <div className="rounded-2xl p-6 border border-border/30" style={{ background: 'linear-gradient(135deg, hsl(215, 25%, 14% / 0.6), hsl(215, 30%, 10% / 0.8))' }}>
-                      <p className="text-foreground leading-relaxed text-base md:text-lg">{analyst.bio}</p>
-                    </div>
 
                     {/* Attributions */}
                     {(analyst.attributions || []).length > 0 && (

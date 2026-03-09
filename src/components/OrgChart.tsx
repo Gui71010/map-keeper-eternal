@@ -49,7 +49,7 @@ const OrgNode = ({
       }}
       onMouseLeave={(e) => {
         const el = e.currentTarget;
-        el.style.borderColor = isBoss ? 'hsl(var(--accent) / 0.4)' : 'hsl(215, 25%, 18% / 0.3)';
+        el.style.borderColor = 'transparent';
         el.style.boxShadow = 'none';
       }}
     >

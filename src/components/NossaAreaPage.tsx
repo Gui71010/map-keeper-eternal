@@ -327,17 +327,17 @@ const NossaAreaPage = () => {
 
       {/* Tratativa de Requisições RQ */}
       <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.6 }} className="relative">
-        <div className="relative overflow-hidden rounded-2xl border-2 border-accent/20" style={{ background: 'linear-gradient(135deg, hsl(215, 50%, 8%), hsl(215, 40%, 14%))' }}>
+        <div className="relative overflow-hidden rounded-2xl border border-accent/20" style={{ background: 'linear-gradient(160deg, hsl(220, 45%, 8%), hsl(220, 35%, 13%))' }}>
           <GalaxyParticles />
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-0 left-0 w-72 h-72 rounded-full bg-amber-500 blur-[120px]" />
-            <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full bg-emerald-500 blur-[150px]" />
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute -top-20 -left-20 w-96 h-96 rounded-full bg-amber-500/8 blur-[150px]" />
+            <div className="absolute -bottom-20 -right-20 w-96 h-96 rounded-full bg-emerald-500/8 blur-[150px]" />
           </div>
-          <div className="relative z-10 p-10 md:p-14">
-            {/* Title */}
-            <div className="flex items-center gap-4 mb-8">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-amber-500 to-emerald-500 flex items-center justify-center shadow-lg">
-                <DollarSign className="w-7 h-7 text-white" />
+          <div className="relative z-10 p-8 md:p-12">
+            {/* Header with gradient line */}
+            <div className="flex items-start gap-5 mb-10">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-emerald-500 flex items-center justify-center shadow-xl shadow-amber-500/20 shrink-0">
+                <DollarSign className="w-8 h-8 text-white" />
               </div>
               <div className="flex-1">
                 {isAdmin ? (
@@ -345,68 +345,91 @@ const NossaAreaPage = () => {
                 ) : (
                   <h3 className="text-3xl md:text-4xl font-display font-bold text-primary-foreground">{content.rqTitle}</h3>
                 )}
+                <div className="w-20 h-1 rounded-full bg-gradient-to-r from-amber-500 to-emerald-500 mt-3" />
               </div>
             </div>
 
-            {/* Description + Analysts */}
-            <div className="grid md:grid-cols-[1.5fr_1fr] gap-10 items-start mb-10">
-              <div>
+            {/* Description + Analysts in modern layout */}
+            <div className="grid md:grid-cols-[1.5fr_1fr] gap-8 mb-12">
+              <div className="rounded-2xl p-6 border border-primary-foreground/8" style={{ background: 'hsl(220, 35%, 11%)' }}>
                 {isAdmin ? (
-                  <textarea className="text-primary-foreground/80 leading-relaxed text-lg bg-transparent border border-primary-foreground/10 rounded-lg p-4 w-full min-h-[150px] outline-none focus:border-accent" value={content.rqDescription} onChange={(e) => updateContent({ rqDescription: e.target.value })} />
+                  <textarea className="text-primary-foreground/80 leading-relaxed text-base bg-transparent border border-primary-foreground/10 rounded-lg p-4 w-full min-h-[150px] outline-none focus:border-accent" value={content.rqDescription} onChange={(e) => updateContent({ rqDescription: e.target.value })} />
                 ) : (
-                  <p className="text-primary-foreground/80 leading-relaxed text-lg">{content.rqDescription}</p>
+                  <p className="text-primary-foreground/75 leading-relaxed text-base">{content.rqDescription}</p>
                 )}
               </div>
 
-              <div className="space-y-4">
-                <h4 className="text-lg font-display font-bold text-primary-foreground/80 mb-4">Analistas Responsáveis</h4>
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-1.5 h-6 rounded-full bg-gradient-to-b from-amber-500 to-emerald-500" />
+                  <h4 className="text-sm font-display font-bold text-primary-foreground/70 uppercase tracking-wider">Analistas Responsáveis</h4>
+                </div>
                 {adminAnalysts.map((analyst, i) => (
                   <motion.div
                     key={analyst.id}
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.7 + i * 0.1 }}
-                    className="w-full flex items-center gap-4 p-4 rounded-xl border-2 border-transparent bg-white/5 hover:border-accent/30 transition-all duration-300"
+                    className="flex items-center gap-4 p-4 rounded-xl border border-primary-foreground/8 hover:border-amber-500/30 transition-all duration-300 group"
+                    style={{ background: 'hsl(220, 35%, 11%)' }}
                   >
-                    <div className="w-12 h-12 rounded-full overflow-hidden bg-muted flex items-center justify-center shrink-0 ring-2 ring-accent/20">
+                    <div className="w-11 h-11 rounded-full overflow-hidden bg-muted flex items-center justify-center shrink-0 ring-2 ring-amber-500/20 group-hover:ring-amber-500/40 transition-all">
                       {analyst.photo ? (
                         <img src={analyst.photo} alt={analyst.name} className="w-full h-full object-cover" />
                       ) : (
-                        <User className="w-6 h-6 text-muted-foreground" />
+                        <User className="w-5 h-5 text-muted-foreground" />
                       )}
                     </div>
                     <div className="text-left">
-                      <p className="font-display font-semibold text-primary-foreground">{analyst.name}</p>
-                      <p className="text-primary-foreground/50 text-sm">{analyst.role}</p>
+                      <p className="font-display font-semibold text-primary-foreground text-sm">{analyst.name}</p>
+                      <p className="text-primary-foreground/40 text-xs">{analyst.role}</p>
                     </div>
                   </motion.div>
                 ))}
               </div>
             </div>
 
-            {/* RQ Category Buttons */}
-            <div className="mb-10">
-              <div className="flex items-center justify-between mb-4">
-                <h4 className="text-lg font-display font-bold text-primary-foreground/80">Categorias de Requisição</h4>
+            {/* RQ Categories - Modern card grid */}
+            <div className="mb-12">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-2">
+                  <div className="w-1.5 h-6 rounded-full bg-gradient-to-b from-amber-500 to-emerald-500" />
+                  <h4 className="text-sm font-display font-bold text-primary-foreground/70 uppercase tracking-wider">Categorias de Requisição</h4>
+                </div>
                 {isAdmin && (
                   <button onClick={() => addRqCategory({ id: Date.now().toString(), label: 'Nova Categoria', description: 'Descrição da categoria.', callPath: 'ServiceNow > Caminho', responsibleAnalystIds: [] })} className="px-3 py-1.5 rounded-lg bg-accent/20 text-accent text-xs font-medium hover:bg-accent/30 transition flex items-center gap-1">
                     <Plus className="w-3 h-3" /> Adicionar
                   </button>
                 )}
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {(content.rqCategories || []).map((cat) => (
-                  <div key={cat.id}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {(content.rqCategories || []).map((cat, idx) => (
+                  <motion.div
+                    key={cat.id}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 + idx * 0.08 }}
+                  >
                     <button
                       onClick={() => setExpandedRqCategory(expandedRqCategory === cat.id ? null : cat.id)}
-                      className={`w-full px-5 py-3 rounded-xl text-left font-medium transition-all duration-300 flex items-center justify-between border-2 ${
-                        expandedRqCategory === cat.id
-                          ? 'bg-accent/15 border-accent/40 text-accent'
-                          : 'bg-accent/5 border-accent/20 text-accent hover:bg-accent/10 hover:border-accent/30'
-                      }`}
+                      className="w-full text-left"
                     >
-                      <span className="text-sm">{cat.label}</span>
-                      <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${expandedRqCategory === cat.id ? 'rotate-180' : ''}`} />
+                      <div
+                        className={`rounded-xl p-5 border transition-all duration-300 ${
+                          expandedRqCategory === cat.id
+                            ? 'border-amber-500/40 shadow-lg shadow-amber-500/10'
+                            : 'border-primary-foreground/8 hover:border-amber-500/25'
+                        }`}
+                        style={{ background: expandedRqCategory === cat.id ? 'hsl(220, 35%, 13%)' : 'hsl(220, 35%, 11%)' }}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className={`w-2 h-2 rounded-full transition-colors duration-300 ${expandedRqCategory === cat.id ? 'bg-amber-500' : 'bg-primary-foreground/20'}`} />
+                            <span className={`font-display font-semibold text-sm transition-colors duration-300 ${expandedRqCategory === cat.id ? 'text-amber-400' : 'text-primary-foreground/80'}`}>{cat.label}</span>
+                          </div>
+                          <ChevronDown className={`w-4 h-4 text-primary-foreground/40 transition-transform duration-300 ${expandedRqCategory === cat.id ? 'rotate-180 text-amber-400' : ''}`} />
+                        </div>
+                      </div>
                     </button>
                     <AnimatePresence>
                       {expandedRqCategory === cat.id && (
@@ -417,7 +440,7 @@ const NossaAreaPage = () => {
                           transition={{ duration: 0.3 }}
                           className="overflow-hidden"
                         >
-                          <div className="mt-2 p-4 rounded-xl bg-white/5 border border-primary-foreground/10 space-y-3">
+                          <div className="mt-2 p-5 rounded-xl border border-primary-foreground/8 space-y-3" style={{ background: 'hsl(220, 35%, 11%)' }}>
                             {isAdmin ? (
                               <>
                                 <div>
@@ -436,10 +459,10 @@ const NossaAreaPage = () => {
                               </>
                             ) : (
                               <>
-                                <p className="text-primary-foreground/70 text-sm leading-relaxed">{cat.description}</p>
-                                <div className="flex items-center gap-2 pt-2 border-t border-primary-foreground/10">
-                                  <span className="text-xs text-primary-foreground/40">📋 Caminho:</span>
-                                  <span className="text-xs text-accent font-medium">{cat.callPath}</span>
+                                <p className="text-primary-foreground/65 text-sm leading-relaxed">{cat.description}</p>
+                                <div className="flex items-center gap-2 pt-3 border-t border-primary-foreground/8">
+                                  <span className="text-xs text-primary-foreground/35">📋 Caminho:</span>
+                                  <span className="text-xs text-amber-400 font-medium">{cat.callPath}</span>
                                 </div>
                               </>
                             )}
@@ -447,69 +470,74 @@ const NossaAreaPage = () => {
                         </motion.div>
                       )}
                     </AnimatePresence>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </div>
 
-            {/* Travel Contact Section */}
-            <div className="mb-10 p-6 rounded-2xl bg-white/5 border-2 border-primary/20">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-primary to-accent flex items-center justify-center shadow-lg">
-                  <Plane className="w-5 h-5 text-primary-foreground" />
+            {/* Travel Contact - Modern card */}
+            <div className="mb-12 rounded-2xl overflow-hidden border border-primary-foreground/8" style={{ background: 'linear-gradient(135deg, hsl(220, 35%, 11%), hsl(220, 30%, 14%))' }}>
+              <div className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-500 flex items-center justify-center shadow-lg">
+                    <Plane className="w-5 h-5 text-white" />
+                  </div>
+                  {isAdmin ? (
+                    <input className="text-lg font-display font-bold text-primary-foreground bg-transparent border-b border-primary-foreground/20 flex-1 outline-none focus:border-accent" value={content.rqTravelTitle || 'Solicitações de Viagens'} onChange={(e) => updateContent({ rqTravelTitle: e.target.value })} />
+                  ) : (
+                    <h4 className="text-lg font-display font-bold text-primary-foreground">{content.rqTravelTitle || 'Solicitações de Viagens'}</h4>
+                  )}
                 </div>
                 {isAdmin ? (
-                  <input className="text-xl font-display font-bold text-primary-foreground bg-transparent border-b border-primary-foreground/20 flex-1 outline-none focus:border-accent" value={content.rqTravelTitle || 'Solicitações de Viagens'} onChange={(e) => updateContent({ rqTravelTitle: e.target.value })} />
+                  <textarea className="text-primary-foreground/60 text-sm leading-relaxed bg-transparent border border-primary-foreground/10 rounded-lg p-3 w-full min-h-[50px] outline-none focus:border-accent mb-4" value={content.rqTravelDescription || ''} onChange={(e) => updateContent({ rqTravelDescription: e.target.value })} />
                 ) : (
-                  <h4 className="text-xl font-display font-bold text-primary-foreground">{content.rqTravelTitle || 'Solicitações de Viagens'}</h4>
+                  <p className="text-primary-foreground/60 text-sm leading-relaxed mb-5">{content.rqTravelDescription || ''}</p>
                 )}
-              </div>
-              {isAdmin ? (
-                <textarea className="text-primary-foreground/70 text-sm leading-relaxed bg-transparent border border-primary-foreground/10 rounded-lg p-3 w-full min-h-[60px] outline-none focus:border-accent mb-4" value={content.rqTravelDescription || ''} onChange={(e) => updateContent({ rqTravelDescription: e.target.value })} />
-              ) : (
-                <p className="text-primary-foreground/70 text-sm leading-relaxed mb-4">{content.rqTravelDescription || ''}</p>
-              )}
-              <div className="flex items-center gap-3 mb-4">
-                {isAdmin ? (
-                  <input className="text-lg font-display font-semibold text-accent bg-transparent border-b border-primary-foreground/20 outline-none focus:border-accent" value={content.rqTravelContactName || ''} onChange={(e) => updateContent({ rqTravelContactName: e.target.value })} placeholder="Nome do contato" />
-                ) : (
-                  <span className="text-lg font-display font-semibold text-accent">{content.rqTravelContactName || ''}</span>
-                )}
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-primary-foreground/10">
-                  <Mail className="w-5 h-5 text-accent shrink-0" />
-                  <div className="min-w-0">
-                    <p className="text-primary-foreground/40 text-xs">E-mail</p>
-                    {isAdmin ? (
-                      <input className="text-primary-foreground text-sm bg-transparent border-b border-primary-foreground/10 w-full outline-none focus:border-accent" value={content.rqTravelContactEmail || ''} onChange={(e) => updateContent({ rqTravelContactEmail: e.target.value })} />
-                    ) : (
-                      <a href={`mailto:${content.rqTravelContactEmail}`} className="text-primary-foreground text-sm hover:text-accent transition-colors truncate block">{content.rqTravelContactEmail || ''}</a>
-                    )}
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-8 h-8 rounded-full bg-sky-500/20 flex items-center justify-center">
+                    <User className="w-4 h-4 text-sky-400" />
                   </div>
+                  {isAdmin ? (
+                    <input className="text-base font-display font-semibold text-sky-400 bg-transparent border-b border-primary-foreground/20 outline-none focus:border-accent" value={content.rqTravelContactName || ''} onChange={(e) => updateContent({ rqTravelContactName: e.target.value })} placeholder="Nome do contato" />
+                  ) : (
+                    <span className="text-base font-display font-semibold text-sky-400">{content.rqTravelContactName || ''}</span>
+                  )}
                 </div>
-                <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-primary-foreground/10">
-                  <MessageCircle className="w-5 h-5 text-accent shrink-0" />
-                  <div className="min-w-0">
-                    <p className="text-primary-foreground/40 text-xs">Teams</p>
-                    {isAdmin ? (
-                      <input className="text-primary-foreground text-sm bg-transparent border-b border-primary-foreground/10 w-full outline-none focus:border-accent" value={content.rqTravelContactTeams || ''} onChange={(e) => updateContent({ rqTravelContactTeams: e.target.value })} />
-                    ) : (
-                      <span className="text-primary-foreground text-sm truncate block">{content.rqTravelContactTeams || ''}</span>
-                    )}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="flex items-center gap-3 p-3 rounded-xl border border-primary-foreground/8 hover:border-sky-500/30 transition-all" style={{ background: 'hsl(220, 35%, 10%)' }}>
+                    <Mail className="w-4 h-4 text-sky-400 shrink-0" />
+                    <div className="min-w-0">
+                      <p className="text-primary-foreground/35 text-[10px] uppercase tracking-wider">E-mail</p>
+                      {isAdmin ? (
+                        <input className="text-primary-foreground text-sm bg-transparent border-b border-primary-foreground/10 w-full outline-none focus:border-accent" value={content.rqTravelContactEmail || ''} onChange={(e) => updateContent({ rqTravelContactEmail: e.target.value })} />
+                      ) : (
+                        <a href={`mailto:${content.rqTravelContactEmail}`} className="text-primary-foreground text-sm hover:text-sky-400 transition-colors truncate block">{content.rqTravelContactEmail || ''}</a>
+                      )}
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-primary-foreground/10">
-                  <svg className="w-5 h-5 text-green-400 shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                  </svg>
-                  <div className="min-w-0">
-                    <p className="text-primary-foreground/40 text-xs">WhatsApp</p>
-                    {isAdmin ? (
-                      <input className="text-primary-foreground text-sm bg-transparent border-b border-primary-foreground/10 w-full outline-none focus:border-accent" value={content.rqTravelContactWhatsapp || ''} onChange={(e) => updateContent({ rqTravelContactWhatsapp: e.target.value })} />
-                    ) : (
-                      <a href={`https://wa.me/${(content.rqTravelContactWhatsapp || '').replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="text-primary-foreground text-sm hover:text-green-400 transition-colors truncate block">{content.rqTravelContactWhatsapp || ''}</a>
-                    )}
+                  <div className="flex items-center gap-3 p-3 rounded-xl border border-primary-foreground/8 hover:border-sky-500/30 transition-all" style={{ background: 'hsl(220, 35%, 10%)' }}>
+                    <MessageCircle className="w-4 h-4 text-sky-400 shrink-0" />
+                    <div className="min-w-0">
+                      <p className="text-primary-foreground/35 text-[10px] uppercase tracking-wider">Teams</p>
+                      {isAdmin ? (
+                        <input className="text-primary-foreground text-sm bg-transparent border-b border-primary-foreground/10 w-full outline-none focus:border-accent" value={content.rqTravelContactTeams || ''} onChange={(e) => updateContent({ rqTravelContactTeams: e.target.value })} />
+                      ) : (
+                        <span className="text-primary-foreground text-sm truncate block">{content.rqTravelContactTeams || ''}</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 p-3 rounded-xl border border-primary-foreground/8 hover:border-green-500/30 transition-all" style={{ background: 'hsl(220, 35%, 10%)' }}>
+                    <svg className="w-4 h-4 text-green-400 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                    </svg>
+                    <div className="min-w-0">
+                      <p className="text-primary-foreground/35 text-[10px] uppercase tracking-wider">WhatsApp</p>
+                      {isAdmin ? (
+                        <input className="text-primary-foreground text-sm bg-transparent border-b border-primary-foreground/10 w-full outline-none focus:border-accent" value={content.rqTravelContactWhatsapp || ''} onChange={(e) => updateContent({ rqTravelContactWhatsapp: e.target.value })} />
+                      ) : (
+                        <a href={`https://wa.me/${(content.rqTravelContactWhatsapp || '').replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="text-primary-foreground text-sm hover:text-green-400 transition-colors truncate block">{content.rqTravelContactWhatsapp || ''}</a>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -518,11 +546,9 @@ const NossaAreaPage = () => {
             {/* RQ Reports */}
             <div>
               <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg gradient-accent flex items-center justify-center">
-                    <FileText className="w-4 h-4 text-primary-foreground" />
-                  </div>
-                  <h4 className="text-lg font-display font-bold text-primary-foreground/80">Relatórios de RQ</h4>
+                <div className="flex items-center gap-2">
+                  <div className="w-1.5 h-6 rounded-full bg-gradient-to-b from-amber-500 to-emerald-500" />
+                  <h4 className="text-sm font-display font-bold text-primary-foreground/70 uppercase tracking-wider">Relatórios de RQ</h4>
                 </div>
                 {isAdmin && (
                   <button onClick={() => addRqReport({ id: Date.now().toString(), name: 'Novo Relatório', description: 'Descrição do relatório.', imageUrl: '' })} className="px-3 py-1.5 rounded-lg bg-accent/20 text-accent text-xs font-medium hover:bg-accent/30 transition flex items-center gap-1">
@@ -530,23 +556,26 @@ const NossaAreaPage = () => {
                   </button>
                 )}
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {(content.rqReports || []).map((report, i) => (
                   <motion.div
                     key={report.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.8 + i * 0.15 }}
-                    className="flex flex-col gap-4 p-6 rounded-xl bg-white/5 border-2 border-transparent hover:border-accent/30 transition-all duration-300"
+                    className="group rounded-xl overflow-hidden border border-primary-foreground/8 hover:border-amber-500/30 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
+                    style={{ background: 'hsl(220, 35%, 11%)' }}
                   >
-                    <div className="w-full h-48 rounded-lg overflow-hidden bg-muted/10 flex items-center justify-center">
+                    <div className="w-full h-48 overflow-hidden relative">
                       {report.imageUrl ? (
-                        <img src={report.imageUrl} alt={report.name} className="w-full h-full object-cover" />
+                        <img src={report.imageUrl} alt={report.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                       ) : (
-                        <FileText className="w-12 h-12 text-accent/30" />
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-amber-500/10 to-emerald-500/10">
+                          <FileText className="w-12 h-12 text-amber-500/30" />
+                        </div>
                       )}
                     </div>
-                    <div className="flex-1 min-w-0">
+                    <div className="p-5">
                       {isAdmin ? (
                         <>
                           <input className="font-display font-bold text-primary-foreground text-base bg-transparent border-b border-primary-foreground/20 w-full outline-none focus:border-accent mb-2" value={report.name} onChange={(e) => updateRqReport(report.id, { name: e.target.value })} />
@@ -557,7 +586,7 @@ const NossaAreaPage = () => {
                       ) : (
                         <>
                           <h5 className="font-display font-bold text-primary-foreground text-base mb-2">{report.name}</h5>
-                          <p className="text-primary-foreground/60 text-sm leading-relaxed">{report.description}</p>
+                          <p className="text-primary-foreground/55 text-sm leading-relaxed">{report.description}</p>
                         </>
                       )}
                     </div>

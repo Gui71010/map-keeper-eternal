@@ -105,7 +105,7 @@ const AreasRoadmap = () => {
                 <div
                   className="glass-card rounded-2xl p-7 h-full transition-all duration-400 cursor-default"
                   style={{
-                    border: `2px solid ${isHovered ? area.borderHover : 'hsl(215, 25%, 18% / 0.5)'}`,
+                    border: `2px solid ${isHovered ? area.borderHover : 'transparent'}`,
                     boxShadow: isHovered
                       ? `0 0 30px ${area.glowColor}25, 0 0 60px ${area.glowColor}10, 0 8px 32px ${area.glowColor}08, inset 0 1px 0 ${area.glowColor}15`
                       : '0 2px 8px hsl(215, 25%, 8% / 0.3)',

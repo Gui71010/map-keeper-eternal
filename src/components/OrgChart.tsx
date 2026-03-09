@@ -34,8 +34,8 @@ const OrgNode = ({
       onClick={onClick}
       className={`relative flex flex-col items-center gap-3 rounded-2xl transition-all duration-300 cursor-pointer group backdrop-blur-md ${
         isBoss
-          ? 'px-10 py-8 border-2 border-accent/40 bg-gradient-to-br from-accent/10 via-card/90 to-primary/5 min-w-[240px]'
-          : 'px-5 py-5 border border-border/30 bg-card/50 min-w-[150px]'
+          ? 'px-10 py-8 border-2 border-transparent bg-gradient-to-br from-accent/10 via-card/90 to-primary/5 min-w-[240px]'
+          : 'px-5 py-5 border border-transparent bg-card/50 min-w-[150px]'
       }`}
       style={{
         transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -49,7 +49,7 @@ const OrgNode = ({
       }}
       onMouseLeave={(e) => {
         const el = e.currentTarget;
-        el.style.borderColor = isBoss ? 'hsl(var(--accent) / 0.4)' : 'hsl(215, 25%, 18% / 0.3)';
+        el.style.borderColor = 'transparent';
         el.style.boxShadow = 'none';
       }}
     >

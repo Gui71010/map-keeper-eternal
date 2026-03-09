@@ -114,172 +114,183 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
 
   return (
     <div className="relative">
-      <div className="relative inline-block w-full max-w-[700px] mx-auto">
-        <svg viewBox="0 0 400 400" className="w-full h-auto" style={{ filter: 'drop-shadow(0 4px 20px rgba(0,200,200,0.15))' }}>
-          {allStateCodes.map((code) => {
-            const isActive = activeStateCodes.includes(code);
-            const isSelected = selectedState === code;
-            const fillColor = isSelected
-              ? 'hsl(174, 72%, 40%)'
-              : isActive
-                ? 'hsl(200, 70%, 65%)'
-                : 'hsl(215, 20%, 82%)';
+      <div className="flex gap-0 items-start">
+        {/* Map */}
+        <div className={`relative inline-block mx-auto transition-all duration-500 ${selectedData ? 'w-full max-w-[500px]' : 'w-full max-w-[700px]'}`}>
+          <svg viewBox="0 0 400 400" className="w-full h-auto" style={{ filter: 'drop-shadow(0 4px 20px rgba(0,200,200,0.15))' }}>
+            {allStateCodes.map((code) => {
+              const isActive = activeStateCodes.includes(code);
+              const isSelected = selectedState === code;
+              const fillColor = isSelected
+                ? 'hsl(174, 72%, 40%)'
+                : isActive
+                  ? 'hsl(200, 70%, 65%)'
+                  : 'hsl(215, 20%, 82%)';
 
-            const commonProps = {
-              key: code,
-              fill: fillColor,
-              stroke: isSelected ? 'hsl(174, 72%, 56%)' : 'hsl(0, 0%, 100%)',
-              strokeWidth: isSelected ? 2 : 1,
-              strokeLinejoin: 'round' as const,
-              strokeLinecap: 'round' as const,
-              className: `transition-all duration-200 ${isActive || isAdmin ? 'cursor-pointer' : ''} ${isActive && !isSelected ? 'hover:fill-[hsl(174,72%,46%)]' : ''}`,
-              onClick: () => handleStateClick(code),
-            };
+              const commonProps = {
+                key: code,
+                fill: fillColor,
+                stroke: isSelected ? 'hsl(174, 72%, 56%)' : 'hsl(0, 0%, 100%)',
+                strokeWidth: isSelected ? 2 : 1,
+                strokeLinejoin: 'round' as const,
+                strokeLinecap: 'round' as const,
+                className: `transition-all duration-200 ${isActive || isAdmin ? 'cursor-pointer' : ''} ${isActive && !isSelected ? 'hover:fill-[hsl(174,72%,46%)]' : ''}`,
+                onClick: () => handleStateClick(code),
+              };
 
-            if (STATE_PATHS[code]) {
-              return <path {...commonProps} d={STATE_PATHS[code]} />;
-            }
-            if (STATE_POLYGONS[code]) {
-              return <polygon {...commonProps} points={STATE_POLYGONS[code]} />;
-            }
-            return null;
-          })}
+              if (STATE_PATHS[code]) {
+                return <path {...commonProps} d={STATE_PATHS[code]} />;
+              }
+              if (STATE_POLYGONS[code]) {
+                return <polygon {...commonProps} points={STATE_POLYGONS[code]} />;
+              }
+              return null;
+            })}
 
-          {allStateCodes.map((code) => {
-            const label = STATE_LABELS[code];
-            if (!label) return null;
-            return (
-              <text
-                key={`label-${code}`}
-                x={label.x}
-                y={label.y}
-                textAnchor="middle"
-                className="pointer-events-none select-none"
-                fill={selectedState === code ? 'hsl(0, 0%, 100%)' : activeStateCodes.includes(code) ? 'hsl(215, 30%, 12%)' : 'hsl(215, 15%, 60%)'}
-                fontSize="7"
-                fontWeight="600"
-                fontFamily="Inter, sans-serif"
+            {allStateCodes.map((code) => {
+              const label = STATE_LABELS[code];
+              if (!label) return null;
+              return (
+                <text
+                  key={`label-${code}`}
+                  x={label.x}
+                  y={label.y}
+                  textAnchor="middle"
+                  className="pointer-events-none select-none"
+                  fill={selectedState === code ? 'hsl(0, 0%, 100%)' : activeStateCodes.includes(code) ? 'hsl(215, 30%, 12%)' : 'hsl(215, 15%, 60%)'}
+                  fontSize="7"
+                  fontWeight="600"
+                  fontFamily="Inter, sans-serif"
+                >
+                  {code}
+                </text>
+              );
+            })}
+          </svg>
+
+          {activeStateCodes.length > 0 && !selectedState && (
+            <p className="text-center text-muted-foreground text-xs mt-2">Clique em um estado colorido para ver os sites</p>
+          )}
+        </div>
+
+        {/* Slide-in Side Panel */}
+        <AnimatePresence>
+          {selectedData && (
+            <motion.div
+              initial={{ opacity: 0, x: 80, width: 0 }}
+              animate={{ opacity: 1, x: 0, width: 420 }}
+              exit={{ opacity: 0, x: 80, width: 0 }}
+              transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+              className="shrink-0 overflow-hidden"
+            >
+              <div
+                className="h-full ml-4 rounded-2xl border border-accent/20 overflow-hidden flex flex-col"
+                style={{
+                  background: 'linear-gradient(180deg, hsl(215, 40%, 10%), hsl(215, 35%, 13%))',
+                  minHeight: 400,
+                  maxHeight: 600,
+                  width: 420,
+                }}
               >
-                {code}
-              </text>
-            );
-          })}
-        </svg>
-
-        {/* Legend */}
-        {activeStateCodes.length > 0 && !selectedState && (
-          <p className="text-center text-muted-foreground text-xs mt-2">Clique em um estado colorido para ver os sites</p>
-        )}
-      </div>
-
-      {/* Selected State Sites Panel */}
-      <AnimatePresence>
-        {selectedData && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.35, ease: 'easeInOut' }}
-            className="overflow-hidden"
-          >
-            <div className="mt-6 rounded-2xl overflow-hidden border-2 border-accent/30" style={{ background: 'linear-gradient(135deg, hsl(215, 40%, 10%), hsl(215, 35%, 14%))' }}>
-              {/* Header */}
-              <div className="flex items-center justify-between px-6 py-4 border-b border-accent/15">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 flex items-center justify-center">
-                    <MapPin className="w-5 h-5 text-white" />
+                {/* Panel Header */}
+                <div className="flex items-center justify-between px-5 py-4 border-b border-accent/10 shrink-0">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center shadow-lg">
+                      <MapPin className="w-4 h-4 text-white" />
+                    </div>
+                    <div>
+                      {isAdmin ? (
+                        <input
+                          className="text-base font-display font-bold text-foreground bg-transparent border-b border-foreground/20 outline-none focus:border-accent w-full"
+                          value={selectedData.stateName}
+                          onChange={(e) => updateState(selectedData.id, { stateName: e.target.value })}
+                        />
+                      ) : (
+                        <h4 className="text-base font-display font-bold text-foreground">{selectedData.stateName}</h4>
+                      )}
+                      <p className="text-muted-foreground text-[11px]">{selectedData.cities.length} site{selectedData.cities.length !== 1 ? 's' : ''} cadastrado{selectedData.cities.length !== 1 ? 's' : ''}</p>
+                    </div>
                   </div>
-                  <div>
-                    {isAdmin ? (
-                      <input
-                        className="text-lg font-display font-bold text-primary-foreground bg-transparent border-b border-primary-foreground/20 outline-none focus:border-accent"
-                        value={selectedData.stateName}
-                        onChange={(e) => updateState(selectedData.id, { stateName: e.target.value })}
-                      />
-                    ) : (
-                      <h4 className="text-lg font-display font-bold text-primary-foreground">{selectedData.stateName}</h4>
-                    )}
-                    <p className="text-primary-foreground/50 text-xs">{selectedData.cities.length} site{selectedData.cities.length !== 1 ? 's' : ''}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  {isAdmin && (
-                    <>
-                      <button onClick={() => addCity(selectedData.id)} className="px-3 py-1.5 rounded-lg bg-accent/20 text-accent text-xs font-medium hover:bg-accent/30 transition flex items-center gap-1">
-                        <Plus className="w-3 h-3" /> Adicionar Site
-                      </button>
-                      <button onClick={() => removeState(selectedData.id)} className="px-3 py-1.5 rounded-lg bg-destructive/20 text-destructive text-xs font-medium hover:bg-destructive/30 transition flex items-center gap-1">
-                        <Trash2 className="w-3 h-3" /> Remover Estado
-                      </button>
-                    </>
-                  )}
-                  <button onClick={() => setSelectedState(null)} className="w-8 h-8 rounded-lg bg-primary-foreground/10 flex items-center justify-center text-primary-foreground/60 hover:text-primary-foreground hover:bg-primary-foreground/20 transition">
+                  <button
+                    onClick={() => setSelectedState(null)}
+                    className="w-7 h-7 rounded-lg bg-muted/20 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors"
+                  >
                     <X className="w-4 h-4" />
                   </button>
                 </div>
-              </div>
 
-              {/* Cities/Sites Grid */}
-              <div className="p-6">
-                {selectedData.cities.length === 0 ? (
-                  <div className="text-center py-8">
-                    <Building2 className="w-10 h-10 text-primary-foreground/20 mx-auto mb-3" />
-                    <p className="text-primary-foreground/40 text-sm">Nenhum site cadastrado para este estado.</p>
-                    {isAdmin && (
-                      <button onClick={() => addCity(selectedData.id)} className="mt-3 px-4 py-2 rounded-lg bg-accent/20 text-accent text-sm font-medium hover:bg-accent/30 transition">
-                        <Plus className="w-4 h-4 inline mr-1" /> Adicionar primeiro site
-                      </button>
-                    )}
+                {/* Admin actions */}
+                {isAdmin && (
+                  <div className="flex gap-2 px-5 py-3 border-b border-accent/10 shrink-0">
+                    <button onClick={() => addCity(selectedData.id)} className="px-3 py-1.5 rounded-lg bg-accent/15 text-accent text-xs font-medium hover:bg-accent/25 transition flex items-center gap-1">
+                      <Plus className="w-3 h-3" /> Adicionar Site
+                    </button>
+                    <button onClick={() => removeState(selectedData.id)} className="px-3 py-1.5 rounded-lg bg-destructive/15 text-destructive text-xs font-medium hover:bg-destructive/25 transition flex items-center gap-1">
+                      <Trash2 className="w-3 h-3" /> Remover Estado
+                    </button>
                   </div>
-                ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {selectedData.cities.map((city, i) => (
+                )}
+
+                {/* Sites List */}
+                <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-thin">
+                  {selectedData.cities.length === 0 ? (
+                    <div className="text-center py-10">
+                      <Building2 className="w-10 h-10 text-muted-foreground/20 mx-auto mb-3" />
+                      <p className="text-muted-foreground/50 text-sm">Nenhum site cadastrado.</p>
+                      {isAdmin && (
+                        <button onClick={() => addCity(selectedData.id)} className="mt-3 px-4 py-2 rounded-lg bg-accent/15 text-accent text-sm font-medium hover:bg-accent/25 transition">
+                          <Plus className="w-4 h-4 inline mr-1" /> Adicionar
+                        </button>
+                      )}
+                    </div>
+                  ) : (
+                    selectedData.cities.map((city, i) => (
                       <motion.div
                         key={city.id}
-                        initial={{ opacity: 0, y: 15 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.08, duration: 0.3 }}
-                        className="group rounded-xl overflow-hidden border border-primary-foreground/10 hover:border-accent/40 transition-all duration-300 hover:shadow-lg hover:shadow-accent/10"
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.06, duration: 0.3 }}
+                        className="group rounded-xl overflow-hidden border border-border/20 hover:border-accent/30 transition-all duration-300"
                         style={{ background: 'hsl(215, 35%, 12%)' }}
                       >
-                        {/* Image */}
-                        <div className="w-full h-40 overflow-hidden relative">
+                        {/* Site image */}
+                        <div className="w-full h-32 overflow-hidden relative">
                           {city.imageUrl ? (
                             <img src={city.imageUrl} alt={city.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-teal-500/10 to-cyan-500/10">
-                              <Building2 className="w-10 h-10 text-accent/30" />
+                              <Building2 className="w-8 h-8 text-accent/30" />
                             </div>
                           )}
-                          <div className="absolute top-2 left-2 px-2 py-1 rounded-md bg-black/60 backdrop-blur-sm">
-                            <span className="text-xs font-bold text-accent">{selectedData.stateCode}</span>
+                          <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-background/70 backdrop-blur-sm">
+                            <span className="text-[10px] font-bold text-accent">{selectedData.stateCode}</span>
                           </div>
                         </div>
 
-                        {/* Info */}
-                        <div className="p-4">
+                        {/* Site info */}
+                        <div className="p-3">
                           {isAdmin ? (
                             <div className="space-y-2">
                               <input
-                                className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-sm font-bold outline-none focus:border-accent"
+                                className="w-full p-1.5 rounded-lg border border-border/20 bg-transparent text-foreground text-sm font-bold outline-none focus:border-accent"
                                 value={city.name}
                                 onChange={(e) => updateCity(selectedData.id, city.id, { name: e.target.value })}
                                 placeholder="Nome do site"
                               />
                               <input
-                                className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-xs outline-none focus:border-accent"
+                                className="w-full p-1.5 rounded-lg border border-border/20 bg-transparent text-foreground text-xs outline-none focus:border-accent"
                                 value={city.imageUrl}
                                 onChange={(e) => updateCity(selectedData.id, city.id, { imageUrl: e.target.value })}
                                 placeholder="URL da imagem"
                               />
                               <textarea
-                                className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-xs outline-none focus:border-accent min-h-[50px]"
+                                className="w-full p-1.5 rounded-lg border border-border/20 bg-transparent text-foreground text-xs outline-none focus:border-accent min-h-[40px]"
                                 value={city.description || ''}
                                 onChange={(e) => updateCity(selectedData.id, city.id, { description: e.target.value })}
-                                placeholder="Descrição / informações do site"
+                                placeholder="Descrição"
                               />
                               <input
-                                className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-xs outline-none focus:border-accent"
+                                className="w-full p-1.5 rounded-lg border border-border/20 bg-transparent text-foreground text-xs outline-none focus:border-accent"
                                 value={city.address || ''}
                                 onChange={(e) => updateCity(selectedData.id, city.id, { address: e.target.value })}
                                 placeholder="Endereço"
@@ -290,12 +301,12 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
                             </div>
                           ) : (
                             <>
-                              <h5 className="font-display font-bold text-primary-foreground text-sm mb-1">{city.name}</h5>
+                              <h5 className="font-display font-bold text-foreground text-sm mb-1">{city.name}</h5>
                               {city.description && (
-                                <p className="text-primary-foreground/60 text-xs leading-relaxed mb-2">{city.description}</p>
+                                <p className="text-muted-foreground text-xs leading-relaxed mb-2">{city.description}</p>
                               )}
                               {city.address && (
-                                <div className="flex items-center gap-1.5 text-primary-foreground/40 text-xs">
+                                <div className="flex items-center gap-1.5 text-muted-foreground/60 text-[11px]">
                                   <MapPin className="w-3 h-3 shrink-0" />
                                   <span>{city.address}</span>
                                 </div>
@@ -304,14 +315,14 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
                           )}
                         </div>
                       </motion.div>
-                    ))}
-                  </div>
-                )}
+                    ))
+                  )}
+                </div>
               </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 };

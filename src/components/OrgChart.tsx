@@ -15,67 +15,93 @@ const OrgNode = ({
   delay,
   isBoss,
   onClick,
+  accentColor,
 }: {
   analyst: Analyst;
   delay: number;
   isBoss?: boolean;
   onClick?: () => void;
-}) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20, scale: 0.95 }}
-    animate={{ opacity: 1, y: 0, scale: 1 }}
-    transition={{ delay, type: 'spring', damping: 18, stiffness: 120 }}
-    whileHover={{ scale: 1.04, y: -4 }}
-    onClick={onClick}
-    className={`relative flex flex-col items-center gap-3 rounded-2xl border-2 transition-all duration-300 cursor-pointer group backdrop-blur-md ${
-      isBoss
-        ? 'px-10 py-8 border-accent/50 bg-gradient-to-br from-accent/15 via-card/90 to-primary/10 hover:border-accent hover:shadow-2xl hover:shadow-accent/20 min-w-[260px]'
-        : 'px-6 py-5 border-border/30 bg-card/60 hover:border-accent/40 hover:shadow-xl hover:shadow-accent/10 min-w-[160px]'
-    }`}
-  >
-    <div
-      className={`rounded-2xl overflow-hidden shrink-0 bg-muted/30 flex items-center justify-center shadow-xl ${
+  accentColor?: string;
+}) => {
+  const hoverBorder = accentColor || 'hsl(var(--accent))';
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ delay, type: 'spring', damping: 18, stiffness: 120 }}
+      whileHover={{ y: -6 }}
+      onClick={onClick}
+      className={`relative flex flex-col items-center gap-3 rounded-2xl transition-all duration-300 cursor-pointer group backdrop-blur-md ${
         isBoss
-          ? 'w-32 h-32 ring-4 ring-accent/40'
-          : 'w-20 h-20 ring-2 ring-border/40 group-hover:ring-accent/40'
+          ? 'px-10 py-8 border-2 border-accent/40 bg-gradient-to-br from-accent/10 via-card/90 to-primary/5 min-w-[240px]'
+          : 'px-5 py-5 border border-border/30 bg-card/50 min-w-[150px]'
       }`}
+      style={{
+        transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+      }}
+      onMouseEnter={(e) => {
+        const el = e.currentTarget;
+        el.style.borderColor = isBoss ? 'hsl(var(--accent))' : hoverBorder;
+        el.style.boxShadow = isBoss
+          ? `0 0 40px hsl(var(--accent) / 0.2), 0 12px 40px hsl(var(--accent) / 0.1)`
+          : `0 0 25px ${hoverBorder}20, 0 8px 30px ${hoverBorder}10`;
+      }}
+      onMouseLeave={(e) => {
+        const el = e.currentTarget;
+        el.style.borderColor = isBoss ? 'hsl(var(--accent) / 0.4)' : 'hsl(215, 25%, 18% / 0.3)';
+        el.style.boxShadow = 'none';
+      }}
     >
-      {analyst.photo ? (
-        <img src={analyst.photo} alt={analyst.name} className="w-full h-full object-cover" />
-      ) : (
-        <User className={`${isBoss ? 'w-14 h-14' : 'w-9 h-9'} text-muted-foreground/60`} />
-      )}
-    </div>
-
-    <div className="text-center min-w-0">
-      <h4 className={`font-display font-bold text-foreground leading-tight ${isBoss ? 'text-xl' : 'text-base'}`}>
-        {analyst.name}
-      </h4>
-      <p className={`text-muted-foreground mt-1 ${isBoss ? 'text-base' : 'text-sm'}`}>
-        {analyst.role}
-      </p>
-      <span className="inline-block mt-2 text-xs font-medium px-3 py-1 rounded-lg bg-muted/40 text-foreground/70 border border-border/40">
-        {analyst.area}
-      </span>
-    </div>
-
-    {isBoss && (
-      <div className="absolute -top-3 -right-3 w-10 h-10 rounded-full gradient-accent flex items-center justify-center shadow-xl ring-2 ring-background">
-        <Shield className="w-5 h-5 text-primary-foreground" />
+      <div
+        className={`rounded-2xl overflow-hidden shrink-0 bg-muted/30 flex items-center justify-center shadow-xl transition-all duration-300 ${
+          isBoss
+            ? 'w-28 h-28 ring-3 ring-accent/30 group-hover:ring-accent/60'
+            : 'w-18 h-18 ring-2 ring-border/30 group-hover:ring-accent/40'
+        }`}
+        style={{
+          width: isBoss ? '7rem' : '4.5rem',
+          height: isBoss ? '7rem' : '4.5rem',
+        }}
+      >
+        {analyst.photo ? (
+          <img src={analyst.photo} alt={analyst.name} className="w-full h-full object-cover" />
+        ) : (
+          <User className={`${isBoss ? 'w-12 h-12' : 'w-7 h-7'} text-muted-foreground/50`} />
+        )}
       </div>
-    )}
-  </motion.div>
-);
+
+      <div className="text-center min-w-0">
+        <h4 className={`font-display font-bold text-foreground leading-tight ${isBoss ? 'text-lg' : 'text-sm'}`}>
+          {analyst.name}
+        </h4>
+        <p className={`text-muted-foreground mt-0.5 ${isBoss ? 'text-sm' : 'text-xs'}`}>
+          {analyst.role}
+        </p>
+        <span
+          className="inline-block mt-2 text-[10px] font-semibold px-2.5 py-0.5 rounded-full border"
+          style={{
+            backgroundColor: accentColor ? `${accentColor}15` : 'hsl(var(--accent) / 0.1)',
+            color: accentColor || 'hsl(var(--accent))',
+            borderColor: accentColor ? `${accentColor}30` : 'hsl(var(--accent) / 0.2)',
+          }}
+        >
+          {analyst.area}
+        </span>
+      </div>
+
+      {isBoss && (
+        <div className="absolute -top-2.5 -right-2.5 w-9 h-9 rounded-full gradient-accent flex items-center justify-center shadow-lg ring-2 ring-background">
+          <Shield className="w-4 h-4 text-primary-foreground" />
+        </div>
+      )}
+    </motion.div>
+  );
+};
 
 const VerticalLine = ({ height = 'h-10' }: { height?: string }) => (
   <div className="flex justify-center">
-    <div className={`w-0.5 ${height} bg-gradient-to-b from-accent/40 to-accent/10`} />
-  </div>
-);
-
-const HorizontalLine = () => (
-  <div className="flex justify-center">
-    <div className="h-0.5 w-full bg-gradient-to-r from-transparent via-accent/30 to-transparent" />
+    <div className={`w-px ${height} bg-gradient-to-b from-accent/30 to-accent/5`} />
   </div>
 );
 
@@ -106,33 +132,34 @@ const AreaGroup = ({
   >
     <VerticalLine height="h-8" />
 
-    {/* Area header */}
+    {/* Area badge */}
     <div
-      className="px-8 py-4 rounded-2xl border-2 font-display font-bold text-lg text-white flex items-center gap-3 shadow-xl"
+      className="px-6 py-3 rounded-xl border font-display font-bold text-base text-white flex items-center gap-2.5 shadow-lg"
       style={{
         background: `linear-gradient(135deg, ${gradientFrom}, ${gradientTo})`,
-        borderColor: `${gradientFrom}80`,
-        boxShadow: `0 0 30px ${glowColor}30, 0 4px 20px rgba(0,0,0,0.3)`,
+        borderColor: `${gradientFrom}60`,
+        boxShadow: `0 0 20px ${glowColor}20, 0 4px 16px hsl(0 0% 0% / 0.25)`,
       }}
     >
-      <Icon className="w-6 h-6" />
+      <Icon className="w-5 h-5" />
       {title}
     </div>
 
-    <VerticalLine height="h-6" />
+    <VerticalLine height="h-5" />
 
-    {/* Members row - side by side */}
-    <div className="flex flex-wrap justify-center gap-4">
+    {/* Members */}
+    <div className="flex flex-wrap justify-center gap-3">
       {analysts.map((analyst, i) => (
         <OrgNode
           key={analyst.id}
           analyst={analyst}
-          delay={delay + 0.1 + i * 0.08}
+          delay={delay + 0.1 + i * 0.06}
           onClick={() => onAnalystClick?.(analyst.id)}
+          accentColor={gradientFrom}
         />
       ))}
       {analysts.length === 0 && (
-        <div className="text-muted-foreground/40 text-base italic py-6">Nenhum membro</div>
+        <div className="text-muted-foreground/30 text-sm italic py-6">Nenhum membro</div>
       )}
     </div>
   </motion.div>
@@ -140,16 +167,16 @@ const AreaGroup = ({
 
 const OrgChart = ({ manager, biAnalysts, adminAnalysts, designAnalysts, onAnalystClick }: OrgChartProps) => {
   return (
-    <div className="relative w-full py-6">
-      {/* Decorative glows */}
+    <div className="relative w-full py-8">
+      {/* Subtle background glows */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/4 left-[10%] w-96 h-96 rounded-full bg-blue-500/8 blur-[140px]" />
-        <div className="absolute top-1/3 right-[10%] w-80 h-80 rounded-full bg-emerald-500/8 blur-[120px]" />
-        <div className="absolute bottom-1/4 left-1/2 w-72 h-72 rounded-full bg-violet-500/8 blur-[120px] -translate-x-1/2" />
+        <div className="absolute top-1/4 left-[10%] w-80 h-80 rounded-full bg-primary/5 blur-[120px]" />
+        <div className="absolute top-1/3 right-[10%] w-64 h-64 rounded-full bg-accent/5 blur-[100px]" />
+        <div className="absolute bottom-1/4 left-1/2 w-56 h-56 rounded-full bg-primary/3 blur-[100px] -translate-x-1/2" />
       </div>
 
       <div className="relative z-10">
-        {/* Manager at top */}
+        {/* Manager */}
         <div className="flex justify-center">
           {manager && (
             <OrgNode analyst={manager} delay={0.1} isBoss onClick={() => onAnalystClick?.(manager.id)} />
@@ -158,13 +185,13 @@ const OrgChart = ({ manager, biAnalysts, adminAnalysts, designAnalysts, onAnalys
 
         <VerticalLine height="h-10" />
 
-        {/* Horizontal line */}
-        <div className="max-w-7xl mx-auto px-4">
-          <HorizontalLine />
+        {/* Horizontal connector */}
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="h-px w-full bg-gradient-to-r from-transparent via-accent/20 to-transparent" />
         </div>
 
         {/* Area columns */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto px-4">
           <AreaGroup
             title="Analistas de BI"
             icon={BarChart3}

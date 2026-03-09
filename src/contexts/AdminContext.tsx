@@ -58,6 +58,8 @@ export interface MapCity {
   id: string;
   name: string;
   imageUrl: string;
+  description?: string;
+  address?: string;
 }
 
 export interface MapState {

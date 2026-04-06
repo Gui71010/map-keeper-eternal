@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { MapState, MapCity, useAdmin } from '@/contexts/AdminContext';
-import { Plus, Trash2, X, MapPin, Building2, ChevronRight } from 'lucide-react';
+import { Plus, Trash2, X, MapPin, Building2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Real SVG polygon points for Brazilian states (from brasil-svg-map)
@@ -54,21 +54,19 @@ interface BrazilMapProps {
 
 const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
   const { isAdmin } = useAdmin();
+  const [hoveredState, setHoveredState] = useState<string | null>(null);
+  const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [selectedState, setSelectedState] = useState<string | null>(null);
 
   const activeStateCodes = states.map(s => s.stateCode);
   const getStateData = (code: string) => states.find(s => s.stateCode === code);
+  const hoveredData = hoveredState ? getStateData(hoveredState) : null;
   const selectedData = selectedState ? getStateData(selectedState) : null;
 
   const handleStateClick = (code: string) => {
     if (isAdmin && !activeStateCodes.includes(code)) {
       if (!onUpdateStates) return;
-      const newState: MapState = {
-        id: Date.now().toString(),
-        stateCode: code,
-        stateName: code,
-        cities: [],
-      };
+      const newState: MapState = { id: Date.now().toString(), stateCode: code, stateName: code, cities: [] };
       onUpdateStates([...states, newState]);
       setSelectedState(code);
       return;
@@ -76,6 +74,14 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
     if (activeStateCodes.includes(code)) {
       setSelectedState(selectedState === code ? null : code);
     }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent, code: string) => {
+    if (!activeStateCodes.includes(code)) return;
+    const rect = (e.currentTarget as SVGElement).closest('svg')?.getBoundingClientRect();
+    if (!rect) return;
+    setTooltipPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    setHoveredState(code);
   };
 
   const removeState = (id: string) => {
@@ -99,9 +105,7 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
   const updateCity = (stateId: string, cityId: string, data: Partial<MapCity>) => {
     const state = states.find(s => s.id === stateId);
     if (!state || !onUpdateStates) return;
-    updateState(stateId, {
-      cities: state.cities.map(c => c.id === cityId ? { ...c, ...data } : c),
-    });
+    updateState(stateId, { cities: state.cities.map(c => c.id === cityId ? { ...c, ...data } : c) });
   };
 
   const removeCity = (stateId: string, cityId: string) => {
@@ -115,15 +119,23 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
   return (
     <div className="relative">
       <div className="relative inline-block w-full max-w-[700px] mx-auto">
-        <svg viewBox="0 0 400 400" className="w-full h-auto" style={{ filter: 'drop-shadow(0 4px 20px rgba(0,200,200,0.15))' }}>
+        <svg
+          viewBox="0 0 400 400"
+          className="w-full h-auto"
+          style={{ filter: 'drop-shadow(0 4px 20px rgba(0,200,200,0.15))' }}
+          onMouseLeave={() => setHoveredState(null)}
+        >
           {allStateCodes.map((code) => {
             const isActive = activeStateCodes.includes(code);
+            const isHovered = hoveredState === code;
             const isSelected = selectedState === code;
             const fillColor = isSelected
               ? 'hsl(174, 72%, 40%)'
-              : isActive
-                ? 'hsl(200, 70%, 65%)'
-                : 'hsl(215, 20%, 82%)';
+              : isHovered && isActive
+                ? 'hsl(174, 72%, 46%)'
+                : isActive
+                  ? 'hsl(200, 70%, 65%)'
+                  : 'hsl(215, 20%, 82%)';
 
             const commonProps = {
               key: code,
@@ -132,16 +144,14 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
               strokeWidth: isSelected ? 2 : 1,
               strokeLinejoin: 'round' as const,
               strokeLinecap: 'round' as const,
-              className: `transition-all duration-200 ${isActive || isAdmin ? 'cursor-pointer' : ''} ${isActive && !isSelected ? 'hover:fill-[hsl(174,72%,46%)]' : ''}`,
+              className: `transition-all duration-200 ${isActive || isAdmin ? 'cursor-pointer' : ''}`,
               onClick: () => handleStateClick(code),
+              onMouseMove: (e: React.MouseEvent) => handleMouseMove(e, code),
+              onMouseLeave: () => setHoveredState(null),
             };
 
-            if (STATE_PATHS[code]) {
-              return <path {...commonProps} d={STATE_PATHS[code]} />;
-            }
-            if (STATE_POLYGONS[code]) {
-              return <polygon {...commonProps} points={STATE_POLYGONS[code]} />;
-            }
+            if (STATE_PATHS[code]) return <path {...commonProps} d={STATE_PATHS[code]} />;
+            if (STATE_POLYGONS[code]) return <polygon {...commonProps} points={STATE_POLYGONS[code]} />;
             return null;
           })}
 
@@ -166,13 +176,55 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
           })}
         </svg>
 
-        {/* Legend */}
-        {activeStateCodes.length > 0 && !selectedState && (
-          <p className="text-center text-muted-foreground text-xs mt-2">Clique em um estado colorido para ver os sites</p>
+        {/* Hover Tooltip */}
+        {hoveredData && hoveredState && !selectedState && (
+          <div
+            className="absolute z-30 pointer-events-none"
+            style={{
+              left: tooltipPos.x,
+              top: tooltipPos.y - 12,
+              transform: 'translate(-50%, -100%)',
+            }}
+          >
+            <div
+              className="rounded-xl px-4 py-3 shadow-2xl border border-accent/30 backdrop-blur-md min-w-[180px]"
+              style={{ background: 'linear-gradient(135deg, hsl(215, 40%, 12%, 0.95), hsl(215, 35%, 16%, 0.95))' }}
+            >
+              <div className="flex items-center gap-2 mb-1.5">
+                <div className="w-6 h-6 rounded-md bg-gradient-to-r from-teal-500 to-cyan-500 flex items-center justify-center">
+                  <MapPin className="w-3 h-3 text-white" />
+                </div>
+                <span className="text-sm font-display font-bold text-primary-foreground">{hoveredData.stateName}</span>
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-accent/20 text-accent">{hoveredData.stateCode}</span>
+              </div>
+              {hoveredData.cities.length > 0 ? (
+                <div className="space-y-1 mt-2 border-t border-primary-foreground/10 pt-2">
+                  {hoveredData.cities.slice(0, 4).map((city) => (
+                    <div key={city.id} className="flex items-center gap-2">
+                      <Building2 className="w-3 h-3 text-accent/60 shrink-0" />
+                      <span className="text-xs text-primary-foreground/80 truncate">{city.name}</span>
+                    </div>
+                  ))}
+                  {hoveredData.cities.length > 4 && (
+                    <p className="text-[10px] text-primary-foreground/40 pl-5">+{hoveredData.cities.length - 4} mais</p>
+                  )}
+                </div>
+              ) : (
+                <p className="text-[10px] text-primary-foreground/40">Nenhum site cadastrado</p>
+              )}
+              <p className="text-[10px] text-accent/60 mt-1.5">Clique para ver detalhes</p>
+              {/* Arrow */}
+              <div className="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-3 h-3 rotate-45 border-r border-b border-accent/30" style={{ background: 'hsl(215, 35%, 16%, 0.95)' }} />
+            </div>
+          </div>
+        )}
+
+        {activeStateCodes.length > 0 && !selectedState && !hoveredState && (
+          <p className="text-center text-muted-foreground text-xs mt-2">Passe o mouse sobre um estado colorido para ver os sites</p>
         )}
       </div>
 
-      {/* Selected State Sites Panel */}
+      {/* Selected State Panel */}
       <AnimatePresence>
         {selectedData && (
           <motion.div
@@ -183,7 +235,6 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
             className="overflow-hidden"
           >
             <div className="mt-6 rounded-2xl overflow-hidden border-2 border-accent/30" style={{ background: 'linear-gradient(135deg, hsl(215, 40%, 10%), hsl(215, 35%, 14%))' }}>
-              {/* Header */}
               <div className="flex items-center justify-between px-6 py-4 border-b border-accent/15">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 flex items-center justify-center">
@@ -191,11 +242,7 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
                   </div>
                   <div>
                     {isAdmin ? (
-                      <input
-                        className="text-lg font-display font-bold text-primary-foreground bg-transparent border-b border-primary-foreground/20 outline-none focus:border-accent"
-                        value={selectedData.stateName}
-                        onChange={(e) => updateState(selectedData.id, { stateName: e.target.value })}
-                      />
+                      <input className="text-lg font-display font-bold text-primary-foreground bg-transparent border-b border-primary-foreground/20 outline-none focus:border-accent" value={selectedData.stateName} onChange={(e) => updateState(selectedData.id, { stateName: e.target.value })} />
                     ) : (
                       <h4 className="text-lg font-display font-bold text-primary-foreground">{selectedData.stateName}</h4>
                     )}
@@ -205,30 +252,21 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
                 <div className="flex items-center gap-2">
                   {isAdmin && (
                     <>
-                      <button onClick={() => addCity(selectedData.id)} className="px-3 py-1.5 rounded-lg bg-accent/20 text-accent text-xs font-medium hover:bg-accent/30 transition flex items-center gap-1">
-                        <Plus className="w-3 h-3" /> Adicionar Site
-                      </button>
-                      <button onClick={() => removeState(selectedData.id)} className="px-3 py-1.5 rounded-lg bg-destructive/20 text-destructive text-xs font-medium hover:bg-destructive/30 transition flex items-center gap-1">
-                        <Trash2 className="w-3 h-3" /> Remover Estado
-                      </button>
+                      <button onClick={() => addCity(selectedData.id)} className="px-3 py-1.5 rounded-lg bg-accent/20 text-accent text-xs font-medium hover:bg-accent/30 transition flex items-center gap-1"><Plus className="w-3 h-3" /> Adicionar Site</button>
+                      <button onClick={() => removeState(selectedData.id)} className="px-3 py-1.5 rounded-lg bg-destructive/20 text-destructive text-xs font-medium hover:bg-destructive/30 transition flex items-center gap-1"><Trash2 className="w-3 h-3" /> Remover Estado</button>
                     </>
                   )}
-                  <button onClick={() => setSelectedState(null)} className="w-8 h-8 rounded-lg bg-primary-foreground/10 flex items-center justify-center text-primary-foreground/60 hover:text-primary-foreground hover:bg-primary-foreground/20 transition">
-                    <X className="w-4 h-4" />
-                  </button>
+                  <button onClick={() => setSelectedState(null)} className="w-8 h-8 rounded-lg bg-primary-foreground/10 flex items-center justify-center text-primary-foreground/60 hover:text-primary-foreground hover:bg-primary-foreground/20 transition"><X className="w-4 h-4" /></button>
                 </div>
               </div>
 
-              {/* Cities/Sites Grid */}
               <div className="p-6">
                 {selectedData.cities.length === 0 ? (
                   <div className="text-center py-8">
                     <Building2 className="w-10 h-10 text-primary-foreground/20 mx-auto mb-3" />
                     <p className="text-primary-foreground/40 text-sm">Nenhum site cadastrado para este estado.</p>
                     {isAdmin && (
-                      <button onClick={() => addCity(selectedData.id)} className="mt-3 px-4 py-2 rounded-lg bg-accent/20 text-accent text-sm font-medium hover:bg-accent/30 transition">
-                        <Plus className="w-4 h-4 inline mr-1" /> Adicionar primeiro site
-                      </button>
+                      <button onClick={() => addCity(selectedData.id)} className="mt-3 px-4 py-2 rounded-lg bg-accent/20 text-accent text-sm font-medium hover:bg-accent/30 transition"><Plus className="w-4 h-4 inline mr-1" /> Adicionar primeiro site</button>
                     )}
                   </div>
                 ) : (
@@ -242,7 +280,6 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
                         className="group rounded-xl overflow-hidden border border-primary-foreground/10 hover:border-accent/40 transition-all duration-300 hover:shadow-lg hover:shadow-accent/10"
                         style={{ background: 'hsl(215, 35%, 12%)' }}
                       >
-                        {/* Image */}
                         <div className="w-full h-40 overflow-hidden relative">
                           {city.imageUrl ? (
                             <img src={city.imageUrl} alt={city.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -255,45 +292,19 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
                             <span className="text-xs font-bold text-accent">{selectedData.stateCode}</span>
                           </div>
                         </div>
-
-                        {/* Info */}
                         <div className="p-4">
                           {isAdmin ? (
                             <div className="space-y-2">
-                              <input
-                                className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-sm font-bold outline-none focus:border-accent"
-                                value={city.name}
-                                onChange={(e) => updateCity(selectedData.id, city.id, { name: e.target.value })}
-                                placeholder="Nome do site"
-                              />
-                              <input
-                                className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-xs outline-none focus:border-accent"
-                                value={city.imageUrl}
-                                onChange={(e) => updateCity(selectedData.id, city.id, { imageUrl: e.target.value })}
-                                placeholder="URL da imagem"
-                              />
-                              <textarea
-                                className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-xs outline-none focus:border-accent min-h-[50px]"
-                                value={city.description || ''}
-                                onChange={(e) => updateCity(selectedData.id, city.id, { description: e.target.value })}
-                                placeholder="Descrição / informações do site"
-                              />
-                              <input
-                                className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-xs outline-none focus:border-accent"
-                                value={city.address || ''}
-                                onChange={(e) => updateCity(selectedData.id, city.id, { address: e.target.value })}
-                                placeholder="Endereço"
-                              />
-                              <button onClick={() => removeCity(selectedData.id, city.id)} className="text-destructive text-xs hover:underline flex items-center gap-1">
-                                <Trash2 className="w-3 h-3" /> Remover
-                              </button>
+                              <input className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-sm font-bold outline-none focus:border-accent" value={city.name} onChange={(e) => updateCity(selectedData.id, city.id, { name: e.target.value })} placeholder="Nome do site" />
+                              <input className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-xs outline-none focus:border-accent" value={city.imageUrl} onChange={(e) => updateCity(selectedData.id, city.id, { imageUrl: e.target.value })} placeholder="URL da imagem" />
+                              <textarea className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-xs outline-none focus:border-accent min-h-[50px]" value={city.description || ''} onChange={(e) => updateCity(selectedData.id, city.id, { description: e.target.value })} placeholder="Descrição / informações do site" />
+                              <input className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-xs outline-none focus:border-accent" value={city.address || ''} onChange={(e) => updateCity(selectedData.id, city.id, { address: e.target.value })} placeholder="Endereço" />
+                              <button onClick={() => removeCity(selectedData.id, city.id)} className="text-destructive text-xs hover:underline flex items-center gap-1"><Trash2 className="w-3 h-3" /> Remover</button>
                             </div>
                           ) : (
                             <>
                               <h5 className="font-display font-bold text-primary-foreground text-sm mb-1">{city.name}</h5>
-                              {city.description && (
-                                <p className="text-primary-foreground/60 text-xs leading-relaxed mb-2">{city.description}</p>
-                              )}
+                              {city.description && <p className="text-primary-foreground/60 text-xs leading-relaxed mb-2">{city.description}</p>}
                               {city.address && (
                                 <div className="flex items-center gap-1.5 text-primary-foreground/40 text-xs">
                                   <MapPin className="w-3 h-3 shrink-0" />

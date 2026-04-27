@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { User, Shield, BarChart3, Briefcase, Palette } from 'lucide-react';
+import { User, Shield, BarChart3, Briefcase, Palette, MousePointerClick } from 'lucide-react';
 import { Analyst } from '@/contexts/AdminContext';
 
 interface OrgChartProps {
@@ -176,6 +176,28 @@ const OrgChart = ({ manager, biAnalysts, adminAnalysts, designAnalysts, onAnalys
       </div>
 
       <div className="relative z-10">
+        {/* CTA Hint */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05, duration: 0.5 }}
+          className="flex justify-center mb-8"
+        >
+          <div
+            className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full border border-accent/30 backdrop-blur-md shadow-lg shadow-accent/10"
+            style={{ background: 'linear-gradient(135deg, hsl(var(--accent) / 0.12), hsl(var(--accent) / 0.04))' }}
+          >
+            <span className="relative flex w-2.5 h-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent/70 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-accent" />
+            </span>
+            <MousePointerClick className="w-4 h-4 text-accent" />
+            <span className="text-sm font-medium text-foreground">
+              Clique em qualquer pessoa para ver as <span className="text-accent font-semibold">atribuições</span> e habilidades
+            </span>
+          </div>
+        </motion.div>
+
         {/* Manager */}
         <div className="flex justify-center">
           {manager && (

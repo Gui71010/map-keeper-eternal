@@ -330,13 +330,13 @@ const NossaAreaPage = () => {
         <div className="relative overflow-hidden rounded-2xl border border-accent/20" style={{ background: 'linear-gradient(160deg, hsl(220, 45%, 8%), hsl(220, 35%, 13%))' }}>
           <GalaxyParticles />
           <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute -top-20 -left-20 w-96 h-96 rounded-full bg-amber-500/8 blur-[150px]" />
-            <div className="absolute -bottom-20 -right-20 w-96 h-96 rounded-full bg-emerald-500/8 blur-[150px]" />
+            <div className="absolute -top-20 -left-20 w-96 h-96 rounded-full bg-accent/10 blur-[150px]" />
+            <div className="absolute -bottom-20 -right-20 w-96 h-96 rounded-full bg-primary/10 blur-[150px]" />
           </div>
           <div className="relative z-10 p-8 md:p-12">
             {/* Header with gradient line */}
             <div className="flex items-start gap-5 mb-10">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-emerald-500 flex items-center justify-center shadow-xl shadow-amber-500/20 shrink-0">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center shadow-xl shadow-accent/20 shrink-0">
                 <DollarSign className="w-8 h-8 text-white" />
               </div>
               <div className="flex-1">
@@ -345,7 +345,7 @@ const NossaAreaPage = () => {
                 ) : (
                   <h3 className="text-3xl md:text-4xl font-display font-bold text-primary-foreground">{content.rqTitle}</h3>
                 )}
-                <div className="w-20 h-1 rounded-full bg-gradient-to-r from-amber-500 to-emerald-500 mt-3" />
+                <div className="w-20 h-1 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500 mt-3" />
               </div>
             </div>
 
@@ -361,7 +361,7 @@ const NossaAreaPage = () => {
 
               <div className="space-y-3">
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="w-1.5 h-6 rounded-full bg-gradient-to-b from-amber-500 to-emerald-500" />
+                  <div className="w-1.5 h-6 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500" />
                   <h4 className="text-sm font-display font-bold text-primary-foreground/70 uppercase tracking-wider">Analistas Responsáveis</h4>
                 </div>
                 {adminAnalysts.map((analyst, i) => (
@@ -370,10 +370,10 @@ const NossaAreaPage = () => {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.7 + i * 0.1 }}
-                    className="flex items-center gap-4 p-4 rounded-xl border border-primary-foreground/8 hover:border-amber-500/30 transition-all duration-300 group"
+                    className="flex items-center gap-4 p-4 rounded-xl border border-primary-foreground/8 hover:border-accent/40 transition-all duration-300 group"
                     style={{ background: 'hsl(220, 35%, 11%)' }}
                   >
-                    <div className="w-11 h-11 rounded-full overflow-hidden bg-muted flex items-center justify-center shrink-0 ring-2 ring-amber-500/20 group-hover:ring-amber-500/40 transition-all">
+                    <div className="w-11 h-11 rounded-full overflow-hidden bg-muted flex items-center justify-center shrink-0 ring-2 ring-accent/20 group-hover:ring-accent/40 transition-all">
                       {analyst.photo ? (
                         <img src={analyst.photo} alt={analyst.name} className="w-full h-full object-cover" />
                       ) : (
@@ -393,7 +393,7 @@ const NossaAreaPage = () => {
             <div className="mb-12">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2">
-                  <div className="w-1.5 h-6 rounded-full bg-gradient-to-b from-amber-500 to-emerald-500" />
+                  <div className="w-1.5 h-6 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500" />
                   <h4 className="text-sm font-display font-bold text-primary-foreground/70 uppercase tracking-wider">Categorias de Requisição</h4>
                 </div>
                 {isAdmin && (
@@ -417,17 +417,17 @@ const NossaAreaPage = () => {
                       <div
                         className={`rounded-xl p-5 border transition-all duration-300 ${
                           expandedRqCategory === cat.id
-                            ? 'border-amber-500/40 shadow-lg shadow-amber-500/10'
-                            : 'border-primary-foreground/8 hover:border-amber-500/25'
+                            ? 'border-accent/50 shadow-lg shadow-accent/15'
+                            : 'border-primary-foreground/8 hover:border-accent/30'
                         }`}
                         style={{ background: expandedRqCategory === cat.id ? 'hsl(220, 35%, 13%)' : 'hsl(220, 35%, 11%)' }}
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
-                            <div className={`w-2 h-2 rounded-full transition-colors duration-300 ${expandedRqCategory === cat.id ? 'bg-amber-500' : 'bg-primary-foreground/20'}`} />
-                            <span className={`font-display font-semibold text-sm transition-colors duration-300 ${expandedRqCategory === cat.id ? 'text-amber-400' : 'text-primary-foreground/80'}`}>{cat.label}</span>
+                            <div className={`w-2 h-2 rounded-full transition-colors duration-300 ${expandedRqCategory === cat.id ? 'bg-accent' : 'bg-primary-foreground/20'}`} />
+                            <span className={`font-display font-semibold text-sm transition-colors duration-300 ${expandedRqCategory === cat.id ? 'text-accent' : 'text-primary-foreground/80'}`}>{cat.label}</span>
                           </div>
-                          <ChevronDown className={`w-4 h-4 text-primary-foreground/40 transition-transform duration-300 ${expandedRqCategory === cat.id ? 'rotate-180 text-amber-400' : ''}`} />
+                          <ChevronDown className={`w-4 h-4 text-primary-foreground/40 transition-transform duration-300 ${expandedRqCategory === cat.id ? 'rotate-180 text-accent' : ''}`} />
                         </div>
                       </div>
                     </button>
@@ -462,7 +462,7 @@ const NossaAreaPage = () => {
                                 <p className="text-primary-foreground/65 text-sm leading-relaxed">{cat.description}</p>
                                 <div className="flex items-center gap-2 pt-3 border-t border-primary-foreground/8">
                                   <span className="text-xs text-primary-foreground/35">📋 Caminho:</span>
-                                  <span className="text-xs text-amber-400 font-medium">{cat.callPath}</span>
+                                  <span className="text-xs text-accent font-medium">{cat.callPath}</span>
                                 </div>
                               </>
                             )}
@@ -547,7 +547,7 @@ const NossaAreaPage = () => {
             <div>
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2">
-                  <div className="w-1.5 h-6 rounded-full bg-gradient-to-b from-amber-500 to-emerald-500" />
+                  <div className="w-1.5 h-6 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500" />
                   <h4 className="text-sm font-display font-bold text-primary-foreground/70 uppercase tracking-wider">Relatórios de RQ</h4>
                 </div>
                 {isAdmin && (
@@ -563,15 +563,15 @@ const NossaAreaPage = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.8 + i * 0.15 }}
-                    className="group rounded-xl overflow-hidden border border-primary-foreground/8 hover:border-amber-500/30 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
+                    className="group rounded-xl overflow-hidden border border-primary-foreground/8 hover:border-accent/40 transition-all duration-300 hover:shadow-lg hover:shadow-accent/15"
                     style={{ background: 'hsl(220, 35%, 11%)' }}
                   >
                     <div className="w-full h-48 overflow-hidden relative">
                       {report.imageUrl ? (
                         <img src={report.imageUrl} alt={report.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-amber-500/10 to-emerald-500/10">
-                          <FileText className="w-12 h-12 text-amber-500/30" />
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-teal-500/10 to-cyan-500/10">
+                          <FileText className="w-12 h-12 text-accent/40" />
                         </div>
                       )}
                     </div>

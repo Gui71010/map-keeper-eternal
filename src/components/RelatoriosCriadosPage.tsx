@@ -39,32 +39,66 @@ const RelatoriosCriadosPage = () => {
       </motion.section>
 
       {/* Stats */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.5 }} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {[
-          { icon: FileText, value: content.reports.length, label: 'Relatórios criados', color: 'text-accent', bg: 'bg-accent/15' },
-          { icon: User, value: biAnalysts.length, label: 'Analistas', color: 'text-primary', bg: 'bg-primary/15' },
-          { icon: TrendingUp, value: new Set(content.reports.flatMap(r => r.eligibleAreas || [])).size, label: 'Áreas atendidas', color: 'text-emerald-400', bg: 'bg-emerald-500/15' },
-        ].map((stat, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 + i * 0.08 }}
-            className="glass-card rounded-2xl p-6 border border-border/30 flex items-center gap-4 hover:border-accent/30 transition-all duration-400"
-            style={{ transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)' }}
-            onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 30px hsl(var(--accent) / 0.08)'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
-          >
-            <div className={`w-13 h-13 rounded-xl ${stat.bg} flex items-center justify-center`} style={{ width: '3.25rem', height: '3.25rem' }}>
-              <stat.icon className={`w-6 h-6 ${stat.color}`} />
-            </div>
-            <div>
-              <p className={`text-3xl font-display font-bold ${stat.color}`}>{stat.value}</p>
-              <p className="text-muted-foreground text-sm">{stat.label}</p>
-            </div>
+      {(() => {
+        const selectedAnalyst = selectedAnalystId ? content.analysts.find(a => a.id === selectedAnalystId) : null;
+        const reportsForSelected = selectedAnalystId ? content.reports.filter(r => r.creatorId === selectedAnalystId).length : content.reports.length;
+        const stats = [
+          {
+            icon: FileText,
+            value: reportsForSelected,
+            label: selectedAnalyst ? 'Relatórios deste analista' : 'Relatórios criados',
+            color: 'text-accent',
+            bg: 'bg-accent/15',
+          },
+          {
+            icon: User,
+            value: selectedAnalyst ? selectedAnalyst.name : biAnalysts.length,
+            label: selectedAnalyst ? 'Analista selecionado' : 'Analistas',
+            color: 'text-primary',
+            bg: 'bg-primary/15',
+            isText: !!selectedAnalyst,
+            avatar: selectedAnalyst?.photo,
+          },
+          {
+            icon: BarChart3,
+            value: selectedAnalyst ? selectedAnalyst.area : new Set(content.reports.flatMap(r => r.eligibleAreas || [])).size,
+            label: selectedAnalyst ? 'Área de atuação' : 'Áreas atendidas',
+            color: 'text-emerald-400',
+            bg: 'bg-emerald-500/15',
+            isText: !!selectedAnalyst,
+          },
+        ];
+        return (
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.5 }} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {stats.map((stat, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 + i * 0.08 }}
+                className="glass-card rounded-2xl p-6 border border-border/30 flex items-center gap-4 hover:border-accent/30 transition-all duration-400"
+                style={{ transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)' }}
+                onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 30px hsl(var(--accent) / 0.08)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
+              >
+                {stat.avatar ? (
+                  <div className="rounded-xl overflow-hidden shrink-0 ring-2 ring-primary/30" style={{ width: '3.25rem', height: '3.25rem' }}>
+                    <img src={stat.avatar} alt="" className="w-full h-full object-cover" />
+                  </div>
+                ) : (
+                  <div className={`rounded-xl ${stat.bg} flex items-center justify-center shrink-0`} style={{ width: '3.25rem', height: '3.25rem' }}>
+                    <stat.icon className={`w-6 h-6 ${stat.color}`} />
+                  </div>
+                )}
+                <div className="min-w-0">
+                  <p className={`font-display font-bold ${stat.color} ${stat.isText ? 'text-xl leading-tight truncate' : 'text-3xl'}`}>{stat.value}</p>
+                  <p className="text-muted-foreground text-sm">{stat.label}</p>
+                </div>
+              </motion.div>
+            ))}
           </motion.div>
-        ))}
-      </motion.div>
+        );
+      })()}
 
       {/* Analyst filter */}
       <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.6 }}>

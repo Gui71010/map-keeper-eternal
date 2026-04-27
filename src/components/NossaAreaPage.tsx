@@ -373,7 +373,7 @@ const NossaAreaPage = () => {
                     className="flex items-center gap-4 p-4 rounded-xl border border-primary-foreground/8 hover:border-accent/40 transition-all duration-300 group"
                     style={{ background: 'hsl(220, 35%, 11%)' }}
                   >
-                    <div className="w-11 h-11 rounded-full overflow-hidden bg-muted flex items-center justify-center shrink-0 ring-2 ring-amber-500/20 group-hover:ring-amber-500/40 transition-all">
+                    <div className="w-11 h-11 rounded-full overflow-hidden bg-muted flex items-center justify-center shrink-0 ring-2 ring-accent/20 group-hover:ring-accent/40 transition-all">
                       {analyst.photo ? (
                         <img src={analyst.photo} alt={analyst.name} className="w-full h-full object-cover" />
                       ) : (

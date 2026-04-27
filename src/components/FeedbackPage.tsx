@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, Star, Lightbulb, Send, ArrowLeft, FileText, Globe, CheckCircle, Sparkles, Heart, Quote } from 'lucide-react';
+import { MessageSquare, Star, Lightbulb, Send, ArrowLeft, FileText, Globe, CheckCircle, Sparkles, Heart, Quote, Search, ChevronDown, Check } from 'lucide-react';
 import { useAdmin } from '@/contexts/AdminContext';
 import { supabase } from '@/integrations/supabase/client';
 import GalaxyParticles from '@/components/GalaxyParticles';
@@ -218,11 +218,11 @@ const FeedbackPage = () => {
                     {target === 'relatorio' && (
                       <div>
                         <label className="text-sm font-medium text-foreground mb-2 block">Relatório</label>
-                        <select value={nomeRelatorio} onChange={(e) => setNomeRelatorio(e.target.value)}
-                          className="w-full px-4 py-3.5 rounded-xl border border-border/50 bg-muted/20 text-foreground outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 transition-all text-base">
-                          <option value="">Selecione um relatório</option>
-                          {reports.map((r) => <option key={r.id} value={r.name}>{r.name}</option>)}
-                        </select>
+                        <ReportCombobox
+                          value={nomeRelatorio}
+                          onChange={setNomeRelatorio}
+                          options={reports.map((r) => r.name)}
+                        />
                       </div>
                     )}
                     <div>

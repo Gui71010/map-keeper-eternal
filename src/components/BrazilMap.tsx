@@ -57,11 +57,26 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
   const [hoveredState, setHoveredState] = useState<string | null>(null);
   const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [selectedState, setSelectedState] = useState<string | null>(null);
+  const [cityIndex, setCityIndex] = useState(0);
 
   const activeStateCodes = states.map(s => s.stateCode);
   const getStateData = (code: string) => states.find(s => s.stateCode === code);
   const hoveredData = hoveredState ? getStateData(hoveredState) : null;
   const selectedData = selectedState ? getStateData(selectedState) : null;
+
+  // Reset rotation index when hovered state changes
+  useEffect(() => {
+    setCityIndex(0);
+  }, [hoveredState]);
+
+  // Rotate through cities every 9 seconds while hovering
+  useEffect(() => {
+    if (!hoveredData || hoveredData.cities.length <= 1) return;
+    const id = setInterval(() => {
+      setCityIndex((i) => (i + 1) % hoveredData.cities.length);
+    }, 9000);
+    return () => clearInterval(id);
+  }, [hoveredData]);
 
   const handleStateClick = (code: string) => {
     if (isAdmin && !activeStateCodes.includes(code)) {

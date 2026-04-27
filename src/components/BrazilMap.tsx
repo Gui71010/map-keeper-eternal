@@ -187,8 +187,8 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
             }}
           >
             <div
-              className="rounded-xl px-4 py-3 shadow-2xl border border-accent/30 backdrop-blur-md min-w-[180px]"
-              style={{ background: 'linear-gradient(135deg, hsl(215, 40%, 12%, 0.95), hsl(215, 35%, 16%, 0.95))' }}
+              className="rounded-xl px-4 py-3 shadow-2xl border border-accent/30 backdrop-blur-md min-w-[240px] max-w-[280px]"
+              style={{ background: 'linear-gradient(135deg, hsl(215, 40%, 12%, 0.97), hsl(215, 35%, 16%, 0.97))' }}
             >
               <div className="flex items-center gap-2 mb-1.5">
                 <div className="w-6 h-6 rounded-md bg-gradient-to-r from-teal-500 to-cyan-500 flex items-center justify-center">

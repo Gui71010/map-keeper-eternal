@@ -1,12 +1,100 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, Star, Lightbulb, Send, ArrowLeft, FileText, Globe, CheckCircle, Sparkles, Heart, Quote } from 'lucide-react';
+import { MessageSquare, Star, Lightbulb, Send, ArrowLeft, FileText, Globe, CheckCircle, Sparkles, Heart, Quote, Search, ChevronDown, Check } from 'lucide-react';
 import { useAdmin } from '@/contexts/AdminContext';
 import { supabase } from '@/integrations/supabase/client';
 import GalaxyParticles from '@/components/GalaxyParticles';
 
 type FeedbackTarget = null | 'relatorio' | 'site';
 type FeedbackType = null | 'elogio' | 'sugestao';
+
+interface ReportComboboxProps {
+  value: string;
+  onChange: (v: string) => void;
+  options: string[];
+}
+
+const ReportCombobox = ({ value, onChange, options }: ReportComboboxProps) => {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const filtered = options.filter(o => o.toLowerCase().includes(query.toLowerCase()));
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        className="w-full px-4 py-3.5 rounded-xl border border-border/50 bg-muted/20 text-left text-foreground outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 transition-all text-base flex items-center justify-between gap-2 hover:border-accent/40"
+      >
+        <span className={value ? 'text-foreground truncate' : 'text-muted-foreground/50'}>
+          {value || 'Selecione um relatório'}
+        </span>
+        <ChevronDown className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -6, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -6, scale: 0.98 }}
+            transition={{ duration: 0.15 }}
+            className="absolute z-50 mt-2 w-full rounded-xl border border-accent/30 shadow-2xl shadow-accent/10 overflow-hidden backdrop-blur-xl"
+            style={{ background: 'linear-gradient(160deg, hsl(222, 40%, 12%), hsl(215, 35%, 9%))' }}
+          >
+            <div className="p-2 border-b border-border/30">
+              <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-muted/30 border border-border/30">
+                <Search className="w-4 h-4 text-muted-foreground shrink-0" />
+                <input
+                  autoFocus
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Pesquisar relatório..."
+                  className="flex-1 bg-transparent outline-none text-sm text-foreground placeholder:text-muted-foreground/50"
+                />
+              </div>
+            </div>
+            <div className="max-h-64 overflow-y-auto py-1">
+              {filtered.length === 0 ? (
+                <div className="px-4 py-6 text-center text-sm text-muted-foreground/60">Nenhum relatório encontrado</div>
+              ) : (
+                filtered.map((opt) => {
+                  const selected = opt === value;
+                  return (
+                    <button
+                      key={opt}
+                      type="button"
+                      onClick={() => { onChange(opt); setOpen(false); setQuery(''); }}
+                      className={`w-full text-left px-4 py-2.5 text-sm flex items-center justify-between gap-2 transition-colors ${
+                        selected
+                          ? 'bg-accent/15 text-accent'
+                          : 'text-foreground/85 hover:bg-accent/10 hover:text-foreground'
+                      }`}
+                    >
+                      <span className="truncate">{opt}</span>
+                      {selected && <Check className="w-4 h-4 text-accent shrink-0" />}
+                    </button>
+                  );
+                })
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
 
 const FeedbackPage = () => {
   const { content } = useAdmin();
@@ -218,11 +306,11 @@ const FeedbackPage = () => {
                     {target === 'relatorio' && (
                       <div>
                         <label className="text-sm font-medium text-foreground mb-2 block">Relatório</label>
-                        <select value={nomeRelatorio} onChange={(e) => setNomeRelatorio(e.target.value)}
-                          className="w-full px-4 py-3.5 rounded-xl border border-border/50 bg-muted/20 text-foreground outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 transition-all text-base">
-                          <option value="">Selecione um relatório</option>
-                          {reports.map((r) => <option key={r.id} value={r.name}>{r.name}</option>)}
-                        </select>
+                        <ReportCombobox
+                          value={nomeRelatorio}
+                          onChange={setNomeRelatorio}
+                          options={reports.map((r) => r.name)}
+                        />
                       </div>
                     )}
                     <div>

@@ -191,59 +191,102 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
           })}
         </svg>
 
-        {/* Hover Tooltip */}
-        {hoveredData && hoveredState && !selectedState && (
-          <div
-            className="absolute z-30 pointer-events-none"
-            style={{
-              left: tooltipPos.x,
-              top: tooltipPos.y - 12,
-              transform: 'translate(-50%, -100%)',
-            }}
-          >
+        {/* Hover Tooltip - rotates one city at a time every 9s */}
+        {hoveredData && hoveredState && !selectedState && (() => {
+          const total = hoveredData.cities.length;
+          const safeIdx = total > 0 ? cityIndex % total : 0;
+          const city = total > 0 ? hoveredData.cities[safeIdx] : null;
+          return (
             <div
-              className="rounded-xl px-4 py-3 shadow-2xl border border-accent/30 backdrop-blur-md min-w-[240px] max-w-[280px]"
-              style={{ background: 'linear-gradient(135deg, hsl(215, 40%, 12%, 0.97), hsl(215, 35%, 16%, 0.97))' }}
+              className="absolute z-30"
+              style={{
+                left: tooltipPos.x,
+                top: tooltipPos.y - 12,
+                transform: 'translate(-50%, -100%)',
+              }}
             >
-              <div className="flex items-center gap-2 mb-1.5">
-                <div className="w-6 h-6 rounded-md bg-gradient-to-r from-teal-500 to-cyan-500 flex items-center justify-center">
-                  <MapPin className="w-3 h-3 text-white" />
-                </div>
-                <span className="text-sm font-display font-bold text-primary-foreground">{hoveredData.stateName}</span>
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-accent/20 text-accent">{hoveredData.stateCode}</span>
-              </div>
-              {hoveredData.cities.length > 0 ? (
-                <div className="space-y-2 mt-2 border-t border-primary-foreground/10 pt-2 max-h-[260px] overflow-y-auto pr-1">
-                  {hoveredData.cities.slice(0, 4).map((city) => (
-                    <div key={city.id} className="flex items-start gap-2.5 p-1.5 rounded-lg hover:bg-accent/5 transition-colors">
-                      <div className="w-12 h-12 rounded-md overflow-hidden shrink-0 bg-muted/30 flex items-center justify-center border border-accent/15">
-                        {city.imageUrl ? (
-                          <img src={city.imageUrl} alt={city.name} className="w-full h-full object-cover" />
-                        ) : (
-                          <Building2 className="w-5 h-5 text-accent/40" />
-                        )}
-                      </div>
-                      <div className="min-w-0 flex-1 pt-0.5">
-                        <p className="text-xs font-semibold text-primary-foreground truncate leading-tight">{city.name}</p>
-                        {city.address && (
-                          <p className="text-[10px] text-primary-foreground/50 truncate leading-tight mt-0.5">{city.address}</p>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                  {hoveredData.cities.length > 4 && (
-                    <p className="text-[10px] text-primary-foreground/40 pl-1">+{hoveredData.cities.length - 4} site{hoveredData.cities.length - 4 !== 1 ? 's' : ''}</p>
+              <div
+                className="rounded-xl px-4 py-3 shadow-2xl border border-accent/30 backdrop-blur-md min-w-[260px] max-w-[300px] pointer-events-auto"
+                style={{ background: 'linear-gradient(135deg, hsl(215, 40%, 12%, 0.97), hsl(215, 35%, 16%, 0.97))' }}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-6 h-6 rounded-md bg-gradient-to-r from-teal-500 to-cyan-500 flex items-center justify-center shrink-0">
+                    <MapPin className="w-3 h-3 text-white" />
+                  </div>
+                  <span className="text-sm font-display font-bold text-primary-foreground truncate">{hoveredData.stateName}</span>
+                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-accent/20 text-accent shrink-0">{hoveredData.stateCode}</span>
+                  {total > 0 && (
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); setSelectedState(hoveredState); }}
+                      title="Expandir"
+                      className="ml-auto w-7 h-7 rounded-md flex items-center justify-center bg-accent/15 hover:bg-accent/30 text-accent transition shrink-0"
+                    >
+                      <Maximize2 className="w-3.5 h-3.5" />
+                    </button>
                   )}
                 </div>
-              ) : (
-                <p className="text-[10px] text-primary-foreground/40">Nenhum site cadastrado</p>
-              )}
-              <p className="text-[10px] text-accent/60 mt-2 pt-2 border-t border-primary-foreground/10">Clique para ver detalhes completos</p>
-              {/* Arrow */}
-              <div className="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-3 h-3 rotate-45 border-r border-b border-accent/30" style={{ background: 'hsl(215, 35%, 16%, 0.95)' }} />
+
+                {city ? (
+                  <>
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={city.id}
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -6 }}
+                        transition={{ duration: 0.35 }}
+                        className="flex items-start gap-3 p-2 rounded-lg border border-accent/15"
+                        style={{ background: 'hsl(215, 35%, 14%, 0.7)' }}
+                      >
+                        <div className="w-16 h-16 rounded-md overflow-hidden shrink-0 bg-muted/30 flex items-center justify-center border border-accent/15">
+                          {city.imageUrl ? (
+                            <img src={city.imageUrl} alt={city.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <Building2 className="w-6 h-6 text-accent/40" />
+                          )}
+                        </div>
+                        <div className="min-w-0 flex-1 pt-0.5">
+                          <p className="text-sm font-semibold text-primary-foreground leading-tight">{city.name}</p>
+                          {city.address && (
+                            <p className="text-[10px] text-primary-foreground/50 leading-snug mt-1 line-clamp-2">{city.address}</p>
+                          )}
+                          {city.description && (
+                            <p className="text-[10px] text-primary-foreground/40 leading-snug mt-1 line-clamp-2">{city.description}</p>
+                          )}
+                        </div>
+                      </motion.div>
+                    </AnimatePresence>
+
+                    {total > 1 && (
+                      <div className="flex items-center justify-between mt-2.5 pt-2 border-t border-primary-foreground/10">
+                        <div className="flex items-center gap-1">
+                          {hoveredData.cities.map((_, i) => (
+                            <span
+                              key={i}
+                              className={`h-1 rounded-full transition-all ${i === safeIdx ? 'w-4 bg-accent' : 'w-1.5 bg-primary-foreground/20'}`}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-[9px] text-primary-foreground/40 uppercase tracking-wider">
+                          {safeIdx + 1}/{total}
+                        </span>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <p className="text-[10px] text-primary-foreground/40">Nenhum site cadastrado</p>
+                )}
+
+                <p className="text-[10px] text-accent/60 mt-2 pt-2 border-t border-primary-foreground/10">
+                  Clique no estado ou no botão <Maximize2 className="w-2.5 h-2.5 inline" /> para ver tudo
+                </p>
+                {/* Arrow */}
+                <div className="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-3 h-3 rotate-45 border-r border-b border-accent/30" style={{ background: 'hsl(215, 35%, 16%, 0.95)' }} />
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {activeStateCodes.length > 0 && !selectedState && !hoveredState && (
           <p className="text-center text-muted-foreground text-xs mt-2">Passe o mouse sobre um estado colorido para ver os sites</p>

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { User, Shield, BarChart3, Briefcase, Palette } from 'lucide-react';
+import { User, Shield, BarChart3, Briefcase, Palette, MousePointerClick } from 'lucide-react';
 import { Analyst } from '@/contexts/AdminContext';
 
 interface OrgChartProps {

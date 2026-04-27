@@ -227,45 +227,62 @@ const AnalystCard = ({ analyst, index, isSelected, onClick, showDetails, editabl
                   </div>
                 ) : (
                   <div className="space-y-6">
+                    {/* Quick stats bar */}
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="rounded-xl p-4 text-center border border-accent/15" style={{ background: 'linear-gradient(135deg, hsl(var(--accent) / 0.10), hsl(var(--accent) / 0.03))' }}>
+                        <p className="text-2xl font-display font-bold text-accent">{(analyst.attributions || []).length}</p>
+                        <p className="text-[11px] text-muted-foreground uppercase tracking-wider mt-0.5">Atribuições</p>
+                      </div>
+                      <div className="rounded-xl p-4 text-center border border-accent/15" style={{ background: 'linear-gradient(135deg, hsl(var(--accent) / 0.10), hsl(var(--accent) / 0.03))' }}>
+                        <p className="text-2xl font-display font-bold text-accent">{(analyst.skills || []).length}</p>
+                        <p className="text-[11px] text-muted-foreground uppercase tracking-wider mt-0.5">Habilidades</p>
+                      </div>
+                      <div className="rounded-xl p-4 text-center border border-accent/15 flex flex-col items-center justify-center" style={{ background: 'linear-gradient(135deg, hsl(var(--accent) / 0.10), hsl(var(--accent) / 0.03))' }}>
+                        <p className="text-sm font-display font-bold text-accent leading-tight">{analyst.area}</p>
+                        <p className="text-[11px] text-muted-foreground uppercase tracking-wider mt-0.5">Área</p>
+                      </div>
+                    </div>
 
-                    {/* Attributions */}
-                    {(analyst.attributions || []).length > 0 && (
-                      <div className="rounded-2xl p-6 border border-border/30" style={{ background: 'linear-gradient(135deg, hsl(215, 25%, 14% / 0.4), hsl(215, 30%, 10% / 0.6))' }}>
-                        <div className="flex items-center gap-2.5 mb-5">
-                          <div className="w-8 h-8 rounded-lg gradient-accent flex items-center justify-center">
-                            <ClipboardList className="w-4 h-4 text-primary-foreground" />
-                          </div>
-                          <h4 className="font-display font-bold text-foreground text-lg">Atribuições</h4>
-                        </div>
-                        <div className="space-y-2.5">
-                          {analyst.attributions!.map((attr, i) => (
-                            <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-muted/20 border border-border/30 hover:border-accent/20 transition-colors">
-                              <div className="w-2 h-2 rounded-full bg-accent mt-2 shrink-0" />
-                              <span className="text-foreground/90 text-base leading-relaxed">{attr}</span>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                      {/* Attributions */}
+                      {(analyst.attributions || []).length > 0 && (
+                        <div className="rounded-2xl p-6 border border-border/30" style={{ background: 'linear-gradient(135deg, hsl(215, 25%, 14% / 0.4), hsl(215, 30%, 10% / 0.6))' }}>
+                          <div className="flex items-center gap-2.5 mb-5">
+                            <div className="w-8 h-8 rounded-lg gradient-accent flex items-center justify-center">
+                              <ClipboardList className="w-4 h-4 text-primary-foreground" />
                             </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Skills */}
-                    {(analyst.skills || []).length > 0 && (
-                      <div className="rounded-2xl p-6 border border-border/30" style={{ background: 'linear-gradient(135deg, hsl(215, 25%, 14% / 0.4), hsl(215, 30%, 10% / 0.6))' }}>
-                        <div className="flex items-center gap-2.5 mb-5">
-                          <div className="w-8 h-8 rounded-lg gradient-accent flex items-center justify-center">
-                            <Sparkles className="w-4 h-4 text-primary-foreground" />
+                            <h4 className="font-display font-bold text-foreground text-lg">Atribuições</h4>
                           </div>
-                          <h4 className="font-display font-bold text-foreground text-lg">Habilidades & Ferramentas</h4>
+                          <div className="space-y-2.5">
+                            {analyst.attributions!.map((attr, i) => (
+                              <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-muted/20 border border-border/30 hover:border-accent/30 hover:bg-accent/5 transition-all">
+                                <div className="w-2 h-2 rounded-full bg-accent mt-2 shrink-0" />
+                                <span className="text-foreground/90 text-sm leading-relaxed">{attr}</span>
+                              </div>
+                            ))}
+                          </div>
                         </div>
-                        <div className="flex flex-wrap gap-2.5">
-                          {analyst.skills!.map((skill, i) => (
-                            <span key={i} className="px-4 py-2 rounded-full bg-accent/12 text-accent border border-accent/25 text-sm font-semibold shadow-sm">
-                              {skill}
-                            </span>
-                          ))}
+                      )}
+
+                      {/* Skills */}
+                      {(analyst.skills || []).length > 0 && (
+                        <div className="rounded-2xl p-6 border border-border/30" style={{ background: 'linear-gradient(135deg, hsl(215, 25%, 14% / 0.4), hsl(215, 30%, 10% / 0.6))' }}>
+                          <div className="flex items-center gap-2.5 mb-5">
+                            <div className="w-8 h-8 rounded-lg gradient-accent flex items-center justify-center">
+                              <Sparkles className="w-4 h-4 text-primary-foreground" />
+                            </div>
+                            <h4 className="font-display font-bold text-foreground text-lg">Habilidades & Ferramentas</h4>
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {analyst.skills!.map((skill, i) => (
+                              <span key={i} className="px-3.5 py-1.5 rounded-full bg-accent/12 text-accent border border-accent/25 text-sm font-semibold shadow-sm hover:bg-accent/20 transition-colors">
+                                {skill}
+                              </span>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
                 )}
               </div>

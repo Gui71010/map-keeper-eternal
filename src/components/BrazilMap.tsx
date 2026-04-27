@@ -293,18 +293,27 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
         )}
       </div>
 
-      {/* Selected State Panel */}
+      {/* Selected State - Overlay (does NOT push content below the map) */}
       <AnimatePresence>
         {selectedData && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.35, ease: 'easeInOut' }}
-            className="overflow-hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-[90] flex items-center justify-center p-4 bg-black/70 backdrop-blur-md"
+            onClick={() => setSelectedState(null)}
           >
-            <div className="mt-6 rounded-2xl overflow-hidden border-2 border-accent/30" style={{ background: 'linear-gradient(135deg, hsl(215, 40%, 10%), hsl(215, 35%, 14%))' }}>
-              <div className="flex items-center justify-between px-6 py-4 border-b border-accent/15">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 10 }}
+              transition={{ type: 'spring', damping: 24, stiffness: 280 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-5xl max-h-[90vh] rounded-2xl overflow-hidden border-2 border-accent/30 shadow-2xl shadow-accent/20 flex flex-col"
+              style={{ background: 'linear-gradient(135deg, hsl(215, 40%, 10%), hsl(215, 35%, 14%))' }}
+            >
+              <div className="flex items-center justify-between px-6 py-4 border-b border-accent/15 shrink-0">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 flex items-center justify-center">
                     <MapPin className="w-5 h-5 text-white" />
@@ -325,11 +334,11 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
                       <button onClick={() => removeState(selectedData.id)} className="px-3 py-1.5 rounded-lg bg-destructive/20 text-destructive text-xs font-medium hover:bg-destructive/30 transition flex items-center gap-1"><Trash2 className="w-3 h-3" /> Remover Estado</button>
                     </>
                   )}
-                  <button onClick={() => setSelectedState(null)} className="w-8 h-8 rounded-lg bg-primary-foreground/10 flex items-center justify-center text-primary-foreground/60 hover:text-primary-foreground hover:bg-primary-foreground/20 transition"><X className="w-4 h-4" /></button>
+                  <button onClick={() => setSelectedState(null)} className="w-9 h-9 rounded-lg bg-primary-foreground/10 flex items-center justify-center text-primary-foreground/60 hover:text-primary-foreground hover:bg-primary-foreground/20 transition"><X className="w-4 h-4" /></button>
                 </div>
               </div>
 
-              <div className="p-6">
+              <div className="p-6 overflow-y-auto">
                 {selectedData.cities.length === 0 ? (
                   <div className="text-center py-8">
                     <Building2 className="w-10 h-10 text-primary-foreground/20 mx-auto mb-3" />
@@ -345,7 +354,7 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
                         key={city.id}
                         initial={{ opacity: 0, y: 15 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.08, duration: 0.3 }}
+                        transition={{ delay: i * 0.06, duration: 0.3 }}
                         className="group rounded-xl overflow-hidden border border-primary-foreground/10 hover:border-accent/40 transition-all duration-300 hover:shadow-lg hover:shadow-accent/10"
                         style={{ background: 'hsl(215, 35%, 12%)' }}
                       >
@@ -388,7 +397,7 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
                   </div>
                 )}
               </div>
-            </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

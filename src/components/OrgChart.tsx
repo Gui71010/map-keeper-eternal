@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
-import { User, Shield, BarChart3, Briefcase, Palette, MousePointerClick } from 'lucide-react';
-import { Analyst } from '@/contexts/AdminContext';
+import { User, Shield, BarChart3, Briefcase, Palette, MousePointerClick, ChevronRight, FileBarChart, Sparkles } from 'lucide-react';
+import { Analyst, useAdmin } from '@/contexts/AdminContext';
 
 interface OrgChartProps {
   manager: Analyst | undefined;
@@ -16,30 +16,33 @@ const OrgNode = ({
   isBoss,
   onClick,
   accentColor,
+  reportsCount,
 }: {
   analyst: Analyst;
   delay: number;
   isBoss?: boolean;
   onClick?: () => void;
   accentColor?: string;
+  reportsCount?: number;
 }) => {
   const hoverBorder = accentColor || 'hsl(var(--accent))';
+  const skills = analyst.skills || [];
+  const previewSkills = skills.slice(0, isBoss ? 4 : 3);
+  const extraSkills = skills.length - previewSkills.length;
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ delay, type: 'spring', damping: 18, stiffness: 120 }}
-      whileHover={{ y: -6 }}
+      whileHover={{ y: -4 }}
       onClick={onClick}
-      className={`relative flex flex-col items-center gap-3 rounded-2xl transition-all duration-300 cursor-pointer group backdrop-blur-md ${
+      className={`relative flex items-stretch gap-4 rounded-2xl cursor-pointer group backdrop-blur-md w-full ${
         isBoss
-          ? 'px-10 py-8 border-2 border-accent/40 bg-gradient-to-br from-accent/10 via-card/90 to-primary/5 min-w-[240px]'
-          : 'px-5 py-5 border border-border/30 bg-card/50 min-w-[150px]'
+          ? 'p-5 border-2 border-accent/40 bg-gradient-to-br from-accent/10 via-card/90 to-primary/5 max-w-[440px]'
+          : 'p-4 border border-border/30 bg-card/50'
       }`}
-      style={{
-        transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
-      }}
+      style={{ transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)' }}
       onMouseEnter={(e) => {
         const el = e.currentTarget;
         el.style.borderColor = isBoss ? 'hsl(var(--accent))' : hoverBorder;
@@ -53,40 +56,86 @@ const OrgNode = ({
         el.style.boxShadow = 'none';
       }}
     >
+      {/* LEFT: Photo */}
       <div
-        className={`rounded-2xl overflow-hidden shrink-0 bg-muted/30 flex items-center justify-center shadow-xl transition-all duration-300 ${
-          isBoss
-            ? 'w-28 h-28 ring-3 ring-accent/30 group-hover:ring-accent/60'
-            : 'w-18 h-18 ring-2 ring-border/30 group-hover:ring-accent/40'
+        className={`rounded-xl overflow-hidden shrink-0 bg-muted/30 flex items-center justify-center shadow-xl ring-2 transition-all duration-300 self-start ${
+          isBoss ? 'ring-accent/30 group-hover:ring-accent/60' : 'ring-border/30 group-hover:ring-accent/40'
         }`}
         style={{
-          width: isBoss ? '7rem' : '4.5rem',
-          height: isBoss ? '7rem' : '4.5rem',
+          width: isBoss ? '5.5rem' : '4.5rem',
+          height: isBoss ? '5.5rem' : '4.5rem',
         }}
       >
         {analyst.photo ? (
           <img src={analyst.photo} alt={analyst.name} className="w-full h-full object-cover" />
         ) : (
-          <User className={`${isBoss ? 'w-12 h-12' : 'w-7 h-7'} text-muted-foreground/50`} />
+          <User className={`${isBoss ? 'w-10 h-10' : 'w-7 h-7'} text-muted-foreground/50`} />
         )}
       </div>
 
-      <div className="text-center min-w-0">
-        <h4 className={`font-display font-bold text-foreground leading-tight ${isBoss ? 'text-lg' : 'text-sm'}`}>
-          {analyst.name}
-        </h4>
-        <p className={`text-muted-foreground mt-0.5 ${isBoss ? 'text-sm' : 'text-xs'}`}>
-          {analyst.role}
-        </p>
-        <span
-          className="inline-block mt-2 text-[10px] font-semibold px-2.5 py-0.5 rounded-full border"
+      {/* CENTER: Identity + competencies */}
+      <div className="flex-1 min-w-0 flex flex-col justify-between gap-2">
+        <div className="min-w-0">
+          <h4 className={`font-display font-bold text-foreground leading-tight truncate ${isBoss ? 'text-base' : 'text-sm'}`}>
+            {analyst.name}
+          </h4>
+          <p className={`text-muted-foreground mt-0.5 truncate ${isBoss ? 'text-xs' : 'text-[11px]'}`}>
+            {analyst.role}
+          </p>
+          <span
+            className="inline-block mt-1.5 text-[10px] font-semibold px-2 py-0.5 rounded-full border"
+            style={{
+              backgroundColor: accentColor ? `${accentColor}15` : 'hsl(var(--accent) / 0.1)',
+              color: accentColor || 'hsl(var(--accent))',
+              borderColor: accentColor ? `${accentColor}30` : 'hsl(var(--accent) / 0.2)',
+            }}
+          >
+            {analyst.area}
+          </span>
+        </div>
+
+        {/* Competencies */}
+        {previewSkills.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {previewSkills.map((skill, i) => (
+              <span
+                key={i}
+                className="inline-flex items-center gap-1 text-[9.5px] font-medium px-1.5 py-0.5 rounded-md bg-muted/40 text-foreground/70 border border-border/40"
+              >
+                <Sparkles className="w-2 h-2 opacity-60" style={{ color: hoverBorder }} />
+                {skill}
+              </span>
+            ))}
+            {extraSkills > 0 && (
+              <span className="text-[9.5px] font-semibold px-1.5 py-0.5 rounded-md text-muted-foreground/70">
+                +{extraSkills}
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Reports created counter */}
+        {typeof reportsCount === 'number' && reportsCount > 0 && (
+          <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+            <FileBarChart className="w-3 h-3" style={{ color: hoverBorder }} />
+            <span><strong className="text-foreground/85 font-bold">{reportsCount}</strong> relatório{reportsCount !== 1 ? 's' : ''} criado{reportsCount !== 1 ? 's' : ''}</span>
+          </div>
+        )}
+      </div>
+
+      {/* RIGHT: lateral "Ver perfil" affordance */}
+      <div className="flex flex-col items-center justify-center shrink-0 self-stretch pl-3 border-l border-border/30 group-hover:border-accent/40 transition-colors">
+        <div
+          className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110"
           style={{
-            backgroundColor: accentColor ? `${accentColor}15` : 'hsl(var(--accent) / 0.1)',
-            color: accentColor || 'hsl(var(--accent))',
-            borderColor: accentColor ? `${accentColor}30` : 'hsl(var(--accent) / 0.2)',
+            background: `linear-gradient(135deg, ${hoverBorder}25, ${hoverBorder}10)`,
+            border: `1px solid ${hoverBorder}40`,
           }}
         >
-          {analyst.area}
+          <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" style={{ color: hoverBorder }} />
+        </div>
+        <span className="text-[9px] font-semibold uppercase tracking-wider mt-1.5 text-muted-foreground/70 group-hover:text-foreground/80 transition-colors">
+          Perfil
         </span>
       </div>
 
@@ -114,6 +163,7 @@ const AreaGroup = ({
   glowColor,
   delay,
   onAnalystClick,
+  reportsCountBy,
 }: {
   title: string;
   icon: React.ElementType;
@@ -123,6 +173,7 @@ const AreaGroup = ({
   glowColor: string;
   delay: number;
   onAnalystClick?: (id: string) => void;
+  reportsCountBy: (id: string) => number;
 }) => (
   <motion.div
     initial={{ opacity: 0, y: 30 }}
@@ -147,8 +198,8 @@ const AreaGroup = ({
 
     <VerticalLine height="h-5" />
 
-    {/* Members */}
-    <div className="flex flex-wrap justify-center gap-3">
+    {/* Members - vertical stack of horizontal cards */}
+    <div className="flex flex-col gap-3 w-full">
       {analysts.map((analyst, i) => (
         <OrgNode
           key={analyst.id}
@@ -156,16 +207,21 @@ const AreaGroup = ({
           delay={delay + 0.1 + i * 0.06}
           onClick={() => onAnalystClick?.(analyst.id)}
           accentColor={gradientFrom}
+          reportsCount={reportsCountBy(analyst.id)}
         />
       ))}
       {analysts.length === 0 && (
-        <div className="text-muted-foreground/30 text-sm italic py-6">Nenhum membro</div>
+        <div className="text-muted-foreground/30 text-sm italic py-6 text-center">Nenhum membro</div>
       )}
     </div>
   </motion.div>
 );
 
 const OrgChart = ({ manager, biAnalysts, adminAnalysts, designAnalysts, onAnalystClick }: OrgChartProps) => {
+  const { content } = useAdmin();
+  const reportsCountBy = (analystId: string) =>
+    (content.reports || []).filter(r => r.creatorId === analystId).length;
+
   return (
     <div className="relative w-full py-8">
       {/* Subtle background glows */}
@@ -193,7 +249,7 @@ const OrgChart = ({ manager, biAnalysts, adminAnalysts, designAnalysts, onAnalys
             </span>
             <MousePointerClick className="w-4 h-4 text-accent" />
             <span className="text-sm font-medium text-foreground">
-              Clique em qualquer pessoa para ver as <span className="text-accent font-semibold">atribuições</span> e habilidades
+              Clique em qualquer pessoa para ver as <span className="text-accent font-semibold">competências e atribuições</span>
             </span>
           </div>
         </motion.div>
@@ -201,7 +257,13 @@ const OrgChart = ({ manager, biAnalysts, adminAnalysts, designAnalysts, onAnalys
         {/* Manager */}
         <div className="flex justify-center">
           {manager && (
-            <OrgNode analyst={manager} delay={0.1} isBoss onClick={() => onAnalystClick?.(manager.id)} />
+            <OrgNode
+              analyst={manager}
+              delay={0.1}
+              isBoss
+              onClick={() => onAnalystClick?.(manager.id)}
+              reportsCount={reportsCountBy(manager.id)}
+            />
           )}
         </div>
 
@@ -213,7 +275,7 @@ const OrgChart = ({ manager, biAnalysts, adminAnalysts, designAnalysts, onAnalys
         </div>
 
         {/* Area columns */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto px-4 items-start">
           <AreaGroup
             title="Analistas de BI"
             icon={BarChart3}
@@ -223,6 +285,7 @@ const OrgChart = ({ manager, biAnalysts, adminAnalysts, designAnalysts, onAnalys
             glowColor="hsl(210, 90%, 55%)"
             delay={0.25}
             onAnalystClick={onAnalystClick}
+            reportsCountBy={reportsCountBy}
           />
           <AreaGroup
             title="Administrativo"
@@ -233,6 +296,7 @@ const OrgChart = ({ manager, biAnalysts, adminAnalysts, designAnalysts, onAnalys
             glowColor="hsl(155, 70%, 45%)"
             delay={0.35}
             onAnalystClick={onAnalystClick}
+            reportsCountBy={reportsCountBy}
           />
           <AreaGroup
             title="Design"
@@ -243,6 +307,7 @@ const OrgChart = ({ manager, biAnalysts, adminAnalysts, designAnalysts, onAnalys
             glowColor="hsl(275, 65%, 55%)"
             delay={0.45}
             onAnalystClick={onAnalystClick}
+            reportsCountBy={reportsCountBy}
           />
         </div>
       </div>

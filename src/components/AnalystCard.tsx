@@ -102,7 +102,7 @@ const AnalystCard = ({ analyst, index, isSelected, onClick, showDetails, editabl
               exit={{ scale: 0.85, opacity: 0, y: 30 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-3xl max-h-[92vh] overflow-y-auto relative rounded-3xl border-2 border-accent/20 shadow-2xl shadow-accent/10"
+              className="w-full max-w-5xl max-h-[92vh] overflow-y-auto relative rounded-3xl border-2 border-accent/20 shadow-2xl shadow-accent/10"
               style={{ background: 'linear-gradient(160deg, hsl(222, 40%, 12%), hsl(215, 35%, 8%))' }}
             >
               {/* Close button */}

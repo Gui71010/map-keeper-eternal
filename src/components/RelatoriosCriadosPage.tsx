@@ -103,32 +103,32 @@ const RelatoriosCriadosPage = () => {
       {/* Analyst filter */}
       <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.6 }}>
         {isAdmin ? <input className="text-xl font-display font-bold text-foreground mb-6 bg-transparent border-b border-border outline-none focus:border-accent block" value={content.filterByAnalystTitle} onChange={(e) => updateContent({ filterByAnalystTitle: e.target.value })} /> : <h3 className="text-xl font-display font-bold text-foreground mb-6">{content.filterByAnalystTitle}</h3>}
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-3.5">
           <button onClick={() => setSelectedAnalystId(null)}
-            className={`flex items-center gap-2.5 px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300 border ${
+            className={`flex items-center gap-3 px-6 py-3.5 rounded-2xl text-base font-semibold transition-all duration-300 border ${
               !selectedAnalystId
-                ? 'gradient-accent text-accent-foreground shadow-lg shadow-accent/20 border-transparent'
+                ? 'gradient-accent text-accent-foreground shadow-lg shadow-accent/25 border-transparent'
                 : 'bg-card/50 text-foreground border-border/30 hover:border-accent/40 hover:shadow-lg'
             }`}
           >
-            <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center"><User className="w-4 h-4" /></div>
+            <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center"><User className="w-5 h-5" /></div>
             Todos
           </button>
           {biAnalysts.map((a) => (
             <div key={a.id} className="relative group">
               <button onClick={() => setSelectedAnalystId(selectedAnalystId === a.id ? null : a.id)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 border ${
+                className={`flex items-center gap-3.5 px-5 py-3.5 rounded-2xl text-base font-medium transition-all duration-300 border ${
                   selectedAnalystId === a.id
-                    ? 'gradient-accent text-accent-foreground shadow-lg shadow-accent/20 border-transparent'
+                    ? 'gradient-accent text-accent-foreground shadow-lg shadow-accent/25 border-transparent'
                     : 'bg-card/50 text-foreground border-border/30 hover:border-accent/40 hover:shadow-lg'
                 }`}
               >
-                <div className="w-10 h-10 rounded-full overflow-hidden bg-muted shrink-0 flex items-center justify-center border border-accent/20">
-                  {a.photo ? <img src={a.photo} alt="" className="w-full h-full object-cover" /> : <User className="w-5 h-5 text-muted-foreground" />}
+                <div className="w-12 h-12 rounded-full overflow-hidden bg-muted shrink-0 flex items-center justify-center border border-accent/20 ring-1 ring-accent/10">
+                  {a.photo ? <img src={a.photo} alt="" className="w-full h-full object-cover" /> : <User className="w-6 h-6 text-muted-foreground" />}
                 </div>
                 <div className="text-left min-w-0">
-                  <span className="block font-display font-semibold text-sm leading-tight truncate">{a.name}</span>
-                  <span className={`text-xs block leading-tight ${selectedAnalystId === a.id ? 'text-accent-foreground/70' : 'text-muted-foreground'}`}>{a.area}</span>
+                  <span className="block font-display font-semibold text-base leading-tight truncate">{a.name}</span>
+                  <span className={`text-xs block leading-tight mt-0.5 ${selectedAnalystId === a.id ? 'text-accent-foreground/75' : 'text-muted-foreground'}`}>{a.area}</span>
                 </div>
               </button>
               {isAdmin && <div className="absolute top-full left-0 mt-1 z-20 hidden group-hover:block"><div className="glass-card rounded-lg p-3 shadow-xl w-64 space-y-2"><label className="text-xs text-muted-foreground">URL da Foto</label><input className="w-full p-2 rounded-lg border border-border bg-background text-foreground text-xs" value={a.photo} onChange={(e) => updateAnalyst(a.id, { photo: e.target.value })} onClick={(e) => e.stopPropagation()} /></div></div>}

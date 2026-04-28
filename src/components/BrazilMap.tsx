@@ -288,9 +288,6 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
           );
         })()}
 
-        {activeStateCodes.length > 0 && !selectedState && !hoveredState && (
-          <p className="text-center text-muted-foreground text-xs mt-2">Passe o mouse sobre um estado colorido para ver os sites</p>
-        )}
       </div>
 
       {/* Selected State - Overlay (does NOT push content below the map) */}

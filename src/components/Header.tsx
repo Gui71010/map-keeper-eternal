@@ -47,7 +47,7 @@ const Header = ({ activeTab, onTabChange }: HeaderProps) => {
             </div>
             <div>
               <h1 className="font-display font-bold text-primary-foreground text-xl leading-tight">
-                Diretoria de Pessoas
+                AeC - People Analytics
               </h1>
               <p className="text-primary-foreground/60 text-sm">Business Intelligence</p>
             </div>

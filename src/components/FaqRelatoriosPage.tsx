@@ -29,7 +29,7 @@ const FaqRelatoriosPage = () => {
         <div className="relative z-10 max-w-3xl">
           {isAdmin ? <input className="text-4xl md:text-5xl font-display font-bold text-primary-foreground mb-4 bg-transparent border-b border-primary-foreground/20 w-full outline-none focus:border-accent" value={content.faqTitle} onChange={(e) => updateContent({ faqTitle: e.target.value })} /> : <h2 className="text-4xl md:text-5xl font-display font-bold text-primary-foreground mb-4">{content.faqTitle}</h2>}
           {isAdmin ? <input className="text-accent text-lg font-medium mb-2 bg-transparent border-b border-primary-foreground/20 w-full outline-none focus:border-accent block" value={content.faqSubtitle} onChange={(e) => updateContent({ faqSubtitle: e.target.value })} /> : <p className="text-accent text-lg font-medium mb-2">{content.faqSubtitle}</p>}
-          <p className="text-primary-foreground/40 text-sm mb-6">AeC - Diretoria de Pessoas - People Analytics</p>
+          <p className="text-primary-foreground/40 text-sm mb-6">AeC - People Analytics</p>
           {isAdmin ? <textarea className="text-primary-foreground/80 leading-relaxed text-lg bg-transparent border border-primary-foreground/10 rounded-lg p-3 w-full min-h-[100px] outline-none focus:border-accent" value={content.faqDescription} onChange={(e) => updateContent({ faqDescription: e.target.value })} /> : <p className="text-primary-foreground/80 leading-relaxed text-lg">{content.faqDescription}</p>}
         </div>
       </motion.section>

@@ -227,21 +227,18 @@ const AnalystCard = ({ analyst, index, isSelected, onClick, showDetails, editabl
                   </div>
                 ) : (
                   <div className="space-y-6">
-                    {/* Quick stats bar */}
-                    <div className="grid grid-cols-3 gap-3">
-                      <div className="rounded-xl p-4 text-center border border-accent/15" style={{ background: 'linear-gradient(135deg, hsl(var(--accent) / 0.10), hsl(var(--accent) / 0.03))' }}>
-                        <p className="text-2xl font-display font-bold text-accent">{(analyst.attributions || []).length}</p>
-                        <p className="text-[11px] text-muted-foreground uppercase tracking-wider mt-0.5">Atribuições</p>
+                    {/* Bio / Resumo profissional */}
+                    {analyst.bio && (
+                      <div className="rounded-2xl p-6 border border-border/30" style={{ background: 'linear-gradient(135deg, hsl(215, 25%, 14% / 0.4), hsl(215, 30%, 10% / 0.6))' }}>
+                        <div className="flex items-center gap-2.5 mb-4">
+                          <div className="w-8 h-8 rounded-lg gradient-accent flex items-center justify-center">
+                            <User className="w-4 h-4 text-primary-foreground" />
+                          </div>
+                          <h4 className="font-display font-bold text-foreground text-lg">Resumo Profissional</h4>
+                        </div>
+                        <p className="text-foreground/85 leading-relaxed text-sm">{analyst.bio}</p>
                       </div>
-                      <div className="rounded-xl p-4 text-center border border-accent/15" style={{ background: 'linear-gradient(135deg, hsl(var(--accent) / 0.10), hsl(var(--accent) / 0.03))' }}>
-                        <p className="text-2xl font-display font-bold text-accent">{(analyst.skills || []).length}</p>
-                        <p className="text-[11px] text-muted-foreground uppercase tracking-wider mt-0.5">Habilidades</p>
-                      </div>
-                      <div className="rounded-xl p-4 text-center border border-accent/15 flex flex-col items-center justify-center" style={{ background: 'linear-gradient(135deg, hsl(var(--accent) / 0.10), hsl(var(--accent) / 0.03))' }}>
-                        <p className="text-sm font-display font-bold text-accent leading-tight">{analyst.area}</p>
-                        <p className="text-[11px] text-muted-foreground uppercase tracking-wider mt-0.5">Área</p>
-                      </div>
-                    </div>
+                    )}
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
                       {/* Attributions */}
@@ -251,7 +248,7 @@ const AnalystCard = ({ analyst, index, isSelected, onClick, showDetails, editabl
                             <div className="w-8 h-8 rounded-lg gradient-accent flex items-center justify-center">
                               <ClipboardList className="w-4 h-4 text-primary-foreground" />
                             </div>
-                            <h4 className="font-display font-bold text-foreground text-lg">Atribuições</h4>
+                            <h4 className="font-display font-bold text-foreground text-lg">Atribuições no Time</h4>
                           </div>
                           <div className="space-y-2.5">
                             {analyst.attributions!.map((attr, i) => (
@@ -271,7 +268,7 @@ const AnalystCard = ({ analyst, index, isSelected, onClick, showDetails, editabl
                             <div className="w-8 h-8 rounded-lg gradient-accent flex items-center justify-center">
                               <Sparkles className="w-4 h-4 text-primary-foreground" />
                             </div>
-                            <h4 className="font-display font-bold text-foreground text-lg">Habilidades & Ferramentas</h4>
+                            <h4 className="font-display font-bold text-foreground text-lg">Competências & Ferramentas</h4>
                           </div>
                           <div className="flex flex-wrap gap-2">
                             {analyst.skills!.map((skill, i) => (

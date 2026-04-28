@@ -66,7 +66,7 @@ const NossaAreaPage = () => {
         <div className="absolute inset-0 opacity-10"><div className="absolute top-0 left-1/2 w-80 h-80 rounded-full bg-teal blur-[100px]" /></div>
         <div className="relative z-10 max-w-3xl">
           {isAdmin ? <input className="text-4xl md:text-5xl font-display font-bold text-primary-foreground mb-4 bg-transparent border-b border-primary-foreground/20 w-full outline-none focus:border-accent" value={content.areaTitle} onChange={(e) => updateContent({ areaTitle: e.target.value })} /> : <h2 className="text-4xl md:text-5xl font-display font-bold text-primary-foreground mb-4">{content.areaTitle}</h2>}
-          <p className="text-accent text-lg font-medium mb-2">AeC - Diretoria de Pessoas - People Analytics</p>
+          <p className="text-accent text-lg font-medium mb-2">AeC - People Analytics</p>
           <p className="text-primary-foreground/40 text-sm mb-6">Equipe de Business Intelligence</p>
           {isAdmin ? <textarea className="text-primary-foreground/80 leading-relaxed text-lg bg-transparent border border-primary-foreground/10 rounded-lg p-3 w-full min-h-[100px] outline-none focus:border-accent" value={content.areaDescription} onChange={(e) => updateContent({ areaDescription: e.target.value })} /> : <p className="text-primary-foreground/80 leading-relaxed text-lg">{content.areaDescription}</p>}
         </div>
@@ -89,7 +89,7 @@ const NossaAreaPage = () => {
             </div>
             {isAdmin ? <input className="text-3xl md:text-4xl font-display font-bold text-foreground bg-transparent border-b border-border outline-none focus:border-accent" value={content.orgChartTitle} onChange={(e) => updateContent({ orgChartTitle: e.target.value })} /> : <h3 className="text-3xl md:text-4xl font-display font-bold text-foreground">{content.orgChartTitle}</h3>}
           </div>
-          <p className="text-muted-foreground text-lg mb-6 max-w-2xl">Estrutura organizacional da equipe de People Analytics — Diretoria de Pessoas</p>
+          <p className="text-muted-foreground text-lg mb-6 max-w-2xl">Estrutura organizacional da equipe de People Analytics</p>
           <OrgChart
             manager={managerAnalysts[0]}
             biAnalysts={biAnalysts}

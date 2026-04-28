@@ -248,11 +248,13 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
                         </div>
                         <div className="min-w-0 flex-1 pt-0.5">
                           <p className="text-sm font-semibold text-primary-foreground leading-tight">{city.name}</p>
+                          {city.analystName && (
+                            <p className="text-[11px] text-accent leading-snug mt-1 font-medium truncate">
+                              👤 {city.analystName}{city.analystRole ? ` · ${city.analystRole}` : ''}
+                            </p>
+                          )}
                           {city.address && (
                             <p className="text-[10px] text-primary-foreground/50 leading-snug mt-1 line-clamp-2">{city.address}</p>
-                          )}
-                          {city.description && (
-                            <p className="text-[10px] text-primary-foreground/40 leading-snug mt-1 line-clamp-2">{city.description}</p>
                           )}
                         </div>
                       </motion.div>
@@ -288,9 +290,6 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
           );
         })()}
 
-        {activeStateCodes.length > 0 && !selectedState && !hoveredState && (
-          <p className="text-center text-muted-foreground text-xs mt-2">Passe o mouse sobre um estado colorido para ver os sites</p>
-        )}
       </div>
 
       {/* Selected State - Overlay (does NOT push content below the map) */}
@@ -373,20 +372,36 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
                         <div className="p-4">
                           {isAdmin ? (
                             <div className="space-y-2">
-                              <input className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-sm font-bold outline-none focus:border-accent" value={city.name} onChange={(e) => updateCity(selectedData.id, city.id, { name: e.target.value })} placeholder="Nome do site" />
+                              <input className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-sm font-bold outline-none focus:border-accent" value={city.name} onChange={(e) => updateCity(selectedData.id, city.id, { name: e.target.value })} placeholder="Nome da cidade / site" />
                               <input className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-xs outline-none focus:border-accent" value={city.imageUrl} onChange={(e) => updateCity(selectedData.id, city.id, { imageUrl: e.target.value })} placeholder="URL da imagem" />
-                              <textarea className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-xs outline-none focus:border-accent min-h-[50px]" value={city.description || ''} onChange={(e) => updateCity(selectedData.id, city.id, { description: e.target.value })} placeholder="Descrição / informações do site" />
                               <input className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-xs outline-none focus:border-accent" value={city.address || ''} onChange={(e) => updateCity(selectedData.id, city.id, { address: e.target.value })} placeholder="Endereço" />
-                              <button onClick={() => removeCity(selectedData.id, city.id)} className="text-destructive text-xs hover:underline flex items-center gap-1"><Trash2 className="w-3 h-3" /> Remover</button>
+                              <div className="pt-2 mt-2 border-t border-primary-foreground/10">
+                                <p className="text-[10px] font-semibold uppercase tracking-wider text-accent/70 mb-2">Analista responsável</p>
+                                <input className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-xs outline-none focus:border-accent mb-1.5" value={city.analystName || ''} onChange={(e) => updateCity(selectedData.id, city.id, { analystName: e.target.value })} placeholder="Nome do analista" />
+                                <div className="grid grid-cols-2 gap-1.5">
+                                  <input className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-xs outline-none focus:border-accent" value={city.analystRole || ''} onChange={(e) => updateCity(selectedData.id, city.id, { analystRole: e.target.value })} placeholder="Cargo" />
+                                  <input className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-xs outline-none focus:border-accent" value={city.analystAge || ''} onChange={(e) => updateCity(selectedData.id, city.id, { analystAge: e.target.value })} placeholder="Idade" />
+                                </div>
+                              </div>
+                              <button onClick={() => removeCity(selectedData.id, city.id)} className="text-destructive text-xs hover:underline flex items-center gap-1 mt-2"><Trash2 className="w-3 h-3" /> Remover</button>
                             </div>
                           ) : (
                             <>
-                              <h5 className="font-display font-bold text-primary-foreground text-sm mb-1">{city.name}</h5>
-                              {city.description && <p className="text-primary-foreground/60 text-xs leading-relaxed mb-2">{city.description}</p>}
+                              <h5 className="font-display font-bold text-primary-foreground text-base mb-1">{city.name}</h5>
                               {city.address && (
-                                <div className="flex items-center gap-1.5 text-primary-foreground/40 text-xs">
+                                <div className="flex items-center gap-1.5 text-primary-foreground/40 text-xs mb-3">
                                   <MapPin className="w-3 h-3 shrink-0" />
                                   <span>{city.address}</span>
+                                </div>
+                              )}
+                              {(city.analystName || city.analystRole) && (
+                                <div className="mt-3 pt-3 border-t border-primary-foreground/10">
+                                  <p className="text-[10px] font-semibold uppercase tracking-wider text-accent/70 mb-1.5">Analista responsável</p>
+                                  <p className="text-sm font-display font-semibold text-primary-foreground">{city.analystName || '—'}</p>
+                                  <div className="flex items-center gap-2 mt-1 text-xs text-primary-foreground/60">
+                                    {city.analystRole && <span>{city.analystRole}</span>}
+                                    {city.analystAge && <span className="text-primary-foreground/40">· {city.analystAge} anos</span>}
+                                  </div>
                                 </div>
                               )}
                             </>

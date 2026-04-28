@@ -35,20 +35,25 @@ const OrgNode = ({
       initial={{ opacity: 0, y: 20, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ delay, type: 'spring', damping: 18, stiffness: 120 }}
-      whileHover={{ y: -4 }}
+      whileHover={{ y: -5 }}
       onClick={onClick}
-      className={`relative flex items-stretch gap-4 rounded-2xl cursor-pointer group backdrop-blur-md w-full ${
+      className={`relative flex items-stretch gap-5 rounded-2xl cursor-pointer group backdrop-blur-md w-full overflow-hidden ${
         isBoss
-          ? 'p-5 border-2 border-accent/40 bg-gradient-to-br from-accent/10 via-card/90 to-primary/5 max-w-[440px]'
-          : 'p-4 border border-border/30 bg-card/50'
+          ? 'p-6 border-2 border-accent/40 max-w-[520px]'
+          : 'p-5 border border-border/30'
       }`}
-      style={{ transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)' }}
+      style={{
+        background: isBoss
+          ? 'linear-gradient(135deg, hsl(215, 40%, 14% / 0.95), hsl(215, 35%, 10% / 0.95))'
+          : 'linear-gradient(135deg, hsl(215, 35%, 13% / 0.6), hsl(215, 30%, 9% / 0.7))',
+        transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+      }}
       onMouseEnter={(e) => {
         const el = e.currentTarget;
         el.style.borderColor = isBoss ? 'hsl(var(--accent))' : hoverBorder;
         el.style.boxShadow = isBoss
-          ? `0 0 40px hsl(var(--accent) / 0.2), 0 12px 40px hsl(var(--accent) / 0.1)`
-          : `0 0 25px ${hoverBorder}20, 0 8px 30px ${hoverBorder}10`;
+          ? `0 0 50px hsl(var(--accent) / 0.25), 0 16px 48px hsl(var(--accent) / 0.12)`
+          : `0 0 30px ${hoverBorder}25, 0 10px 36px ${hoverBorder}15`;
       }}
       onMouseLeave={(e) => {
         const el = e.currentTarget;
@@ -56,38 +61,49 @@ const OrgNode = ({
         el.style.boxShadow = 'none';
       }}
     >
+      {/* Decorative accent stripe on the left */}
+      <div
+        className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl opacity-60 group-hover:opacity-100 transition-opacity"
+        style={{ background: `linear-gradient(180deg, ${hoverBorder}, transparent)` }}
+      />
+      {/* Subtle radial glow on hover */}
+      <div
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+        style={{ background: `radial-gradient(circle at 20% 50%, ${hoverBorder}10, transparent 60%)` }}
+      />
+
       {/* LEFT: Photo */}
       <div
-        className={`rounded-xl overflow-hidden shrink-0 bg-muted/30 flex items-center justify-center shadow-xl ring-2 transition-all duration-300 self-start ${
-          isBoss ? 'ring-accent/30 group-hover:ring-accent/60' : 'ring-border/30 group-hover:ring-accent/40'
+        className={`rounded-2xl overflow-hidden shrink-0 bg-muted/30 flex items-center justify-center shadow-xl ring-2 transition-all duration-300 self-start relative z-10 ${
+          isBoss ? 'ring-accent/40 group-hover:ring-accent/70' : 'ring-border/30 group-hover:ring-accent/50'
         }`}
         style={{
-          width: isBoss ? '5.5rem' : '4.5rem',
-          height: isBoss ? '5.5rem' : '4.5rem',
+          width: isBoss ? '6.5rem' : '5.5rem',
+          height: isBoss ? '6.5rem' : '5.5rem',
         }}
       >
         {analyst.photo ? (
           <img src={analyst.photo} alt={analyst.name} className="w-full h-full object-cover" />
         ) : (
-          <User className={`${isBoss ? 'w-10 h-10' : 'w-7 h-7'} text-muted-foreground/50`} />
+          <User className={`${isBoss ? 'w-12 h-12' : 'w-9 h-9'} text-muted-foreground/50`} />
         )}
       </div>
 
       {/* CENTER: Identity + competencies */}
-      <div className="flex-1 min-w-0 flex flex-col justify-between gap-2">
+      <div className="flex-1 min-w-0 flex flex-col justify-between gap-2.5 relative z-10">
         <div className="min-w-0">
-          <h4 className={`font-display font-bold text-foreground leading-tight truncate ${isBoss ? 'text-base' : 'text-sm'}`}>
+          <h4 className={`font-display font-bold text-foreground leading-tight ${isBoss ? 'text-lg' : 'text-base'}`}>
             {analyst.name}
           </h4>
-          <p className={`text-muted-foreground mt-0.5 truncate ${isBoss ? 'text-xs' : 'text-[11px]'}`}>
+          <p className={`text-muted-foreground mt-1 ${isBoss ? 'text-sm' : 'text-xs'}`}>
             {analyst.role}
           </p>
           <span
-            className="inline-block mt-1.5 text-[10px] font-semibold px-2 py-0.5 rounded-full border"
+            className="inline-block mt-2 text-[10px] font-semibold px-2.5 py-0.5 rounded-full border"
             style={{
-              backgroundColor: accentColor ? `${accentColor}15` : 'hsl(var(--accent) / 0.1)',
+              backgroundColor: accentColor ? `${accentColor}18` : 'hsl(var(--accent) / 0.1)',
               color: accentColor || 'hsl(var(--accent))',
-              borderColor: accentColor ? `${accentColor}30` : 'hsl(var(--accent) / 0.2)',
+              borderColor: accentColor ? `${accentColor}40` : 'hsl(var(--accent) / 0.2)',
             }}
           >
             {analyst.area}
@@ -96,18 +112,18 @@ const OrgNode = ({
 
         {/* Competencies */}
         {previewSkills.length > 0 && (
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap gap-1.5">
             {previewSkills.map((skill, i) => (
               <span
                 key={i}
-                className="inline-flex items-center gap-1 text-[9.5px] font-medium px-1.5 py-0.5 rounded-md bg-muted/40 text-foreground/70 border border-border/40"
+                className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-md bg-muted/50 text-foreground/75 border border-border/50"
               >
-                <Sparkles className="w-2 h-2 opacity-60" style={{ color: hoverBorder }} />
+                <Sparkles className="w-2.5 h-2.5 opacity-70" style={{ color: hoverBorder }} />
                 {skill}
               </span>
             ))}
             {extraSkills > 0 && (
-              <span className="text-[9.5px] font-semibold px-1.5 py-0.5 rounded-md text-muted-foreground/70">
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-muted/30 text-muted-foreground/80 border border-border/30">
                 +{extraSkills}
               </span>
             )}
@@ -116,31 +132,32 @@ const OrgNode = ({
 
         {/* Reports created counter */}
         {typeof reportsCount === 'number' && reportsCount > 0 && (
-          <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
-            <FileBarChart className="w-3 h-3" style={{ color: hoverBorder }} />
-            <span><strong className="text-foreground/85 font-bold">{reportsCount}</strong> relatório{reportsCount !== 1 ? 's' : ''} criado{reportsCount !== 1 ? 's' : ''}</span>
+          <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+            <FileBarChart className="w-3.5 h-3.5" style={{ color: hoverBorder }} />
+            <span><strong className="text-foreground/90 font-bold">{reportsCount}</strong> relatório{reportsCount !== 1 ? 's' : ''} criado{reportsCount !== 1 ? 's' : ''}</span>
           </div>
         )}
       </div>
 
       {/* RIGHT: lateral "Ver perfil" affordance */}
-      <div className="flex flex-col items-center justify-center shrink-0 self-stretch pl-3 border-l border-border/30 group-hover:border-accent/40 transition-colors">
+      <div className="flex flex-col items-center justify-center shrink-0 self-stretch pl-4 border-l border-border/30 group-hover:border-accent/40 transition-colors relative z-10">
         <div
-          className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+          className="w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 shadow-lg"
           style={{
-            background: `linear-gradient(135deg, ${hoverBorder}25, ${hoverBorder}10)`,
-            border: `1px solid ${hoverBorder}40`,
+            background: `linear-gradient(135deg, ${hoverBorder}30, ${hoverBorder}12)`,
+            border: `1px solid ${hoverBorder}50`,
+            boxShadow: `0 4px 12px ${hoverBorder}20`,
           }}
         >
-          <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" style={{ color: hoverBorder }} />
+          <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-0.5" style={{ color: hoverBorder }} />
         </div>
-        <span className="text-[9px] font-semibold uppercase tracking-wider mt-1.5 text-muted-foreground/70 group-hover:text-foreground/80 transition-colors">
+        <span className="text-[10px] font-semibold uppercase tracking-wider mt-2 text-muted-foreground/80 group-hover:text-foreground/90 transition-colors">
           Perfil
         </span>
       </div>
 
       {isBoss && (
-        <div className="absolute -top-2.5 -right-2.5 w-9 h-9 rounded-full gradient-accent flex items-center justify-center shadow-lg ring-2 ring-background">
+        <div className="absolute -top-2.5 -right-2.5 w-10 h-10 rounded-full gradient-accent flex items-center justify-center shadow-lg ring-2 ring-background z-20">
           <Shield className="w-4 h-4 text-primary-foreground" />
         </div>
       )}

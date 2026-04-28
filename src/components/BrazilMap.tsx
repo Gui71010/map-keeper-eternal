@@ -248,11 +248,13 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
                         </div>
                         <div className="min-w-0 flex-1 pt-0.5">
                           <p className="text-sm font-semibold text-primary-foreground leading-tight">{city.name}</p>
+                          {city.analystName && (
+                            <p className="text-[11px] text-accent leading-snug mt-1 font-medium truncate">
+                              👤 {city.analystName}{city.analystRole ? ` · ${city.analystRole}` : ''}
+                            </p>
+                          )}
                           {city.address && (
                             <p className="text-[10px] text-primary-foreground/50 leading-snug mt-1 line-clamp-2">{city.address}</p>
-                          )}
-                          {city.description && (
-                            <p className="text-[10px] text-primary-foreground/40 leading-snug mt-1 line-clamp-2">{city.description}</p>
                           )}
                         </div>
                       </motion.div>

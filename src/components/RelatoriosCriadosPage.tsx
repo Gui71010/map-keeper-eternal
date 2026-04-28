@@ -149,14 +149,15 @@ const RelatoriosCriadosPage = () => {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.28, duration: 0.4 }}
-        className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-4 flex items-start gap-3"
+        className="rounded-2xl border-2 border-amber-500/40 p-5 flex items-start gap-4 shadow-lg shadow-amber-500/10"
+        style={{ background: 'linear-gradient(135deg, hsl(38, 92%, 50% / 0.10), hsl(38, 92%, 50% / 0.04))' }}
       >
-        <div className="w-10 h-10 rounded-lg bg-amber-500/15 flex items-center justify-center shrink-0 mt-0.5">
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 9v4"/><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636-2.87L13.637 3.59a1.914 1.914 0 0 0-3.274 0z"/><path d="M12 17h.01"/></svg>
+        <div className="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center shrink-0 mt-0.5 ring-2 ring-amber-500/30">
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 9v4"/><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636-2.87L13.637 3.59a1.914 1.914 0 0 0-3.274 0z"/><path d="M12 17h.01"/></svg>
         </div>
-        <div>
-          <p className="text-sm font-display font-semibold text-amber-300">Acesso restrito por cargo e área</p>
-          <p className="text-xs text-muted-foreground mt-1 leading-relaxed">Nem todos os colaboradores possuem acesso a todos os relatórios. O acesso é validado de acordo com o cargo e a área de atuação. Caso precise de acesso a um relatório específico, entre em contato com a equipe de BI.</p>
+        <div className="flex-1">
+          <p className="text-base font-display font-bold text-amber-300">Acesso restrito por cargo e área</p>
+          <p className="text-sm text-foreground/75 mt-1.5 leading-relaxed">Nem todos os colaboradores possuem acesso a todos os relatórios. O acesso é validado de acordo com o cargo e a área de atuação. Caso precise de acesso a um relatório específico, entre em contato com a equipe de BI.</p>
         </div>
       </motion.div>
 

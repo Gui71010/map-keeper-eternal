@@ -350,6 +350,9 @@ const NossaAreaPage = () => {
                 )}
                 <div className="w-20 h-1 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500 mt-3" />
               </div>
+              <div className="hidden md:block w-44 h-28 rounded-2xl overflow-hidden border border-primary-foreground/10 shrink-0 shadow-lg">
+                <img src={adminTeamImg} alt="Equipe administrativa" className="w-full h-full object-cover" />
+              </div>
             </div>
 
             {/* Description + Analysts in modern layout */}

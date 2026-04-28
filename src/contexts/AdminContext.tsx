@@ -52,6 +52,7 @@ export interface RqReport {
   name: string;
   description: string;
   imageUrl: string;
+  linkedReportId?: string;
 }
 
 export interface MapCity {

@@ -7,12 +7,15 @@ import GalaxyParticles from '@/components/GalaxyParticles';
 import BrazilMap from '@/components/BrazilMap';
 import AreasRoadmap from '@/components/AreasRoadmap';
 import OrgChart from '@/components/OrgChart';
+import ReportDetailModal from '@/components/ReportDetailModal';
+import adminTeamImg from '@/assets/admin-team.jpg';
 
 const NossaAreaPage = () => {
   const { content, isAdmin, updateContent, addAnalyst, addProject, updateProject, removeProject, addAreaReportCard, updateAreaReportCard, removeAreaReportCard, addRqCategory, updateRqCategory, removeRqCategory, addRqReport, updateRqReport, removeRqReport } = useAdmin();
   const [selectedAnalyst, setSelectedAnalyst] = useState<string | null>(null);
   const [currentProjectIdx, setCurrentProjectIdx] = useState(0);
   const [expandedRqCategory, setExpandedRqCategory] = useState<string | null>(null);
+  const [selectedRqReportId, setSelectedRqReportId] = useState<string | null>(null);
   const projectTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const managerAnalysts = content.analysts.filter((a) => a.type === 'manager');
   const biAnalysts = content.analysts.filter((a) => a.type === 'bi');

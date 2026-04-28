@@ -26,6 +26,8 @@ const RelatoriosCriadosPage = () => {
       {/* Hero */}
       <motion.section initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="relative overflow-hidden rounded-2xl gradient-navy p-10 md:p-16">
         <GalaxyParticles />
+        <img src={dataFlowImg} alt="" className="absolute inset-0 w-full h-full object-cover opacity-25 mix-blend-screen pointer-events-none" loading="eager" width={1280} height={768} />
+        <div className="absolute inset-0 bg-gradient-to-r from-navy via-navy/85 to-transparent pointer-events-none" />
         <div className="absolute inset-0 opacity-10"><div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-accent blur-[120px]" /></div>
         <div className="relative z-10 max-w-3xl">
           <div className="flex items-center gap-4 mb-4">

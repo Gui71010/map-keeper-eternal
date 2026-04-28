@@ -569,7 +569,10 @@ const NossaAreaPage = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.8 + i * 0.15 }}
-                    className="group rounded-xl overflow-hidden border border-primary-foreground/8 hover:border-accent/40 transition-all duration-300 hover:shadow-lg hover:shadow-accent/15"
+                    onClick={() => {
+                      if (!isAdmin && report.linkedReportId) setSelectedRqReportId(report.linkedReportId);
+                    }}
+                    className={`group rounded-xl overflow-hidden border border-primary-foreground/8 hover:border-accent/40 transition-all duration-300 hover:shadow-lg hover:shadow-accent/15 ${!isAdmin && report.linkedReportId ? 'cursor-pointer' : ''}`}
                     style={{ background: 'hsl(220, 35%, 11%)' }}
                   >
                     <div className="w-full h-48 overflow-hidden relative">
@@ -587,12 +590,30 @@ const NossaAreaPage = () => {
                           <input className="font-display font-bold text-primary-foreground text-base bg-transparent border-b border-primary-foreground/20 w-full outline-none focus:border-accent mb-2" value={report.name} onChange={(e) => updateRqReport(report.id, { name: e.target.value })} />
                           <textarea className="text-primary-foreground/60 text-sm leading-relaxed bg-transparent border border-primary-foreground/10 rounded p-2 w-full min-h-[60px] outline-none focus:border-accent" value={report.description} onChange={(e) => updateRqReport(report.id, { description: e.target.value })} />
                           <input className="w-full p-2 rounded border border-primary-foreground/10 bg-transparent text-primary-foreground text-sm outline-none focus:border-accent mt-2" value={report.imageUrl} onChange={(e) => updateRqReport(report.id, { imageUrl: e.target.value })} placeholder="URL da imagem" />
+                          <div className="mt-2">
+                            <label className="text-xs text-primary-foreground/50 block mb-1">Vincular a um relatório existente (abre o card completo ao clicar)</label>
+                            <select
+                              className="w-full p-2 rounded border border-primary-foreground/10 bg-card text-primary-foreground text-sm outline-none focus:border-accent"
+                              value={report.linkedReportId || ''}
+                              onChange={(e) => updateRqReport(report.id, { linkedReportId: e.target.value || undefined })}
+                            >
+                              <option value="">— Nenhum —</option>
+                              {(content.reports || []).map((r) => (
+                                <option key={r.id} value={r.id}>{r.name}</option>
+                              ))}
+                            </select>
+                          </div>
                           <button onClick={() => removeRqReport(report.id)} className="text-destructive text-xs hover:underline flex items-center gap-1 mt-2"><Trash2 className="w-3 h-3" /> Remover</button>
                         </>
                       ) : (
                         <>
                           <h5 className="font-display font-bold text-primary-foreground text-base mb-2">{report.name}</h5>
                           <p className="text-primary-foreground/55 text-sm leading-relaxed">{report.description}</p>
+                          {report.linkedReportId && (
+                            <span className="inline-flex items-center gap-1 mt-3 text-xs text-accent font-medium">
+                              Ver detalhes <ChevronRight className="w-3 h-3" />
+                            </span>
+                          )}
                         </>
                       )}
                     </div>
@@ -603,6 +624,23 @@ const NossaAreaPage = () => {
           </div>
         </div>
       </motion.section>
+
+      {/* RQ Report Detail Modal */}
+      <AnimatePresence>
+        {selectedRqReportId && (() => {
+          const linked = (content.reports || []).find((r) => r.id === selectedRqReportId);
+          if (!linked) return null;
+          const creator = content.analysts.find((a) => a.id === linked.creatorId);
+          return (
+            <ReportDetailModal
+              report={linked}
+              creatorName={creator?.name || ''}
+              onClose={() => setSelectedRqReportId(null)}
+              showMetrics={false}
+            />
+          );
+        })()}
+      </AnimatePresence>
     </div>
   );
 };

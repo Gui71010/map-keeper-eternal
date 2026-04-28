@@ -154,7 +154,7 @@ const DEFAULT_CONTENT: SiteContent = {
   portfolioTitle: 'Relatórios Criados',
   faqTitle: 'FAQ dos Relatórios',
   faqSubtitle: 'Métricas e detalhes dos nossos relatórios',
-  portfolioSubtitle: 'AeC - Diretoria de Pessoas - People Analytics',
+  portfolioSubtitle: 'AeC - People Analytics',
   biAnalystsTitle: 'Analistas de BI',
   adminAnalystsTitle: 'Analistas Administrativos',
   designAnalystsTitle: 'Analista de Design Gráfico',

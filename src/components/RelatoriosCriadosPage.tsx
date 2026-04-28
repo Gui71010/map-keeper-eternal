@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, User, Search, FileText, BarChart3, TrendingUp } from 'lucide-react';
+import dataFlowImg from '@/assets/data-flow.jpg';
 import { useAdmin } from '@/contexts/AdminContext';
 import ReportCard from '@/components/ReportCard';
 import ReportDetailModal from '@/components/ReportDetailModal';

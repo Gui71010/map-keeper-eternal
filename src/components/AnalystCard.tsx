@@ -281,7 +281,6 @@ const AnalystCard = ({ analyst, index, isSelected, onClick, showDetails, editabl
                       )}
                     </div>
                   </div>
-                  </div>
                 )}
               </div>
             </motion.div>

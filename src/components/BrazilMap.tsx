@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { MapState, MapCity, useAdmin } from '@/contexts/AdminContext';
-import { Plus, Trash2, X, MapPin, Building2, Maximize2 } from 'lucide-react';
+import { Plus, Trash2, X, MapPin, Building2, Maximize2, ExternalLink, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Real SVG polygon points for Brazilian states (from brasil-svg-map)

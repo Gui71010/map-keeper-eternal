@@ -64,6 +64,9 @@ export interface MapCity {
   analystName?: string;
   analystRole?: string;
   analystAge?: string;
+  analystPhoto?: string;
+  siteUrl?: string;
+  siteImageUrl?: string;
 }
 
 export interface MapState {

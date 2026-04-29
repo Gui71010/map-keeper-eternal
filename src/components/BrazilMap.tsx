@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { MapState, MapCity, useAdmin } from '@/contexts/AdminContext';
-import { Plus, Trash2, X, MapPin, Building2, Maximize2 } from 'lucide-react';
+import { Plus, Trash2, X, MapPin, Building2, Maximize2, ExternalLink, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Real SVG polygon points for Brazilian states (from brasil-svg-map)
@@ -205,24 +205,33 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
                 transform: 'translate(-50%, -100%)',
               }}
             >
-              <div
-                className="rounded-xl px-4 py-3 shadow-2xl border border-accent/30 backdrop-blur-md min-w-[260px] max-w-[300px] pointer-events-auto"
-                style={{ background: 'linear-gradient(135deg, hsl(215, 40%, 12%, 0.97), hsl(215, 35%, 16%, 0.97))' }}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.92, y: 8 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ type: 'spring', damping: 22, stiffness: 280 }}
+                className="rounded-2xl px-5 py-4 shadow-2xl border border-accent/40 backdrop-blur-md min-w-[340px] max-w-[380px] pointer-events-auto relative overflow-hidden"
+                style={{
+                  background: 'linear-gradient(135deg, hsl(215, 40%, 12%, 0.97), hsl(215, 35%, 16%, 0.97))',
+                  boxShadow: '0 20px 60px hsl(174, 72%, 40%, 0.25), 0 0 0 1px hsl(174, 72%, 50%, 0.15)',
+                }}
               >
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-6 h-6 rounded-md bg-gradient-to-r from-teal-500 to-cyan-500 flex items-center justify-center shrink-0">
-                    <MapPin className="w-3 h-3 text-white" />
+                {/* Decorative glow */}
+                <div className="absolute -top-12 -right-12 w-32 h-32 rounded-full bg-accent/20 blur-2xl pointer-events-none" />
+
+                <div className="relative flex items-center gap-2.5 mb-3">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center shrink-0 shadow-lg">
+                    <MapPin className="w-4 h-4 text-white" />
                   </div>
-                  <span className="text-sm font-display font-bold text-primary-foreground truncate">{hoveredData.stateName}</span>
-                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-accent/20 text-accent shrink-0">{hoveredData.stateCode}</span>
+                  <span className="text-base font-display font-bold text-primary-foreground truncate">{hoveredData.stateName}</span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-accent/20 text-accent shrink-0 font-bold">{hoveredData.stateCode}</span>
                   {total > 0 && (
                     <button
                       type="button"
                       onClick={(e) => { e.stopPropagation(); setSelectedState(hoveredState); }}
                       title="Expandir"
-                      className="ml-auto w-7 h-7 rounded-md flex items-center justify-center bg-accent/15 hover:bg-accent/30 text-accent transition shrink-0"
+                      className="ml-auto w-8 h-8 rounded-lg flex items-center justify-center bg-accent/15 hover:bg-accent/30 text-accent transition shrink-0"
                     >
-                      <Maximize2 className="w-3.5 h-3.5" />
+                      <Maximize2 className="w-4 h-4" />
                     </button>
                   )}
                 </div>
@@ -232,41 +241,59 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
                     <AnimatePresence mode="wait">
                       <motion.div
                         key={city.id}
-                        initial={{ opacity: 0, y: 6 }}
+                        initial={{ opacity: 0, y: 8 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -6 }}
+                        exit={{ opacity: 0, y: -8 }}
                         transition={{ duration: 0.35 }}
-                        className="flex items-start gap-3 p-2 rounded-lg border border-accent/15"
+                        className="rounded-xl overflow-hidden border border-accent/20 relative"
                         style={{ background: 'hsl(215, 35%, 14%, 0.7)' }}
                       >
-                        <div className="w-16 h-16 rounded-md overflow-hidden shrink-0 bg-muted/30 flex items-center justify-center border border-accent/15">
+                        {/* Site image header */}
+                        <div className="w-full h-32 overflow-hidden bg-muted/20 relative">
                           {city.imageUrl ? (
                             <img src={city.imageUrl} alt={city.name} className="w-full h-full object-cover" />
                           ) : (
-                            <Building2 className="w-6 h-6 text-accent/40" />
+                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-teal-500/10 to-cyan-500/10">
+                              <Building2 className="w-10 h-10 text-accent/40" />
+                            </div>
                           )}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                          <div className="absolute bottom-2 left-3 right-3">
+                            <p className="text-base font-display font-bold text-white leading-tight drop-shadow-lg">{city.name}</p>
+                            {city.address && (
+                              <p className="text-[10px] text-white/80 leading-snug mt-0.5 line-clamp-1 drop-shadow">{city.address}</p>
+                            )}
+                          </div>
                         </div>
-                        <div className="min-w-0 flex-1 pt-0.5">
-                          <p className="text-sm font-semibold text-primary-foreground leading-tight">{city.name}</p>
-                          {city.analystName && (
-                            <p className="text-[11px] text-accent leading-snug mt-1 font-medium truncate">
-                              👤 {city.analystName}{city.analystRole ? ` · ${city.analystRole}` : ''}
-                            </p>
-                          )}
-                          {city.address && (
-                            <p className="text-[10px] text-primary-foreground/50 leading-snug mt-1 line-clamp-2">{city.address}</p>
-                          )}
-                        </div>
+
+                        {/* Analyst row */}
+                        {(city.analystName || city.analystRole) && (
+                          <div className="flex items-center gap-2.5 p-2.5 border-t border-accent/15">
+                            <div className="w-9 h-9 rounded-full overflow-hidden bg-muted/30 flex items-center justify-center shrink-0 ring-2 ring-accent/30">
+                              {city.analystPhoto ? (
+                                <img src={city.analystPhoto} alt={city.analystName} className="w-full h-full object-cover" />
+                              ) : (
+                                <User className="w-4 h-4 text-accent/60" />
+                              )}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs font-semibold text-primary-foreground leading-tight truncate">{city.analystName}</p>
+                              {city.analystRole && (
+                                <p className="text-[10px] text-accent/80 truncate">{city.analystRole}</p>
+                              )}
+                            </div>
+                          </div>
+                        )}
                       </motion.div>
                     </AnimatePresence>
 
                     {total > 1 && (
-                      <div className="flex items-center justify-between mt-2.5 pt-2 border-t border-primary-foreground/10">
+                      <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-primary-foreground/10">
                         <div className="flex items-center gap-1">
                           {hoveredData.cities.map((_, i) => (
                             <span
                               key={i}
-                              className={`h-1 rounded-full transition-all ${i === safeIdx ? 'w-4 bg-accent' : 'w-1.5 bg-primary-foreground/20'}`}
+                              className={`h-1 rounded-full transition-all ${i === safeIdx ? 'w-5 bg-accent' : 'w-1.5 bg-primary-foreground/20'}`}
                             />
                           ))}
                         </div>
@@ -277,22 +304,22 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
                     )}
                   </>
                 ) : (
-                  <p className="text-[10px] text-primary-foreground/40">Nenhum site cadastrado</p>
+                  <p className="text-xs text-primary-foreground/40">Nenhum site cadastrado</p>
                 )}
 
-                <p className="text-[10px] text-accent/60 mt-2 pt-2 border-t border-primary-foreground/10">
-                  Clique no estado ou no botão <Maximize2 className="w-2.5 h-2.5 inline" /> para ver tudo
+                <p className="text-[10px] text-accent/70 mt-3 pt-2.5 border-t border-primary-foreground/10 text-center">
+                  Clique para ver detalhes completos do site e da pessoa
                 </p>
                 {/* Arrow */}
-                <div className="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-3 h-3 rotate-45 border-r border-b border-accent/30" style={{ background: 'hsl(215, 35%, 16%, 0.95)' }} />
-              </div>
+                <div className="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-3 h-3 rotate-45 border-r border-b border-accent/40" style={{ background: 'hsl(215, 35%, 16%, 0.97)' }} />
+              </motion.div>
             </div>
           );
         })()}
 
       </div>
 
-      {/* Selected State - Overlay (does NOT push content below the map) */}
+      {/* Selected State - Overlay */}
       <AnimatePresence>
         {selectedData && (
           <motion.div
@@ -373,11 +400,14 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
                           {isAdmin ? (
                             <div className="space-y-2">
                               <input className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-sm font-bold outline-none focus:border-accent" value={city.name} onChange={(e) => updateCity(selectedData.id, city.id, { name: e.target.value })} placeholder="Nome da cidade / site" />
-                              <input className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-xs outline-none focus:border-accent" value={city.imageUrl} onChange={(e) => updateCity(selectedData.id, city.id, { imageUrl: e.target.value })} placeholder="URL da imagem" />
+                              <input className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-xs outline-none focus:border-accent" value={city.imageUrl} onChange={(e) => updateCity(selectedData.id, city.id, { imageUrl: e.target.value })} placeholder="URL imagem (cidade)" />
+                              <input className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-xs outline-none focus:border-accent" value={city.siteImageUrl || ''} onChange={(e) => updateCity(selectedData.id, city.id, { siteImageUrl: e.target.value })} placeholder="URL foto do site" />
+                              <input className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-xs outline-none focus:border-accent" value={city.siteUrl || ''} onChange={(e) => updateCity(selectedData.id, city.id, { siteUrl: e.target.value })} placeholder="Link do site (URL)" />
                               <input className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-xs outline-none focus:border-accent" value={city.address || ''} onChange={(e) => updateCity(selectedData.id, city.id, { address: e.target.value })} placeholder="Endereço" />
                               <div className="pt-2 mt-2 border-t border-primary-foreground/10">
                                 <p className="text-[10px] font-semibold uppercase tracking-wider text-accent/70 mb-2">Analista responsável</p>
                                 <input className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-xs outline-none focus:border-accent mb-1.5" value={city.analystName || ''} onChange={(e) => updateCity(selectedData.id, city.id, { analystName: e.target.value })} placeholder="Nome do analista" />
+                                <input className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-xs outline-none focus:border-accent mb-1.5" value={city.analystPhoto || ''} onChange={(e) => updateCity(selectedData.id, city.id, { analystPhoto: e.target.value })} placeholder="URL foto do analista" />
                                 <div className="grid grid-cols-2 gap-1.5">
                                   <input className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-xs outline-none focus:border-accent" value={city.analystRole || ''} onChange={(e) => updateCity(selectedData.id, city.id, { analystRole: e.target.value })} placeholder="Cargo" />
                                   <input className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-xs outline-none focus:border-accent" value={city.analystAge || ''} onChange={(e) => updateCity(selectedData.id, city.id, { analystAge: e.target.value })} placeholder="Idade" />
@@ -387,20 +417,34 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
                             </div>
                           ) : (
                             <>
-                              <h5 className="font-display font-bold text-primary-foreground text-base mb-1">{city.name}</h5>
+                              <h5 className="font-display font-bold text-primary-foreground text-lg mb-1">{city.name}</h5>
                               {city.address && (
                                 <div className="flex items-center gap-1.5 text-primary-foreground/40 text-xs mb-3">
                                   <MapPin className="w-3 h-3 shrink-0" />
                                   <span>{city.address}</span>
                                 </div>
                               )}
+                              {city.siteUrl && (
+                                <a href={city.siteUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 mt-1 px-3 py-2 rounded-lg bg-accent/15 hover:bg-accent/25 text-accent text-xs font-semibold transition border border-accent/25">
+                                  <ExternalLink className="w-3.5 h-3.5" /> Acessar site
+                                </a>
+                              )}
                               {(city.analystName || city.analystRole) && (
-                                <div className="mt-3 pt-3 border-t border-primary-foreground/10">
-                                  <p className="text-[10px] font-semibold uppercase tracking-wider text-accent/70 mb-1.5">Analista responsável</p>
-                                  <p className="text-sm font-display font-semibold text-primary-foreground">{city.analystName || '—'}</p>
-                                  <div className="flex items-center gap-2 mt-1 text-xs text-primary-foreground/60">
-                                    {city.analystRole && <span>{city.analystRole}</span>}
-                                    {city.analystAge && <span className="text-primary-foreground/40">· {city.analystAge} anos</span>}
+                                <div className="mt-4 pt-4 border-t border-primary-foreground/10 flex items-center gap-3">
+                                  <div className="w-12 h-12 rounded-full overflow-hidden bg-muted/30 flex items-center justify-center shrink-0 ring-2 ring-accent/30">
+                                    {city.analystPhoto ? (
+                                      <img src={city.analystPhoto} alt={city.analystName} className="w-full h-full object-cover" />
+                                    ) : (
+                                      <User className="w-5 h-5 text-accent/60" />
+                                    )}
+                                  </div>
+                                  <div className="min-w-0 flex-1">
+                                    <p className="text-[10px] font-semibold uppercase tracking-wider text-accent/70 mb-0.5">Analista responsável</p>
+                                    <p className="text-sm font-display font-semibold text-primary-foreground truncate">{city.analystName || '—'}</p>
+                                    <div className="flex items-center gap-2 text-xs text-primary-foreground/60">
+                                      {city.analystRole && <span className="truncate">{city.analystRole}</span>}
+                                      {city.analystAge && <span className="text-primary-foreground/40">· {city.analystAge} anos</span>}
+                                    </div>
                                   </div>
                                 </div>
                               )}

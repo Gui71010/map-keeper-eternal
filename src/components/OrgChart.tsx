@@ -61,11 +61,15 @@ const OrgNode = ({
         el.style.boxShadow = 'none';
       }}
     >
-      {/* Decorative accent stripe on the left */}
+      {/* Decorative animated accent stripe on the left */}
       <div
-        className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl opacity-60 group-hover:opacity-100 transition-opacity"
-        style={{ background: `linear-gradient(180deg, ${hoverBorder}, transparent)` }}
-      />
+        className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl overflow-hidden opacity-70 group-hover:opacity-100 transition-opacity"
+      >
+        <div
+          className="w-full h-[200%] animate-[stripe-move_3.5s_ease-in-out_infinite]"
+          style={{ background: `linear-gradient(180deg, transparent, ${hoverBorder}, ${hoverBorder}, transparent)` }}
+        />
+      </div>
       {/* Subtle radial glow on hover */}
       <div
         className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
@@ -157,8 +161,8 @@ const OrgNode = ({
       </div>
 
       {isBoss && (
-        <div className="absolute -top-2.5 -right-2.5 w-10 h-10 rounded-full gradient-accent flex items-center justify-center shadow-lg ring-2 ring-background z-20">
-          <Shield className="w-4 h-4 text-primary-foreground" />
+        <div className="absolute -top-3 -right-3 w-11 h-11 rounded-full gradient-accent flex items-center justify-center shadow-xl shadow-accent/30 ring-2 ring-background z-20">
+          <Shield className="w-5 h-5 text-primary-foreground" />
         </div>
       )}
     </motion.div>

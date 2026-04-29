@@ -66,6 +66,8 @@ const NossaAreaPage = () => {
       {/* Hero */}
       <motion.section initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="relative overflow-hidden rounded-2xl gradient-navy p-10 md:p-16">
         <GalaxyParticles />
+        <img src={adminTeamImg} alt="" className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-screen pointer-events-none" loading="eager" />
+        <div className="absolute inset-0 bg-gradient-to-r from-navy via-navy/85 to-transparent pointer-events-none" />
         <div className="absolute inset-0 opacity-10"><div className="absolute top-0 left-1/2 w-80 h-80 rounded-full bg-teal blur-[100px]" /></div>
         <div className="relative z-10 max-w-3xl">
           {isAdmin ? <input className="text-4xl md:text-5xl font-display font-bold text-primary-foreground mb-4 bg-transparent border-b border-primary-foreground/20 w-full outline-none focus:border-accent" value={content.areaTitle} onChange={(e) => updateContent({ areaTitle: e.target.value })} /> : <h2 className="text-4xl md:text-5xl font-display font-bold text-primary-foreground mb-4">{content.areaTitle}</h2>}
@@ -350,7 +352,7 @@ const NossaAreaPage = () => {
                 )}
                 <div className="w-20 h-1 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500 mt-3" />
               </div>
-              <div className="hidden md:block w-44 h-28 rounded-2xl overflow-hidden border border-primary-foreground/10 shrink-0 shadow-lg">
+              <div className="hidden md:block w-72 h-44 rounded-2xl overflow-hidden border border-primary-foreground/10 shrink-0 shadow-2xl shadow-accent/10 ring-1 ring-accent/20">
                 <img src={adminTeamImg} alt="Equipe administrativa" className="w-full h-full object-cover" />
               </div>
             </div>

@@ -64,7 +64,7 @@ const ReportDetailModal = ({ report, creatorName, onClose, showMetrics = true, o
         <div className="p-6 md:p-10 grid lg:grid-cols-[1.8fr_1fr] gap-10 items-start">
           {/* Image area */}
           <div className="flex flex-col space-y-4">
-            <div className="bg-muted/10 rounded-2xl overflow-hidden relative flex items-center justify-center border border-border/20" style={{ minHeight: '72vh', maxHeight: '85vh' }}>
+            <div className="bg-muted/10 rounded-2xl overflow-hidden relative border border-border/20 aspect-[16/10]">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={imgIndex}
@@ -72,12 +72,12 @@ const ReportDetailModal = ({ report, creatorName, onClose, showMetrics = true, o
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.97 }}
                   transition={{ duration: 0.25 }}
-                  className="w-full h-full absolute inset-0 flex items-center justify-center p-4"
+                  className="absolute inset-0 flex items-center justify-center"
                 >
                   {images[imgIndex] ? (
-                    <img src={images[imgIndex]} alt="" className="max-w-full max-h-full object-contain rounded-xl" style={{ minHeight: '65vh' }} />
+                    <img src={images[imgIndex]} alt="" className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground/30 gap-3" style={{ minHeight: '65vh' }}>
+                    <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground/30 gap-3">
                       <Eye className="w-16 h-16" />
                       <span className="text-lg font-medium">Sem imagem</span>
                     </div>

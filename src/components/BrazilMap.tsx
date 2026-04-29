@@ -364,6 +364,7 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
                 </div>
               </div>
 
+              <div className="p-6 overflow-y-auto">
                 {selectedData.cities.length === 0 ? (
                   <div className="text-center py-8">
                     <Building2 className="w-10 h-10 text-primary-foreground/20 mx-auto mb-3" />

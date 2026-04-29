@@ -61,11 +61,15 @@ const OrgNode = ({
         el.style.boxShadow = 'none';
       }}
     >
-      {/* Decorative accent stripe on the left */}
+      {/* Decorative animated accent stripe on the left */}
       <div
-        className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl opacity-60 group-hover:opacity-100 transition-opacity"
-        style={{ background: `linear-gradient(180deg, ${hoverBorder}, transparent)` }}
-      />
+        className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl overflow-hidden opacity-70 group-hover:opacity-100 transition-opacity"
+      >
+        <div
+          className="w-full h-[200%] animate-[stripe-move_3.5s_ease-in-out_infinite]"
+          style={{ background: `linear-gradient(180deg, transparent, ${hoverBorder}, ${hoverBorder}, transparent)` }}
+        />
+      </div>
       {/* Subtle radial glow on hover */}
       <div
         className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"

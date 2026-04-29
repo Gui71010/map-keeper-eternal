@@ -417,20 +417,34 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
                             </div>
                           ) : (
                             <>
-                              <h5 className="font-display font-bold text-primary-foreground text-base mb-1">{city.name}</h5>
+                              <h5 className="font-display font-bold text-primary-foreground text-lg mb-1">{city.name}</h5>
                               {city.address && (
                                 <div className="flex items-center gap-1.5 text-primary-foreground/40 text-xs mb-3">
                                   <MapPin className="w-3 h-3 shrink-0" />
                                   <span>{city.address}</span>
                                 </div>
                               )}
+                              {city.siteUrl && (
+                                <a href={city.siteUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 mt-1 px-3 py-2 rounded-lg bg-accent/15 hover:bg-accent/25 text-accent text-xs font-semibold transition border border-accent/25">
+                                  <ExternalLink className="w-3.5 h-3.5" /> Acessar site
+                                </a>
+                              )}
                               {(city.analystName || city.analystRole) && (
-                                <div className="mt-3 pt-3 border-t border-primary-foreground/10">
-                                  <p className="text-[10px] font-semibold uppercase tracking-wider text-accent/70 mb-1.5">Analista responsável</p>
-                                  <p className="text-sm font-display font-semibold text-primary-foreground">{city.analystName || '—'}</p>
-                                  <div className="flex items-center gap-2 mt-1 text-xs text-primary-foreground/60">
-                                    {city.analystRole && <span>{city.analystRole}</span>}
-                                    {city.analystAge && <span className="text-primary-foreground/40">· {city.analystAge} anos</span>}
+                                <div className="mt-4 pt-4 border-t border-primary-foreground/10 flex items-center gap-3">
+                                  <div className="w-12 h-12 rounded-full overflow-hidden bg-muted/30 flex items-center justify-center shrink-0 ring-2 ring-accent/30">
+                                    {city.analystPhoto ? (
+                                      <img src={city.analystPhoto} alt={city.analystName} className="w-full h-full object-cover" />
+                                    ) : (
+                                      <User className="w-5 h-5 text-accent/60" />
+                                    )}
+                                  </div>
+                                  <div className="min-w-0 flex-1">
+                                    <p className="text-[10px] font-semibold uppercase tracking-wider text-accent/70 mb-0.5">Analista responsável</p>
+                                    <p className="text-sm font-display font-semibold text-primary-foreground truncate">{city.analystName || '—'}</p>
+                                    <div className="flex items-center gap-2 text-xs text-primary-foreground/60">
+                                      {city.analystRole && <span className="truncate">{city.analystRole}</span>}
+                                      {city.analystAge && <span className="text-primary-foreground/40">· {city.analystAge} anos</span>}
+                                    </div>
                                   </div>
                                 </div>
                               )}

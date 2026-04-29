@@ -314,8 +314,56 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
                 <div className="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-3 h-3 rotate-45 border-r border-b border-accent/40" style={{ background: 'hsl(215, 35%, 16%, 0.97)' }} />
               </motion.div>
             </div>
+          );
+        })()}
 
-              <div className="p-6 overflow-y-auto">
+      </div>
+
+      {/* Selected State - Overlay */}
+      <AnimatePresence>
+        {selectedData && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-[90] flex items-center justify-center p-4 bg-black/70 backdrop-blur-md"
+            onClick={() => setSelectedState(null)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 10 }}
+              transition={{ type: 'spring', damping: 24, stiffness: 280 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-5xl max-h-[90vh] rounded-2xl overflow-hidden border-2 border-accent/30 shadow-2xl shadow-accent/20 flex flex-col"
+              style={{ background: 'linear-gradient(135deg, hsl(215, 40%, 10%), hsl(215, 35%, 14%))' }}
+            >
+              <div className="flex items-center justify-between px-6 py-4 border-b border-accent/15 shrink-0">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 flex items-center justify-center">
+                    <MapPin className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    {isAdmin ? (
+                      <input className="text-lg font-display font-bold text-primary-foreground bg-transparent border-b border-primary-foreground/20 outline-none focus:border-accent" value={selectedData.stateName} onChange={(e) => updateState(selectedData.id, { stateName: e.target.value })} />
+                    ) : (
+                      <h4 className="text-lg font-display font-bold text-primary-foreground">{selectedData.stateName}</h4>
+                    )}
+                    <p className="text-primary-foreground/50 text-xs">{selectedData.cities.length} site{selectedData.cities.length !== 1 ? 's' : ''}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  {isAdmin && (
+                    <>
+                      <button onClick={() => addCity(selectedData.id)} className="px-3 py-1.5 rounded-lg bg-accent/20 text-accent text-xs font-medium hover:bg-accent/30 transition flex items-center gap-1"><Plus className="w-3 h-3" /> Adicionar Site</button>
+                      <button onClick={() => removeState(selectedData.id)} className="px-3 py-1.5 rounded-lg bg-destructive/20 text-destructive text-xs font-medium hover:bg-destructive/30 transition flex items-center gap-1"><Trash2 className="w-3 h-3" /> Remover Estado</button>
+                    </>
+                  )}
+                  <button onClick={() => setSelectedState(null)} className="w-9 h-9 rounded-lg bg-primary-foreground/10 flex items-center justify-center text-primary-foreground/60 hover:text-primary-foreground hover:bg-primary-foreground/20 transition"><X className="w-4 h-4" /></button>
+                </div>
+              </div>
+
                 {selectedData.cities.length === 0 ? (
                   <div className="text-center py-8">
                     <Building2 className="w-10 h-10 text-primary-foreground/20 mx-auto mb-3" />

@@ -107,6 +107,11 @@
     50% { transform: translate(30px, -20px) scale(1.1); opacity: 0.12; }
     100% { transform: translate(0, 0) scale(1); opacity: 0.06; }
   }
+  @keyframes stripe-move {
+    0% { transform: translateY(-50%); }
+    50% { transform: translateY(0%); }
+    100% { transform: translateY(-50%); }
+  }
   .galaxy-bg {
     position: relative;
     overflow: hidden;

@@ -161,8 +161,8 @@ const OrgNode = ({
       </div>
 
       {isBoss && (
-        <div className="absolute -top-2.5 -right-2.5 w-10 h-10 rounded-full gradient-accent flex items-center justify-center shadow-lg ring-2 ring-background z-20">
-          <Shield className="w-4 h-4 text-primary-foreground" />
+        <div className="absolute -top-3 -right-3 w-11 h-11 rounded-full gradient-accent flex items-center justify-center shadow-xl shadow-accent/30 ring-2 ring-background z-20">
+          <Shield className="w-5 h-5 text-primary-foreground" />
         </div>
       )}
     </motion.div>

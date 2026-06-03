@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, ImageIcon, MapPin, Crown, Palette, Briefcase, BarChart3, Globe, ChevronLeft, ChevronRight, Trash2, Rocket, FileText, DollarSign, User, ChevronDown, Mail, Phone, MessageCircle, Plane } from 'lucide-react';
+import { Plus, ImageIcon, MapPin, Crown, Palette, Briefcase, BarChart3, Globe, ChevronLeft, ChevronRight, Trash2, Rocket, FileText, DollarSign, User, ChevronDown, Mail, Phone, MessageCircle, Plane, Database, Workflow, LineChart, Layers, Sparkles, Cpu, ExternalLink, LifeBuoy, AlertCircle, FileEdit, FilePlus, FileCheck, FileX, Flame, UserCheck } from 'lucide-react';
 import { useAdmin } from '@/contexts/AdminContext';
 import AnalystCard from '@/components/AnalystCard';
 import GalaxyParticles from '@/components/GalaxyParticles';
@@ -9,18 +9,18 @@ import AreasRoadmap from '@/components/AreasRoadmap';
 import OrgChart from '@/components/OrgChart';
 import ReportDetailModal from '@/components/ReportDetailModal';
 import adminTeamImg from '@/assets/admin-team.jpg';
+import dataPipelineImg from '@/assets/data-pipeline.jpg';
 
 const NossaAreaPage = () => {
-  const { content, isAdmin, updateContent, addAnalyst, addProject, updateProject, removeProject, addAreaReportCard, updateAreaReportCard, removeAreaReportCard, addRqCategory, updateRqCategory, removeRqCategory, addRqReport, updateRqReport, removeRqReport } = useAdmin();
+  const { content, isAdmin, updateContent, addAnalyst, addProject, updateProject, removeProject, addAreaReportCard, updateAreaReportCard, removeAreaReportCard } = useAdmin();
   const [selectedAnalyst, setSelectedAnalyst] = useState<string | null>(null);
   const [currentProjectIdx, setCurrentProjectIdx] = useState(0);
-  const [expandedRqCategory, setExpandedRqCategory] = useState<string | null>(null);
-  const [selectedRqReportId, setSelectedRqReportId] = useState<string | null>(null);
   const projectTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const managerAnalysts = content.analysts.filter((a) => a.type === 'manager');
   const biAnalysts = content.analysts.filter((a) => a.type === 'bi');
   const adminAnalysts = content.analysts.filter((a) => a.type === 'admin');
   const designAnalysts = content.analysts.filter((a) => a.type === 'design');
+  const assistantAnalysts = content.analysts.filter((a) => a.type === 'assistant');
   const orgImage = content.orgChartUrl || '';
   const projects = content.projects || [];
   const areaReportCards = content.areaReportCards || [];
@@ -100,6 +100,7 @@ const NossaAreaPage = () => {
             biAnalysts={biAnalysts}
             adminAnalysts={adminAnalysts}
             designAnalysts={designAnalysts}
+            assistantAnalysts={assistantAnalysts}
             onAnalystClick={(id) => setSelectedAnalyst(selectedAnalyst === id ? null : id)}
           />
         </div>
@@ -206,6 +207,7 @@ const NossaAreaPage = () => {
           <button onClick={() => addAnalyst({ id: Date.now().toString(), name: 'Novo Analista BI', role: 'Analista de BI', area: 'Nova Área', photo: '', bio: 'Descrição.', type: 'bi' })} className="px-4 py-2 rounded-lg gradient-accent text-accent-foreground text-sm font-medium hover:opacity-90 transition flex items-center gap-2"><Plus className="w-4 h-4" /> Analista BI</button>
           <button onClick={() => addAnalyst({ id: Date.now().toString(), name: 'Novo Admin', role: 'Analista Administrativo', area: 'Administrativo', photo: '', bio: 'Descrição.', type: 'admin' })} className="px-4 py-2 rounded-lg gradient-accent text-accent-foreground text-sm font-medium hover:opacity-90 transition flex items-center gap-2"><Plus className="w-4 h-4" /> Analista Admin</button>
           <button onClick={() => addAnalyst({ id: Date.now().toString(), name: 'Novo Designer', role: 'Designer', area: 'Design', photo: '', bio: 'Descrição.', type: 'design' })} className="px-4 py-2 rounded-lg gradient-accent text-accent-foreground text-sm font-medium hover:opacity-90 transition flex items-center gap-2"><Plus className="w-4 h-4" /> Designer</button>
+          <button onClick={() => addAnalyst({ id: Date.now().toString(), name: 'Novo Assistente', role: 'Assistente de Pessoas', area: 'People Analytics', photo: '', bio: 'Descrição.', type: 'assistant' })} className="px-4 py-2 rounded-lg gradient-accent text-accent-foreground text-sm font-medium hover:opacity-90 transition flex items-center gap-2"><Plus className="w-4 h-4" /> Assistente</button>
         </motion.section>
       )}
 

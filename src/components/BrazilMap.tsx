@@ -268,18 +268,21 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
 
                         {/* Analyst row */}
                         {(city.analystName || city.analystRole) && (
-                          <div className="flex items-center gap-2.5 p-2.5 border-t border-accent/15">
-                            <div className="w-9 h-9 rounded-full overflow-hidden bg-muted/30 flex items-center justify-center shrink-0 ring-2 ring-accent/30">
+                          <div className="flex items-center gap-3 p-3 border-t border-accent/15">
+                            <div className="w-14 h-14 rounded-full overflow-hidden bg-muted/30 flex items-center justify-center shrink-0 ring-2 ring-accent/40 shadow-lg shadow-accent/20">
                               {city.analystPhoto ? (
                                 <img src={city.analystPhoto} alt={city.analystName} className="w-full h-full object-cover" />
                               ) : (
-                                <User className="w-4 h-4 text-accent/60" />
+                                <User className="w-6 h-6 text-accent/60" />
                               )}
                             </div>
                             <div className="min-w-0 flex-1">
-                              <p className="text-xs font-semibold text-primary-foreground leading-tight truncate">{city.analystName}</p>
+                              <p className="text-[9px] font-semibold uppercase tracking-wider text-accent/70 mb-0.5">Analista responsável</p>
+                              <p className="text-sm font-display font-bold text-primary-foreground leading-tight truncate">{city.analystName}</p>
                               {city.analystRole && (
-                                <p className="text-[10px] text-accent/80 truncate">{city.analystRole}</p>
+                                <p className="text-[11px] text-primary-foreground/60 truncate">
+                                  {city.analystRole}{city.analystAge ? ` · ${city.analystAge} anos` : ''}
+                                </p>
                               )}
                             </div>
                           </div>

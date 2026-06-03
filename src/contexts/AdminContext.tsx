@@ -8,7 +8,7 @@ export interface Analyst {
   area: string;
   photo: string;
   bio: string;
-  type?: 'bi' | 'admin' | 'design' | 'manager';
+  type?: 'bi' | 'admin' | 'design' | 'manager' | 'assistant';
   age?: string;
   attributions?: string[];
   skills?: string[];
@@ -181,6 +181,7 @@ const DEFAULT_CONTENT: SiteContent = {
     { id: '5', name: 'Laura', role: 'Analista Administrativo', area: 'Administrativo', photo: '', bio: 'Analista administrativo da equipe de People Analytics.', type: 'admin' },
     { id: '6', name: 'Henrique', role: 'Analista Administrativo', area: 'Administrativo', photo: '', bio: 'Analista administrativo da equipe de People Analytics.', type: 'admin' },
     { id: '7', name: 'Junior', role: 'Analista de Design Gráfico', area: 'Design', photo: '', bio: 'Analista de design gráfico da equipe de People Analytics.', type: 'design' },
+    { id: '8', name: 'Novo Assistente', role: 'Assistente de Pessoas', area: 'People Analytics', photo: '', bio: 'Assistente de Pessoas da equipe de People Analytics.', type: 'assistant' },
   ],
   reports: [
     { id: '1', name: 'Gestão Candidato SOU', creatorId: '3', description: 'Funil admissional completo com métricas de inscritos, aprovados e contratados.', images: [], metrics: ['Inscritos Vaga: 10.691', 'Aprovados: 10.428', 'Doc Aprovado: 4.294', 'Assinatura Contrato: 3.566'], link: '', eligibleAreas: [] },

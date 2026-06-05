@@ -76,6 +76,13 @@ export interface MapState {
   cities: MapCity[];
 }
 
+export interface DataJourneyStat {
+  id: string;
+  value: string;
+  label: string;
+  icon: 'FileText' | 'Database' | 'Sparkles' | 'LineChart' | 'Users' | 'BarChart3' | 'Layers' | 'Cpu';
+}
+
 interface SiteContent {
   areaDescription: string;
   faqDescription: string;
@@ -112,6 +119,7 @@ interface SiteContent {
   rqTravelContactEmail: string;
   rqTravelContactTeams: string;
   rqTravelContactWhatsapp: string;
+  dataJourneyStats: DataJourneyStat[];
 }
 
 interface AdminContextType {
@@ -217,6 +225,12 @@ const DEFAULT_CONTENT: SiteContent = {
   rqTravelContactEmail: 'ana.laura@aec.com.br',
   rqTravelContactTeams: 'ana.laura@aec.com.br',
   rqTravelContactWhatsapp: '(31) 99999-9999',
+  dataJourneyStats: [
+    { id: '1', value: '28+', label: 'Relatórios ativos', icon: 'FileText' },
+    { id: '2', value: '15M+', label: 'Registros processados', icon: 'Database' },
+    { id: '3', value: '100%', label: 'Governança de dados', icon: 'Sparkles' },
+    { id: '4', value: '24/7', label: 'Insights disponíveis', icon: 'LineChart' },
+  ],
 };
 
 const ADMIN_PASSWORD = 'Guisantos88';

@@ -76,6 +76,13 @@ export interface MapState {
   cities: MapCity[];
 }
 
+export interface DataJourneyStat {
+  id: string;
+  value: string;
+  label: string;
+  icon: 'FileText' | 'Database' | 'Sparkles' | 'LineChart' | 'Users' | 'BarChart3' | 'Layers' | 'Cpu';
+}
+
 interface SiteContent {
   areaDescription: string;
   faqDescription: string;

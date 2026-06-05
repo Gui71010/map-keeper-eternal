@@ -393,25 +393,105 @@ const NossaAreaPage = () => {
               ))}
             </div>
 
-            {/* Stats / signature numbers */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+            {/* Ferramentas & Stack */}
+            <div className="mb-12">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-1 h-6 rounded-full bg-gradient-to-b from-teal-400 to-cyan-400" />
+                <h4 className="text-xl md:text-2xl font-display font-bold text-primary-foreground">Ferramentas & Stack</h4>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                {[
+                  { title: 'Power BI', desc: 'Visualização e modelagem de dashboards corporativos.', image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop', color: 'from-amber-500 to-yellow-500' },
+                  { title: 'SQL & Bases', desc: 'Consultas, integrações e modelagem dimensional.', image: 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=600&h=400&fit=crop', color: 'from-blue-500 to-indigo-500' },
+                  { title: 'Excel Avançado', desc: 'Análises rápidas, prototipação e validação cruzada.', image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&h=400&fit=crop', color: 'from-emerald-500 to-green-500' },
+                  { title: 'Orbi & Sistemas', desc: 'Integração com as fontes oficiais da Diretoria.', image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop', color: 'from-violet-500 to-purple-500' },
+                ].map((t, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 + i * 0.08 }}
+                    className="group rounded-2xl border border-primary-foreground/10 overflow-hidden hover:border-accent/50 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-accent/20"
+                    style={{ background: 'linear-gradient(160deg, hsl(220, 40%, 11%), hsl(220, 35%, 9%))' }}
+                  >
+                    <div className="relative h-28 overflow-hidden">
+                      <img src={t.image} alt={t.title} className="w-full h-full object-cover opacity-60 group-hover:opacity-90 group-hover:scale-110 transition-all duration-700" loading="lazy" />
+                      <div className={`absolute inset-0 bg-gradient-to-t from-card via-card/40 to-transparent`} />
+                      <div className={`absolute bottom-2 left-3 px-2.5 py-1 rounded-md bg-gradient-to-r ${t.color} text-white text-xs font-semibold shadow-lg`}>{t.title}</div>
+                    </div>
+                    <div className="p-4">
+                      <p className="text-primary-foreground/70 text-sm leading-relaxed">{t.desc}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* Stats / signature numbers (editable) */}
+            <div className="mb-12">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-1 h-6 rounded-full bg-gradient-to-b from-teal-400 to-cyan-400" />
+                <h4 className="text-xl md:text-2xl font-display font-bold text-primary-foreground">Nossos números</h4>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {(content.dataJourneyStats || []).map((s, i) => {
+                  const IconMap: Record<string, any> = { FileText, Database, Sparkles, LineChart, Layers, Cpu };
+                  const Ico = IconMap[s.icon] || FileText;
+                  return (
+                    <motion.div
+                      key={s.id}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.6 + i * 0.08, type: 'spring' }}
+                      className="rounded-xl p-5 border border-primary-foreground/10 backdrop-blur-sm hover:border-accent/40 transition-all duration-300 group relative"
+                      style={{ background: 'hsl(220, 35%, 11% / 0.7)' }}
+                    >
+                      <Ico className="w-5 h-5 text-accent mb-3 group-hover:scale-110 transition-transform" />
+                      {isAdmin ? (
+                        <>
+                          <input
+                            value={s.value}
+                            onChange={(e) => updateContent({ dataJourneyStats: content.dataJourneyStats.map(x => x.id === s.id ? { ...x, value: e.target.value } : x) })}
+                            className="w-full text-3xl font-display font-bold bg-transparent border-b border-accent/30 text-primary-foreground outline-none focus:border-accent"
+                          />
+                          <input
+                            value={s.label}
+                            onChange={(e) => updateContent({ dataJourneyStats: content.dataJourneyStats.map(x => x.id === s.id ? { ...x, label: e.target.value } : x) })}
+                            className="w-full text-xs text-primary-foreground/70 uppercase tracking-wider mt-2 bg-transparent border-b border-border/30 outline-none focus:border-accent"
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <div className="text-3xl font-display font-bold bg-gradient-to-r from-teal-300 to-cyan-300 bg-clip-text text-transparent">{s.value}</div>
+                          <div className="text-xs text-primary-foreground/50 uppercase tracking-wider mt-1">{s.label}</div>
+                        </>
+                      )}
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Princípios */}
+            <div className="mb-10 grid grid-cols-1 md:grid-cols-3 gap-5">
               {[
-                { value: '28+', label: 'Relatórios ativos', icon: FileText },
-                { value: '15M+', label: 'Registros processados', icon: Database },
-                { value: '100%', label: 'Governança de dados', icon: Sparkles },
-                { value: '24/7', label: 'Insights disponíveis', icon: LineChart },
-              ].map((s, i) => (
+                { title: 'Governança', desc: 'Padrões claros, métricas auditáveis e dados confiáveis em toda a cadeia.', icon: Sparkles, color: 'from-teal-500 to-cyan-500' },
+                { title: 'Velocidade', desc: 'Entregas ágeis sem abrir mão da qualidade analítica.', icon: Cpu, color: 'from-cyan-500 to-blue-500' },
+                { title: 'Impacto', desc: 'Cada relatório nasce para gerar decisão e resultado mensurável.', icon: LineChart, color: 'from-emerald-500 to-teal-500' },
+              ].map((p, i) => (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.6 + i * 0.08, type: 'spring' }}
-                  className="rounded-xl p-5 border border-primary-foreground/10 backdrop-blur-sm hover:border-accent/40 transition-all duration-300 group"
-                  style={{ background: 'hsl(220, 35%, 11% / 0.7)' }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.7 + i * 0.08 }}
+                  className="rounded-2xl p-5 border border-primary-foreground/10 hover:border-accent/40 transition-all"
+                  style={{ background: 'hsl(220, 38%, 10% / 0.7)' }}
                 >
-                  <s.icon className="w-5 h-5 text-accent mb-3 group-hover:scale-110 transition-transform" />
-                  <div className="text-3xl font-display font-bold bg-gradient-to-r from-teal-300 to-cyan-300 bg-clip-text text-transparent">{s.value}</div>
-                  <div className="text-xs text-primary-foreground/50 uppercase tracking-wider mt-1">{s.label}</div>
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${p.color} flex items-center justify-center mb-3 shadow-lg`}>
+                    <p.icon className="w-6 h-6 text-white" />
+                  </div>
+                  <h5 className="font-display font-bold text-primary-foreground text-lg mb-1">{p.title}</h5>
+                  <p className="text-primary-foreground/65 text-sm leading-relaxed">{p.desc}</p>
                 </motion.div>
               ))}
             </div>

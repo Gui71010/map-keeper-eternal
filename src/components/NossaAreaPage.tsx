@@ -556,7 +556,7 @@ const NossaAreaPage = () => {
                   title: 'Mapa de Calor Instrutor',
                   path: 'People Analytics › Mapa de Calor Instrutor',
                   items: [
-                    { name: 'Correções e Contestações de Resultados', sla: 'SLA 45h úteis', kind: 'Solicitação', tone: 'text-rose-300' },
+                    { name: 'Correções e Contestações de Resultados', sla: 'SLA 45h úteis', kind: 'Solicitação', tone: 'text-rose-300', itemIcon: FileEdit },
                   ],
                 },
                 {
@@ -565,10 +565,10 @@ const NossaAreaPage = () => {
                   title: 'Relatórios',
                   path: 'People Analytics › Relatórios',
                   items: [
-                    { name: 'Alteração de Relatório', sla: 'SLA Negociado', kind: 'Tarefa', tone: 'text-cyan-300' },
-                    { name: 'Criação de Relatório', sla: 'SLA Negociado', kind: 'Tarefa', tone: 'text-cyan-300' },
-                    { name: 'Erros e correções', sla: 'SLA 36h úteis', kind: 'Solicitação', tone: 'text-cyan-300' },
-                    { name: 'Liberação de Relatórios', sla: 'SLA 27h úteis', kind: 'Incidente', tone: 'text-amber-300' },
+                    { name: 'Alteração de Relatório', sla: 'SLA Negociado', kind: 'Tarefa', tone: 'text-cyan-300', itemIcon: FileEdit },
+                    { name: 'Criação de Relatório', sla: 'SLA Negociado', kind: 'Tarefa', tone: 'text-cyan-300', itemIcon: FilePlus },
+                    { name: 'Erros e correções', sla: 'SLA 36h úteis', kind: 'Solicitação', tone: 'text-cyan-300', itemIcon: FileX },
+                    { name: 'Liberação de Relatórios', sla: 'SLA 27h úteis', kind: 'Incidente', tone: 'text-amber-300', itemIcon: FileCheck },
                   ],
                 },
                 {
@@ -577,7 +577,7 @@ const NossaAreaPage = () => {
                   title: 'Remuneração Variável',
                   path: 'People Analytics › Remuneração Variável',
                   items: [
-                    { name: 'Contestação', sla: 'SLA 27h úteis', kind: 'Solicitação', tone: 'text-emerald-300' },
+                    { name: 'Contestação', sla: 'SLA 27h úteis', kind: 'Solicitação', tone: 'text-emerald-300', itemIcon: FileEdit },
                   ],
                 },
               ].map((cat, idx) => (
@@ -586,28 +586,36 @@ const NossaAreaPage = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 + idx * 0.1 }}
-                  className="rounded-2xl border border-primary-foreground/10 overflow-hidden hover:border-accent/40 transition-all duration-300 hover:shadow-xl hover:shadow-accent/10"
+                  className="rounded-2xl border border-primary-foreground/10 overflow-hidden hover:border-accent/40 transition-all duration-300 hover:shadow-xl hover:shadow-accent/10 flex flex-col"
                   style={{ background: 'hsl(220, 38%, 10%)' }}
                 >
-                  <div className={`p-4 bg-gradient-to-r ${cat.color} flex items-center gap-3`}>
-                    <div className="w-10 h-10 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center ring-1 ring-white/20">
-                      <cat.icon className="w-5 h-5 text-white" />
+                  <div className={`p-5 bg-gradient-to-r ${cat.color} flex items-center gap-3`}>
+                    <div className="w-12 h-12 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center ring-1 ring-white/20 shrink-0">
+                      <cat.icon className="w-6 h-6 text-white" />
                     </div>
-                    <div>
-                      <h4 className="font-display font-bold text-white text-base leading-tight">{cat.title}</h4>
-                      <p className="text-white/75 text-[11px] font-mono mt-0.5">{cat.path}</p>
+                    <div className="min-w-0">
+                      <h4 className="font-display font-bold text-white text-lg leading-tight">{cat.title}</h4>
+                      <p className="text-white/80 text-[11px] font-mono mt-1 truncate">{cat.path}</p>
                     </div>
                   </div>
-                  <div className="p-4 space-y-2">
-                    {cat.items.map((it, j) => (
-                      <div key={j} className="rounded-lg p-3 border border-primary-foreground/8 hover:border-accent/30 transition-all" style={{ background: 'hsl(220, 35%, 12%)' }}>
-                        <p className="text-primary-foreground text-sm font-semibold leading-snug">{it.name}</p>
-                        <div className="flex items-center gap-2 mt-2 flex-wrap">
-                          <span className={`text-[10px] px-2 py-0.5 rounded-full bg-white/5 ${it.tone} font-mono font-semibold`}>{it.sla}</span>
-                          <span className="text-[10px] text-primary-foreground/50 px-2 py-0.5 rounded-full bg-primary-foreground/5">{it.kind}</span>
+                  <div className="p-4 space-y-2.5 flex-1">
+                    {cat.items.map((it, j) => {
+                      const ItemIco = it.itemIcon;
+                      return (
+                        <div key={j} className="group rounded-xl p-3.5 border border-primary-foreground/10 hover:border-accent/40 hover:translate-x-0.5 transition-all flex items-start gap-3" style={{ background: 'hsl(220, 35%, 12%)' }}>
+                          <div className={`w-9 h-9 rounded-lg bg-gradient-to-br ${cat.color} bg-opacity-20 flex items-center justify-center shrink-0 shadow-md ring-1 ring-white/10`}>
+                            <ItemIco className="w-4 h-4 text-white" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-primary-foreground text-sm font-semibold leading-snug">{it.name}</p>
+                            <div className="flex items-center gap-2 mt-2 flex-wrap">
+                              <span className={`text-[10px] px-2 py-0.5 rounded-full bg-white/5 ${it.tone} font-mono font-semibold border border-white/5`}>{it.sla}</span>
+                              <span className="text-[10px] text-primary-foreground/60 px-2 py-0.5 rounded-full bg-primary-foreground/5 border border-primary-foreground/10">{it.kind}</span>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </motion.div>
               ))}

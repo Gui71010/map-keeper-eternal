@@ -119,6 +119,7 @@ interface SiteContent {
   rqTravelContactEmail: string;
   rqTravelContactTeams: string;
   rqTravelContactWhatsapp: string;
+  dataJourneyStats: DataJourneyStat[];
 }
 
 interface AdminContextType {

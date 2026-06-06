@@ -211,130 +211,8 @@ const NossaAreaPage = () => {
         </motion.section>
       )}
 
-      {/* Nossos principais projetos */}
+      {/* === PIPELINE DE DADOS - Jornada do Dado === */}
       <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55, duration: 0.6 }} className="relative">
-        <SectionHeader
-          icon={Rocket}
-          title="Nossos principais projetos"
-          onAdd={isAdmin ? () => addProject({ id: Date.now().toString(), title: 'Novo Projeto', description: 'Descrição do projeto.', imageUrl: '' }) : undefined}
-          addLabel="Adicionar Projeto"
-        />
-
-        {projects.length > 0 && (
-          <div className="relative overflow-hidden rounded-2xl" style={{ background: 'linear-gradient(135deg, hsl(215, 50%, 12%), hsl(215, 40%, 18%))' }}>
-            <div className="absolute inset-0 opacity-20">
-              <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-accent blur-[150px]" />
-              <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-primary blur-[100px]" />
-            </div>
-
-            <div className="relative z-10 grid md:grid-cols-2 min-h-[750px]">
-              {/* Image side */}
-              <div className="relative overflow-hidden flex items-center justify-center p-4">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={currentProjectIdx}
-                    initial={{ opacity: 0, rotateY: 90 }}
-                    animate={{ opacity: 1, rotateY: 0 }}
-                    exit={{ opacity: 0, rotateY: -90 }}
-                    transition={{ duration: 0.5, ease: 'easeInOut' }}
-                    className="w-full h-full flex items-center justify-center"
-                    style={{ perspective: '1200px' }}
-                  >
-                    {projects[currentProjectIdx]?.imageUrl ? (
-                      <img src={projects[currentProjectIdx].imageUrl} alt={projects[currentProjectIdx].title} className="max-w-full max-h-[700px] object-contain rounded-2xl shadow-2xl" />
-                    ) : (
-                      <div className="w-full h-[700px] flex items-center justify-center bg-muted/10 rounded-2xl">
-                        <Rocket className="w-20 h-20 text-accent/30" />
-                      </div>
-                    )}
-                  </motion.div>
-                </AnimatePresence>
-
-                {/* Navigation arrows */}
-                {projects.length > 1 && (
-                  <>
-                    <button onClick={() => goToProject('prev')} className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border-2 border-primary-foreground/30 flex items-center justify-center text-primary-foreground/70 hover:border-accent hover:text-accent transition-all backdrop-blur-sm bg-foreground/10">
-                      <ChevronLeft className="w-6 h-6" />
-                    </button>
-                    <button onClick={() => goToProject('next')} className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border-2 border-primary-foreground/30 flex items-center justify-center text-primary-foreground/70 hover:border-accent hover:text-accent transition-all backdrop-blur-sm bg-foreground/10">
-                      <ChevronRight className="w-6 h-6" />
-                    </button>
-                  </>
-                )}
-              </div>
-
-              {/* Text side */}
-              <div className="p-8 md:p-12 flex flex-col justify-center">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={currentProjectIdx}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    <div className="w-10 h-1 bg-accent rounded-full mb-6" />
-                    {isAdmin ? (
-                      <input className="text-3xl md:text-4xl font-display font-bold text-primary-foreground mb-4 bg-transparent border-b border-primary-foreground/20 w-full outline-none focus:border-accent" value={projects[currentProjectIdx]?.title || ''} onChange={(e) => updateProject(projects[currentProjectIdx].id, { title: e.target.value })} />
-                    ) : (
-                      <h3 className="text-3xl md:text-4xl font-display font-bold text-primary-foreground mb-4">{projects[currentProjectIdx]?.title}</h3>
-                    )}
-                    {isAdmin ? (
-                      <textarea className="text-primary-foreground/70 text-lg leading-relaxed bg-transparent border border-primary-foreground/10 rounded-lg p-3 w-full min-h-[100px] outline-none focus:border-accent" value={projects[currentProjectIdx]?.description || ''} onChange={(e) => updateProject(projects[currentProjectIdx].id, { description: e.target.value })} />
-                    ) : (
-                      <p className="text-primary-foreground/70 text-lg leading-relaxed">{projects[currentProjectIdx]?.description}</p>
-                    )}
-                    {isAdmin && (
-                      <div className="mt-4 space-y-2">
-                        <label className="text-xs text-primary-foreground/50">URL da imagem</label>
-                        <input className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-sm outline-none focus:border-accent" value={projects[currentProjectIdx]?.imageUrl || ''} onChange={(e) => updateProject(projects[currentProjectIdx].id, { imageUrl: e.target.value })} placeholder="Cole a URL da imagem" />
-                        <button onClick={() => removeProject(projects[currentProjectIdx].id)} className="text-destructive text-xs hover:underline flex items-center gap-1 mt-2"><Trash2 className="w-3 h-3" /> Remover projeto</button>
-                      </div>
-                    )}
-                  </motion.div>
-                </AnimatePresence>
-
-                {/* Progress dots */}
-                {projects.length > 1 && (
-                  <div className="flex gap-2 mt-8">
-                    {projects.map((_, i) => (
-                      <button key={i} onClick={() => setCurrentProjectIdx(i)} className={`h-1.5 rounded-full transition-all duration-300 ${i === currentProjectIdx ? 'w-8 bg-accent' : 'w-3 bg-primary-foreground/20'}`} />
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Thumbnail strip */}
-            {projects.length > 1 && (
-              <div className="relative z-10 border-t border-primary-foreground/10 px-6 py-4">
-                <div className="flex gap-3 overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-                  {projects.map((project, i) => (
-                    <button
-                      key={project.id}
-                      onClick={() => setCurrentProjectIdx(i)}
-                      className={`shrink-0 rounded-lg overflow-hidden transition-all duration-300 ${i === currentProjectIdx ? 'ring-2 ring-accent scale-105 opacity-100' : 'opacity-50 hover:opacity-80'}`}
-                      style={{ width: '120px', height: '75px' }}
-                    >
-                      {project.imageUrl ? (
-                        <img src={project.imageUrl} alt={project.title} className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full bg-muted/20 flex items-center justify-center">
-                          <Rocket className="w-5 h-5 text-accent/40" />
-                        </div>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-      </motion.section>
-
-
-      {/* === PIPELINE DE DADOS - Substitui a antiga seção de RQ === */}
-      <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.6 }} className="relative">
         <div className="relative overflow-hidden rounded-2xl border border-accent/20" style={{ background: 'linear-gradient(160deg, hsl(220, 45%, 8%), hsl(220, 35%, 13%))' }}>
           <GalaxyParticles />
           <img src={dataPipelineImg} alt="" className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-screen pointer-events-none" loading="lazy" width={1280} height={768} />
@@ -361,7 +239,6 @@ const NossaAreaPage = () => {
 
             {/* Pipeline steps */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-12 relative">
-              {/* Connector line (desktop) */}
               <div className="hidden lg:block absolute top-[88px] left-[12%] right-[12%] h-0.5 bg-gradient-to-r from-transparent via-accent/40 to-transparent" />
 
               {[
@@ -511,6 +388,127 @@ const NossaAreaPage = () => {
             </div>
           </div>
         </div>
+      </motion.section>
+
+      {/* Nossos principais projetos */}
+      <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.6 }} className="relative">
+        <SectionHeader
+          icon={Rocket}
+          title="Nossos principais projetos"
+          onAdd={isAdmin ? () => addProject({ id: Date.now().toString(), title: 'Novo Projeto', description: 'Descrição do projeto.', imageUrl: '' }) : undefined}
+          addLabel="Adicionar Projeto"
+        />
+
+        {projects.length > 0 && (
+          <div className="relative overflow-hidden rounded-2xl" style={{ background: 'linear-gradient(135deg, hsl(215, 50%, 12%), hsl(215, 40%, 18%))' }}>
+            <div className="absolute inset-0 opacity-20">
+              <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-accent blur-[150px]" />
+              <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-primary blur-[100px]" />
+            </div>
+
+            <div className="relative z-10 grid md:grid-cols-2 min-h-[750px]">
+              {/* Image side */}
+              <div className="relative overflow-hidden flex items-center justify-center p-4">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentProjectIdx}
+                    initial={{ opacity: 0, rotateY: 90 }}
+                    animate={{ opacity: 1, rotateY: 0 }}
+                    exit={{ opacity: 0, rotateY: -90 }}
+                    transition={{ duration: 0.5, ease: 'easeInOut' }}
+                    className="w-full h-full flex items-center justify-center"
+                    style={{ perspective: '1200px' }}
+                  >
+                    {projects[currentProjectIdx]?.imageUrl ? (
+                      <img src={projects[currentProjectIdx].imageUrl} alt={projects[currentProjectIdx].title} className="max-w-full max-h-[700px] object-contain rounded-2xl shadow-2xl" />
+                    ) : (
+                      <div className="w-full h-[700px] flex items-center justify-center bg-muted/10 rounded-2xl">
+                        <Rocket className="w-20 h-20 text-accent/30" />
+                      </div>
+                    )}
+                  </motion.div>
+                </AnimatePresence>
+
+                {/* Navigation arrows */}
+                {projects.length > 1 && (
+                  <>
+                    <button onClick={() => goToProject('prev')} className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border-2 border-primary-foreground/30 flex items-center justify-center text-primary-foreground/70 hover:border-accent hover:text-accent transition-all backdrop-blur-sm bg-foreground/10">
+                      <ChevronLeft className="w-6 h-6" />
+                    </button>
+                    <button onClick={() => goToProject('next')} className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border-2 border-primary-foreground/30 flex items-center justify-center text-primary-foreground/70 hover:border-accent hover:text-accent transition-all backdrop-blur-sm bg-foreground/10">
+                      <ChevronRight className="w-6 h-6" />
+                    </button>
+                  </>
+                )}
+              </div>
+
+              {/* Text side */}
+              <div className="p-8 md:p-12 flex flex-col justify-center">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentProjectIdx}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <div className="w-10 h-1 bg-accent rounded-full mb-6" />
+                    {isAdmin ? (
+                      <input className="text-3xl md:text-4xl font-display font-bold text-primary-foreground mb-4 bg-transparent border-b border-primary-foreground/20 w-full outline-none focus:border-accent" value={projects[currentProjectIdx]?.title || ''} onChange={(e) => updateProject(projects[currentProjectIdx].id, { title: e.target.value })} />
+                    ) : (
+                      <h3 className="text-3xl md:text-4xl font-display font-bold text-primary-foreground mb-4">{projects[currentProjectIdx]?.title}</h3>
+                    )}
+                    {isAdmin ? (
+                      <textarea className="text-primary-foreground/70 text-lg leading-relaxed bg-transparent border border-primary-foreground/10 rounded-lg p-3 w-full min-h-[100px] outline-none focus:border-accent" value={projects[currentProjectIdx]?.description || ''} onChange={(e) => updateProject(projects[currentProjectIdx].id, { description: e.target.value })} />
+                    ) : (
+                      <p className="text-primary-foreground/70 text-lg leading-relaxed">{projects[currentProjectIdx]?.description}</p>
+                    )}
+                    {isAdmin && (
+                      <div className="mt-4 space-y-2">
+                        <label className="text-xs text-primary-foreground/50">URL da imagem</label>
+                        <input className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-sm outline-none focus:border-accent" value={projects[currentProjectIdx]?.imageUrl || ''} onChange={(e) => updateProject(projects[currentProjectIdx].id, { imageUrl: e.target.value })} placeholder="Cole a URL da imagem" />
+                        <button onClick={() => removeProject(projects[currentProjectIdx].id)} className="text-destructive text-xs hover:underline flex items-center gap-1 mt-2"><Trash2 className="w-3 h-3" /> Remover projeto</button>
+                      </div>
+                    )}
+                  </motion.div>
+                </AnimatePresence>
+
+                {/* Progress dots */}
+                {projects.length > 1 && (
+                  <div className="flex gap-2 mt-8">
+                    {projects.map((_, i) => (
+                      <button key={i} onClick={() => setCurrentProjectIdx(i)} className={`h-1.5 rounded-full transition-all duration-300 ${i === currentProjectIdx ? 'w-8 bg-accent' : 'w-3 bg-primary-foreground/20'}`} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Thumbnail strip */}
+            {projects.length > 1 && (
+              <div className="relative z-10 border-t border-primary-foreground/10 px-6 py-4">
+                <div className="flex gap-3 overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                  {projects.map((project, i) => (
+                    <button
+                      key={project.id}
+                      onClick={() => setCurrentProjectIdx(i)}
+                      className={`shrink-0 rounded-lg overflow-hidden transition-all duration-300 ${i === currentProjectIdx ? 'ring-2 ring-accent scale-105 opacity-100' : 'opacity-50 hover:opacity-80'}`}
+                      style={{ width: '120px', height: '75px' }}
+                    >
+                      {project.imageUrl ? (
+                        <img src={project.imageUrl} alt={project.title} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full bg-muted/20 flex items-center justify-center">
+                          <Rocket className="w-5 h-5 text-accent/40" />
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </motion.section>
 
       {/* === CHAMADOS / SERVICE DESK === */}

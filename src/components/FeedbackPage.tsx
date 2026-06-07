@@ -166,14 +166,14 @@ const FeedbackPage = () => {
   const [sugestoesCount, setSugestoesCount] = useState(0);
 
   const fictionalPraise = useMemo(() => ([
-    { id: 1, comentario: 'O painel ficou muito intuitivo, ajudou demais nas reuniões de fechamento!', nome_relatorio: 'Headcount Corporativo' },
-    { id: 2, comentario: 'A equipe sempre entrega análises bem completas e no prazo. Parabéns!', nome_relatorio: 'Treinamento Corporativo' },
-    { id: 3, comentario: 'Adoro a clareza dos dashboards, fica fácil de apresentar pra liderança.', nome_relatorio: 'Gestão Candidato SOU' },
-    { id: 4, comentario: 'O suporte do time de BI é excelente, respondem rápido e com qualidade.', nome_relatorio: 'Indicadores de Saúde' },
-    { id: 5, comentario: 'O novo layout dos relatórios deixou tudo mais profissional e moderno.', nome_relatorio: 'Headcount Corporativo' },
-    { id: 6, comentario: 'Visualizações lindas e dados confiáveis — virou referência aqui na área!', nome_relatorio: 'Treinamento Corporativo' },
-    { id: 7, comentario: 'Excelente trabalho da equipe! Os indicadores mudaram nossa rotina.', nome_relatorio: 'Gestão Candidato SOU' },
-    { id: 8, comentario: 'Adorei poder filtrar por unidade, ficou muito mais prático.', nome_relatorio: 'Indicadores de Saúde' },
+    { id: 1, comentario: 'O time entrega análises incríveis com muita agilidade. Nota 10!' },
+    { id: 2, comentario: 'A clareza das visualizações facilita muito a apresentação para a liderança.' },
+    { id: 3, comentario: 'Parabéns pelo suporte! Sempre respondem rápido e com qualidade.' },
+    { id: 4, comentario: 'O novo layout dos painéis ficou muito profissional e moderno.' },
+    { id: 5, comentario: 'Dados confiáveis e bem organizados. Virou referência na área!' },
+    { id: 6, comentario: 'Adoro a intuitividade dos dashboards, tudo muito fácil de encontrar.' },
+    { id: 7, comentario: 'Excelente trabalho da equipe! Os indicadores mudaram nossa rotina.' },
+    { id: 8, comentario: 'A experiência do site está linda e muito fluida. Continuem assim!' },
   ]), []);
   const recentPraise = fictionalPraise;
 
@@ -299,7 +299,6 @@ const FeedbackPage = () => {
                 <div key={`${f.id}-${i}`} className="shrink-0 w-80 rounded-xl p-5 border border-accent/15 bg-muted/10">
                   <Star className="w-4 h-4 text-amber-400 mb-2" />
                   <p className="text-foreground/85 text-sm leading-relaxed italic line-clamp-3">"{f.comentario}"</p>
-                  {f.nome_relatorio && <p className="text-accent text-xs font-medium mt-3">— {f.nome_relatorio}</p>}
                 </div>
               ))}
             </motion.div>

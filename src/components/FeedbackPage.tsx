@@ -158,26 +158,33 @@ const FeedbackPage = () => {
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
+  const [pickerMode, setPickerMode] = useState<'lista' | 'galeria'>('lista');
   const reports = content.reports || [];
 
-  // Live counters & praise mural
+  // Live counters (real) + fictitious praise mural
   const [elogiosCount, setElogiosCount] = useState(0);
   const [sugestoesCount, setSugestoesCount] = useState(0);
-  const [recentPraise, setRecentPraise] = useState<{ id: number; comentario: string; nome_relatorio?: string }[]>([]);
+
+  const fictionalPraise = useMemo(() => ([
+    { id: 1, comentario: 'O painel ficou muito intuitivo, ajudou demais nas reuniões de fechamento!', nome_relatorio: 'Headcount Corporativo' },
+    { id: 2, comentario: 'A equipe sempre entrega análises bem completas e no prazo. Parabéns!', nome_relatorio: 'Treinamento Corporativo' },
+    { id: 3, comentario: 'Adoro a clareza dos dashboards, fica fácil de apresentar pra liderança.', nome_relatorio: 'Gestão Candidato SOU' },
+    { id: 4, comentario: 'O suporte do time de BI é excelente, respondem rápido e com qualidade.', nome_relatorio: 'Indicadores de Saúde' },
+    { id: 5, comentario: 'O novo layout dos relatórios deixou tudo mais profissional e moderno.', nome_relatorio: 'Headcount Corporativo' },
+    { id: 6, comentario: 'Visualizações lindas e dados confiáveis — virou referência aqui na área!', nome_relatorio: 'Treinamento Corporativo' },
+    { id: 7, comentario: 'Excelente trabalho da equipe! Os indicadores mudaram nossa rotina.', nome_relatorio: 'Gestão Candidato SOU' },
+    { id: 8, comentario: 'Adorei poder filtrar por unidade, ficou muito mais prático.', nome_relatorio: 'Indicadores de Saúde' },
+  ]), []);
+  const recentPraise = fictionalPraise;
 
   const loadStats = async () => {
     const [{ data: rel }, { data: site }] = await Promise.all([
-      supabase.from('feedback_relatorios').select('id, tipo, comentario, nome_relatorio, created_at').order('created_at', { ascending: false }),
-      supabase.from('feedback_site').select('id, tipo, comentario, created_at').order('created_at', { ascending: false }),
+      supabase.from('feedback_relatorios').select('id, tipo').order('created_at', { ascending: false }),
+      supabase.from('feedback_site').select('id, tipo').order('created_at', { ascending: false }),
     ]);
     const all = [...(rel || []), ...(site || [])];
     setElogiosCount(all.filter((f: any) => f.tipo === 'elogio').length);
     setSugestoesCount(all.filter((f: any) => f.tipo === 'sugestao').length);
-    setRecentPraise(
-      all.filter((f: any) => f.tipo === 'elogio')
-        .slice(0, 10)
-        .map((f: any) => ({ id: f.id, comentario: f.comentario, nome_relatorio: f.nome_relatorio }))
-    );
   };
 
   useEffect(() => { loadStats(); }, []);
@@ -277,7 +284,7 @@ const FeedbackPage = () => {
             </div>
             <div>
               <h3 className="text-xl font-display font-bold text-foreground">Mural de elogios recentes</h3>
-              <p className="text-xs text-muted-foreground">Mensagens reais enviadas pela equipe AeC</p>
+              <p className="text-xs text-muted-foreground">Alguns exemplos de elogios da equipe</p>
             </div>
           </div>
           <div className="relative overflow-hidden rounded-2xl border border-border/30 py-5" style={{ background: 'linear-gradient(160deg, hsl(222, 40%, 10%), hsl(215, 35%, 7%))' }}>
@@ -427,12 +434,50 @@ const FeedbackPage = () => {
                       </div>
                       {target === 'relatorio' && (
                         <div>
-                          <label className="text-sm font-medium text-foreground mb-2 block">Relatório</label>
-                          <ReportCombobox
-                            value={nomeRelatorio}
-                            onChange={setNomeRelatorio}
-                            options={reports.map((r) => r.name)}
-                          />
+                          <div className="flex items-center justify-between mb-2">
+                            <label className="text-sm font-medium text-foreground">Relatório</label>
+                            <div className="inline-flex rounded-lg border border-border/50 bg-muted/20 p-0.5 text-xs">
+                              <button type="button" onClick={() => setPickerMode('lista')} className={`px-3 py-1 rounded-md font-medium transition ${pickerMode === 'lista' ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground'}`}>Lista</button>
+                              <button type="button" onClick={() => setPickerMode('galeria')} className={`px-3 py-1 rounded-md font-medium transition ${pickerMode === 'galeria' ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground'}`}>Galeria</button>
+                            </div>
+                          </div>
+                          {pickerMode === 'lista' ? (
+                            <ReportCombobox value={nomeRelatorio} onChange={setNomeRelatorio} options={reports.map((r) => r.name)} />
+                          ) : (
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-80 overflow-y-auto p-1 rounded-xl border border-border/30 bg-muted/10">
+                              {reports.map((r) => {
+                                const selected = nomeRelatorio === r.name;
+                                const thumb = r.images?.[0];
+                                return (
+                                  <button key={r.id} type="button" onClick={() => setNomeRelatorio(r.name)}
+                                    className={`group relative rounded-xl overflow-hidden border transition-all text-left ${selected ? 'border-accent ring-2 ring-accent/40 shadow-lg shadow-accent/20' : 'border-border/30 hover:border-accent/40'}`}
+                                    style={{ background: 'linear-gradient(160deg, hsl(222, 40%, 12%), hsl(215, 35%, 9%))' }}>
+                                    <div className="aspect-video w-full overflow-hidden bg-gradient-to-br from-accent/20 to-primary/20 flex items-center justify-center">
+                                      {thumb ? (
+                                        <img src={thumb} alt={r.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                      ) : (
+                                        <FileText className="w-8 h-8 text-accent/50" />
+                                      )}
+                                    </div>
+                                    <div className="p-2.5">
+                                      <p className={`text-xs font-semibold leading-tight line-clamp-2 ${selected ? 'text-accent' : 'text-foreground/90'}`}>{r.name}</p>
+                                    </div>
+                                    {selected && (
+                                      <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-accent flex items-center justify-center shadow-lg">
+                                        <Check className="w-3.5 h-3.5 text-accent-foreground" />
+                                      </div>
+                                    )}
+                                  </button>
+                                );
+                              })}
+                              {reports.length === 0 && (
+                                <p className="col-span-full text-center text-xs text-muted-foreground/60 py-6">Nenhum relatório cadastrado.</p>
+                              )}
+                            </div>
+                          )}
+                          {nomeRelatorio && pickerMode === 'galeria' && (
+                            <p className="mt-2 text-xs text-accent">Selecionado: <b>{nomeRelatorio}</b></p>
+                          )}
                         </div>
                       )}
                       <div>

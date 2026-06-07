@@ -283,7 +283,7 @@ const FeedbackPage = () => {
             </div>
             <div>
               <h3 className="text-xl font-display font-bold text-foreground">Mural de elogios recentes</h3>
-              <p className="text-xs text-muted-foreground">Mensagens reais enviadas pela equipe AeC</p>
+              <p className="text-xs text-muted-foreground">Alguns exemplos de elogios da equipe</p>
             </div>
           </div>
           <div className="relative overflow-hidden rounded-2xl border border-border/30 py-5" style={{ background: 'linear-gradient(160deg, hsl(222, 40%, 10%), hsl(215, 35%, 7%))' }}>

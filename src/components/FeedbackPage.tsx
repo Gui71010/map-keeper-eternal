@@ -434,12 +434,50 @@ const FeedbackPage = () => {
                       </div>
                       {target === 'relatorio' && (
                         <div>
-                          <label className="text-sm font-medium text-foreground mb-2 block">Relatório</label>
-                          <ReportCombobox
-                            value={nomeRelatorio}
-                            onChange={setNomeRelatorio}
-                            options={reports.map((r) => r.name)}
-                          />
+                          <div className="flex items-center justify-between mb-2">
+                            <label className="text-sm font-medium text-foreground">Relatório</label>
+                            <div className="inline-flex rounded-lg border border-border/50 bg-muted/20 p-0.5 text-xs">
+                              <button type="button" onClick={() => setPickerMode('lista')} className={`px-3 py-1 rounded-md font-medium transition ${pickerMode === 'lista' ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground'}`}>Lista</button>
+                              <button type="button" onClick={() => setPickerMode('galeria')} className={`px-3 py-1 rounded-md font-medium transition ${pickerMode === 'galeria' ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground'}`}>Galeria</button>
+                            </div>
+                          </div>
+                          {pickerMode === 'lista' ? (
+                            <ReportCombobox value={nomeRelatorio} onChange={setNomeRelatorio} options={reports.map((r) => r.name)} />
+                          ) : (
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-80 overflow-y-auto p-1 rounded-xl border border-border/30 bg-muted/10">
+                              {reports.map((r) => {
+                                const selected = nomeRelatorio === r.name;
+                                const thumb = r.images?.[0];
+                                return (
+                                  <button key={r.id} type="button" onClick={() => setNomeRelatorio(r.name)}
+                                    className={`group relative rounded-xl overflow-hidden border transition-all text-left ${selected ? 'border-accent ring-2 ring-accent/40 shadow-lg shadow-accent/20' : 'border-border/30 hover:border-accent/40'}`}
+                                    style={{ background: 'linear-gradient(160deg, hsl(222, 40%, 12%), hsl(215, 35%, 9%))' }}>
+                                    <div className="aspect-video w-full overflow-hidden bg-gradient-to-br from-accent/20 to-primary/20 flex items-center justify-center">
+                                      {thumb ? (
+                                        <img src={thumb} alt={r.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                      ) : (
+                                        <FileText className="w-8 h-8 text-accent/50" />
+                                      )}
+                                    </div>
+                                    <div className="p-2.5">
+                                      <p className={`text-xs font-semibold leading-tight line-clamp-2 ${selected ? 'text-accent' : 'text-foreground/90'}`}>{r.name}</p>
+                                    </div>
+                                    {selected && (
+                                      <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-accent flex items-center justify-center shadow-lg">
+                                        <Check className="w-3.5 h-3.5 text-accent-foreground" />
+                                      </div>
+                                    )}
+                                  </button>
+                                );
+                              })}
+                              {reports.length === 0 && (
+                                <p className="col-span-full text-center text-xs text-muted-foreground/60 py-6">Nenhum relatório cadastrado.</p>
+                              )}
+                            </div>
+                          )}
+                          {nomeRelatorio && pickerMode === 'galeria' && (
+                            <p className="mt-2 text-xs text-accent">Selecionado: <b>{nomeRelatorio}</b></p>
+                          )}
                         </div>
                       )}
                       <div>

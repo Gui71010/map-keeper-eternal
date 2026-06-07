@@ -160,24 +160,30 @@ const FeedbackPage = () => {
   const [error, setError] = useState('');
   const reports = content.reports || [];
 
-  // Live counters & praise mural
+  // Live counters (real) + fictitious praise mural
   const [elogiosCount, setElogiosCount] = useState(0);
   const [sugestoesCount, setSugestoesCount] = useState(0);
-  const [recentPraise, setRecentPraise] = useState<{ id: number; comentario: string; nome_relatorio?: string }[]>([]);
+
+  const fictionalPraise = useMemo(() => ([
+    { id: 1, comentario: 'O painel ficou muito intuitivo, ajudou demais nas reuniões de fechamento!', nome_relatorio: 'Headcount Corporativo' },
+    { id: 2, comentario: 'A equipe sempre entrega análises bem completas e no prazo. Parabéns!', nome_relatorio: 'Treinamento Corporativo' },
+    { id: 3, comentario: 'Adoro a clareza dos dashboards, fica fácil de apresentar pra liderança.', nome_relatorio: 'Gestão Candidato SOU' },
+    { id: 4, comentario: 'O suporte do time de BI é excelente, respondem rápido e com qualidade.', nome_relatorio: 'Indicadores de Saúde' },
+    { id: 5, comentario: 'O novo layout dos relatórios deixou tudo mais profissional e moderno.', nome_relatorio: 'Headcount Corporativo' },
+    { id: 6, comentario: 'Visualizações lindas e dados confiáveis — virou referência aqui na área!', nome_relatorio: 'Treinamento Corporativo' },
+    { id: 7, comentario: 'Excelente trabalho da equipe! Os indicadores mudaram nossa rotina.', nome_relatorio: 'Gestão Candidato SOU' },
+    { id: 8, comentario: 'Adorei poder filtrar por unidade, ficou muito mais prático.', nome_relatorio: 'Indicadores de Saúde' },
+  ]), []);
+  const recentPraise = fictionalPraise;
 
   const loadStats = async () => {
     const [{ data: rel }, { data: site }] = await Promise.all([
-      supabase.from('feedback_relatorios').select('id, tipo, comentario, nome_relatorio, created_at').order('created_at', { ascending: false }),
-      supabase.from('feedback_site').select('id, tipo, comentario, created_at').order('created_at', { ascending: false }),
+      supabase.from('feedback_relatorios').select('id, tipo').order('created_at', { ascending: false }),
+      supabase.from('feedback_site').select('id, tipo').order('created_at', { ascending: false }),
     ]);
     const all = [...(rel || []), ...(site || [])];
     setElogiosCount(all.filter((f: any) => f.tipo === 'elogio').length);
     setSugestoesCount(all.filter((f: any) => f.tipo === 'sugestao').length);
-    setRecentPraise(
-      all.filter((f: any) => f.tipo === 'elogio')
-        .slice(0, 10)
-        .map((f: any) => ({ id: f.id, comentario: f.comentario, nome_relatorio: f.nome_relatorio }))
-    );
   };
 
   useEffect(() => { loadStats(); }, []);

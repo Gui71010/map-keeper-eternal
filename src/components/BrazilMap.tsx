@@ -384,21 +384,26 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
                         initial={{ opacity: 0, y: 15 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.06, duration: 0.3 }}
-                        className="group rounded-xl overflow-hidden border border-primary-foreground/10 hover:border-accent/40 transition-all duration-300 hover:shadow-lg hover:shadow-accent/10"
-                        style={{ background: 'hsl(215, 35%, 12%)' }}
+                        className="group rounded-2xl overflow-hidden border border-accent/15 hover:border-accent/50 transition-all duration-300 hover:shadow-xl hover:shadow-accent/20 hover:-translate-y-1"
+                        style={{ background: 'linear-gradient(160deg, hsl(215, 40%, 11%), hsl(200, 45%, 8%))' }}
                       >
-                        <div className="w-full h-40 overflow-hidden relative">
+                        <div className="w-full h-44 overflow-hidden relative">
                           {city.imageUrl ? (
-                            <img src={city.imageUrl} alt={city.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                            <img src={city.imageUrl} alt={city.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-teal-500/10 to-cyan-500/10">
+                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-teal-500/15 to-cyan-500/15">
                               <Building2 className="w-10 h-10 text-accent/30" />
                             </div>
                           )}
-                          <div className="absolute top-2 left-2 px-2 py-1 rounded-md bg-black/60 backdrop-blur-sm">
-                            <span className="text-xs font-bold text-accent">{selectedData.stateCode}</span>
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                          <div className="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-accent/90 backdrop-blur-sm shadow-lg">
+                            <span className="text-[11px] font-bold text-primary-foreground tracking-wider">{selectedData.stateCode}</span>
+                          </div>
+                          <div className="absolute bottom-3 left-3 right-3">
+                            <h5 className="font-display font-bold text-white text-xl leading-tight drop-shadow-lg">{city.name}</h5>
                           </div>
                         </div>
+
                         <div className="p-4">
                           {isAdmin ? (
                             <div className="space-y-2">

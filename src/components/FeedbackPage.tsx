@@ -299,7 +299,6 @@ const FeedbackPage = () => {
                 <div key={`${f.id}-${i}`} className="shrink-0 w-80 rounded-xl p-5 border border-accent/15 bg-muted/10">
                   <Star className="w-4 h-4 text-amber-400 mb-2" />
                   <p className="text-foreground/85 text-sm leading-relaxed italic line-clamp-3">"{f.comentario}"</p>
-                  {f.nome_relatorio && <p className="text-accent text-xs font-medium mt-3">— {f.nome_relatorio}</p>}
                 </div>
               ))}
             </motion.div>

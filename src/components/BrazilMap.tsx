@@ -425,38 +425,42 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
                             </div>
                           ) : (
                             <>
-                              <h5 className="font-display font-bold text-primary-foreground text-lg mb-1">{city.name}</h5>
                               {city.address && (
-                                <div className="flex items-center gap-1.5 text-primary-foreground/40 text-xs mb-3">
-                                  <MapPin className="w-3 h-3 shrink-0" />
+                                <div className="flex items-center gap-1.5 text-primary-foreground/50 text-xs mb-3">
+                                  <MapPin className="w-3 h-3 shrink-0 text-accent" />
                                   <span>{city.address}</span>
                                 </div>
                               )}
                               {city.siteUrl && (
-                                <a href={city.siteUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 mt-1 px-3 py-2 rounded-lg bg-accent/15 hover:bg-accent/25 text-accent text-xs font-semibold transition border border-accent/25">
+                                <a href={city.siteUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 mb-3 px-3 py-2 rounded-lg bg-gradient-to-r from-accent/20 to-cyan-400/20 hover:from-accent/30 hover:to-cyan-400/30 text-accent text-xs font-semibold transition border border-accent/30">
                                   <ExternalLink className="w-3.5 h-3.5" /> Acessar site
                                 </a>
                               )}
                               {(city.analystName || city.analystRole) && (
-                                <div className="mt-4 pt-4 border-t border-primary-foreground/10 flex items-center gap-3">
-                                  <div className="w-12 h-12 rounded-full overflow-hidden bg-muted/30 flex items-center justify-center shrink-0 ring-2 ring-accent/30">
-                                    {city.analystPhoto ? (
-                                      <img src={city.analystPhoto} alt={city.analystName} className="w-full h-full object-cover" />
-                                    ) : (
-                                      <User className="w-5 h-5 text-accent/60" />
-                                    )}
-                                  </div>
-                                  <div className="min-w-0 flex-1">
-                                    <p className="text-[10px] font-semibold uppercase tracking-wider text-accent/70 mb-0.5">Analista responsável</p>
-                                    <p className="text-sm font-display font-semibold text-primary-foreground truncate">{city.analystName || '—'}</p>
-                                    <div className="flex items-center gap-2 text-xs text-primary-foreground/60">
-                                      {city.analystRole && <span className="truncate">{city.analystRole}</span>}
-                                      {city.analystAge && <span className="text-primary-foreground/40">· {city.analystAge} anos</span>}
+                                <div className="mt-3 pt-4 border-t border-accent/15 rounded-xl p-3 -mx-1" style={{ background: 'linear-gradient(135deg, hsl(174, 60%, 18% / 0.4), hsl(220, 50%, 14% / 0.6))' }}>
+                                  <p className="text-[10px] font-bold uppercase tracking-widest text-accent mb-2.5 flex items-center gap-1.5">
+                                    <span className="w-1 h-1 rounded-full bg-accent animate-pulse" /> Analista responsável
+                                  </p>
+                                  <div className="flex items-center gap-3">
+                                    <div className="w-14 h-14 rounded-2xl overflow-hidden bg-gradient-to-br from-accent/30 to-cyan-400/30 flex items-center justify-center shrink-0 ring-2 ring-accent/40 shadow-lg shadow-accent/20">
+                                      {city.analystPhoto ? (
+                                        <img src={city.analystPhoto} alt={city.analystName} className="w-full h-full object-cover" />
+                                      ) : (
+                                        <User className="w-6 h-6 text-accent" />
+                                      )}
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                      <p className="text-base font-display font-bold text-primary-foreground truncate leading-tight">{city.analystName || '—'}</p>
+                                      <div className="flex items-center gap-1.5 text-xs text-primary-foreground/70 mt-0.5 flex-wrap">
+                                        {city.analystRole && <span className="px-2 py-0.5 rounded-md bg-accent/15 text-accent font-medium truncate">{city.analystRole}</span>}
+                                        {city.analystAge && <span className="text-primary-foreground/50">{city.analystAge} anos</span>}
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
                               )}
                             </>
+
                           )}
                         </div>
                       </motion.div>

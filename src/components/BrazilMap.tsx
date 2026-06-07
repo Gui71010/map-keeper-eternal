@@ -339,8 +339,8 @@ const BrazilMap = ({ states, onUpdateStates }: BrazilMapProps) => {
               exit={{ opacity: 0, scale: 0.92, y: 10 }}
               transition={{ type: 'spring', damping: 24, stiffness: 280 }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-5xl max-h-[90vh] rounded-2xl overflow-hidden border-2 border-accent/30 shadow-2xl shadow-accent/20 flex flex-col"
-              style={{ background: 'linear-gradient(135deg, hsl(215, 40%, 10%), hsl(215, 35%, 14%))' }}
+              className="w-full max-w-5xl max-h-[90vh] rounded-3xl overflow-hidden border border-accent/40 shadow-2xl shadow-accent/30 flex flex-col relative"
+              style={{ background: 'linear-gradient(140deg, hsl(220, 50%, 8%) 0%, hsl(195, 60%, 12%) 50%, hsl(174, 55%, 10%) 100%)' }}
             >
               <div className="flex items-center justify-between px-6 py-4 border-b border-accent/15 shrink-0">
                 <div className="flex items-center gap-3">

@@ -158,6 +158,7 @@ const FeedbackPage = () => {
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
+  const [pickerMode, setPickerMode] = useState<'lista' | 'galeria'>('lista');
   const reports = content.reports || [];
 
   // Live counters (real) + fictitious praise mural

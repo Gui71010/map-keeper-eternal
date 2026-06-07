@@ -26,12 +26,12 @@ const NossaAreaPage = () => {
   const areaReportCards = content.areaReportCards || [];
 
   useEffect(() => {
-    if (projects.length <= 1) return;
+    if (projects.length <= 1 || isAdmin) return;
     projectTimerRef.current = setInterval(() => {
       setCurrentProjectIdx(prev => (prev + 1) % projects.length);
     }, 5000);
     return () => { if (projectTimerRef.current) clearInterval(projectTimerRef.current); };
-  }, [projects.length]);
+  }, [projects.length, isAdmin]);
 
   const goToProject = (dir: 'prev' | 'next') => {
     if (projectTimerRef.current) clearInterval(projectTimerRef.current);

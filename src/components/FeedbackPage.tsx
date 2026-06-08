@@ -4,6 +4,7 @@ import { MessageSquare, Star, Lightbulb, Send, ArrowLeft, FileText, Globe, Check
 import { useAdmin } from '@/contexts/AdminContext';
 import { supabase } from '@/integrations/supabase/client';
 import GalaxyParticles from '@/components/GalaxyParticles';
+import feedbackHeroImg from '@/assets/data-pipeline.jpg';
 
 type FeedbackTarget = null | 'relatorio' | 'site';
 type FeedbackType = null | 'elogio' | 'sugestao';
@@ -223,6 +224,8 @@ const FeedbackPage = () => {
       {/* Hero with animated icons + dense particles */}
       <motion.section initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="relative overflow-hidden rounded-2xl gradient-navy p-10 md:p-16">
         <GalaxyParticles />
+        <img src={feedbackHeroImg} alt="" className="absolute inset-0 w-full h-full object-cover opacity-25 mix-blend-screen pointer-events-none" loading="eager" />
+        <div className="absolute inset-0 bg-gradient-to-r from-navy via-navy/85 to-transparent pointer-events-none" />
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-accent blur-[120px] animate-pulse" />
           <div className="absolute bottom-0 left-0 w-72 h-72 rounded-full bg-primary blur-[100px] animate-pulse" style={{ animationDelay: '1.5s' }} />

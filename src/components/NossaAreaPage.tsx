@@ -10,6 +10,14 @@ import OrgChart from '@/components/OrgChart';
 import ReportDetailModal from '@/components/ReportDetailModal';
 import adminTeamImg from '@/assets/admin-team.jpg';
 import dataPipelineImg from '@/assets/data-pipeline.jpg';
+import journeyColetaImg from '@/assets/journey-coleta.jpg';
+import journeyModelagemImg from '@/assets/journey-modelagem.jpg';
+import journeyAnaliseImg from '@/assets/journey-analise.jpg';
+import journeyDecisaoImg from '@/assets/journey-decisao.jpg';
+import stackPowerBiImg from '@/assets/stack-powerbi.jpg';
+import stackSqlImg from '@/assets/stack-sql.jpg';
+import stackExcelImg from '@/assets/stack-excel.jpg';
+import stackOrbiImg from '@/assets/stack-orbi.jpg';
 
 const NossaAreaPage = () => {
   const { content, isAdmin, updateContent, addAnalyst, addProject, updateProject, removeProject, addAreaReportCard, updateAreaReportCard, removeAreaReportCard } = useAdmin();
@@ -242,10 +250,10 @@ const NossaAreaPage = () => {
               <div className="hidden lg:block absolute top-[88px] left-[12%] right-[12%] h-0.5 bg-gradient-to-r from-transparent via-accent/40 to-transparent" />
 
               {[
-                { icon: Database, color: 'from-blue-500 to-cyan-500', title: '1. Coleta', desc: 'Conectamos múltiplas fontes — Orbi, sistemas internos, planilhas e bases externas.', image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop' },
-                { icon: Layers, color: 'from-cyan-500 to-teal-500', title: '2. Modelagem', desc: 'Estruturamos os dados, validamos a integridade e desenhamos métricas confiáveis.', image: 'https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=600&h=400&fit=crop' },
-                { icon: Cpu, color: 'from-teal-500 to-emerald-500', title: '3. Análise', desc: 'Aplicamos lógica analítica e narrativa para extrair padrões e oportunidades.', image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop' },
-                { icon: LineChart, color: 'from-emerald-500 to-amber-500', title: '4. Decisão', desc: 'Entregamos dashboards e relatórios que orientam a estratégia da Diretoria.', image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop' },
+                { icon: Database, color: 'from-blue-500 to-cyan-500', title: '1. Coleta', desc: 'Conectamos múltiplas fontes — Orbi, sistemas internos, planilhas e bases externas.', image: journeyColetaImg },
+                { icon: Layers, color: 'from-cyan-500 to-teal-500', title: '2. Modelagem', desc: 'Estruturamos os dados, validamos a integridade e desenhamos métricas confiáveis.', image: journeyModelagemImg },
+                { icon: Cpu, color: 'from-teal-500 to-emerald-500', title: '3. Análise', desc: 'Aplicamos lógica analítica e narrativa para extrair padrões e oportunidades.', image: journeyAnaliseImg },
+                { icon: LineChart, color: 'from-emerald-500 to-amber-500', title: '4. Decisão', desc: 'Entregamos dashboards e relatórios que orientam a estratégia da Diretoria.', image: journeyDecisaoImg },
               ].map((step, i) => (
                 <motion.div
                   key={i}
@@ -278,10 +286,10 @@ const NossaAreaPage = () => {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
                 {[
-                  { title: 'Power BI', desc: 'Visualização e modelagem de dashboards corporativos.', image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop', color: 'from-amber-500 to-yellow-500' },
-                  { title: 'SQL & Bases', desc: 'Consultas, integrações e modelagem dimensional.', image: 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=600&h=400&fit=crop', color: 'from-blue-500 to-indigo-500' },
-                  { title: 'Excel Avançado', desc: 'Análises rápidas, prototipação e validação cruzada.', image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&h=400&fit=crop', color: 'from-emerald-500 to-green-500' },
-                  { title: 'Orbi & Sistemas', desc: 'Integração com as fontes oficiais da Diretoria.', image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop', color: 'from-violet-500 to-purple-500' },
+                  { title: 'Power BI', desc: 'Visualização e modelagem de dashboards corporativos.', image: stackPowerBiImg, color: 'from-amber-500 to-yellow-500' },
+                  { title: 'SQL & Bases', desc: 'Consultas, integrações e modelagem dimensional.', image: stackSqlImg, color: 'from-blue-500 to-indigo-500' },
+                  { title: 'Excel Avançado', desc: 'Análises rápidas, prototipação e validação cruzada.', image: stackExcelImg, color: 'from-emerald-500 to-green-500' },
+                  { title: 'Orbi & Sistemas', desc: 'Integração com as fontes oficiais da Diretoria.', image: stackOrbiImg, color: 'from-violet-500 to-purple-500' },
                 ].map((t, i) => (
                   <motion.div
                     key={i}

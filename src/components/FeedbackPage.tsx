@@ -446,6 +446,13 @@ const FeedbackPage = () => {
                           {pickerMode === 'lista' ? (
                             <ReportCombobox value={nomeRelatorio} onChange={setNomeRelatorio} options={reports.map((r) => r.name)} />
                           ) : (
+                            <>
+                              {!nomeRelatorio && (
+                                <div className="mb-3 flex items-start gap-2.5 rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-2.5">
+                                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 9v4"/><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636-2.87L13.637 3.59a1.914 1.914 0 0 0-3.274 0z"/><path d="M12 17h.01"/></svg>
+                                  <p className="text-xs text-amber-200/90 leading-snug"><b className="text-amber-300">Selecione um relatório</b> clicando em uma das opções abaixo para continuar.</p>
+                                </div>
+                              )}
                             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-80 overflow-y-auto p-1 rounded-xl border border-border/30 bg-muted/10">
                               {reports.map((r) => {
                                 const selected = nomeRelatorio === r.name;

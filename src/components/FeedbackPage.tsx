@@ -361,8 +361,8 @@ const FeedbackPage = () => {
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                       {[
-                        { key: 'site' as const, icon: Globe, title: 'Site', desc: 'Experiência geral do site', color: 'from-accent to-primary' },
-                        { key: 'relatorio' as const, icon: FileText, title: 'Relatórios', desc: 'Sobre um relatório específico', color: 'from-primary to-accent' },
+                        { key: 'site' as const, icon: Globe, title: 'Site', desc: 'Experiência geral do site', colorFrom: 'hsl(199, 89%, 48%)', colorTo: 'hsl(217, 91%, 60%)' },
+                        { key: 'relatorio' as const, icon: FileText, title: 'Relatórios', desc: 'Sobre um relatório específico', colorFrom: 'hsl(280, 75%, 60%)', colorTo: 'hsl(330, 80%, 58%)' },
                       ].map((opt) => (
                         <button
                           key={opt.key}
@@ -370,7 +370,7 @@ const FeedbackPage = () => {
                           className="group relative rounded-2xl p-8 border border-border/30 hover:border-accent/40 transition-all duration-400 text-left"
                           style={{ background: 'hsl(215, 25%, 12% / 0.5)' }}
                         >
-                          <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${opt.color} flex items-center justify-center mb-5 shadow-xl group-hover:scale-105 transition-transform duration-300`}>
+                          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5 shadow-xl group-hover:scale-105 transition-transform duration-300" style={{ background: `linear-gradient(135deg, ${opt.colorFrom}, ${opt.colorTo})` }}>
                             <opt.icon className="w-8 h-8 text-white" />
                           </div>
                           <h4 className="text-xl font-display font-bold text-foreground mb-1">{opt.title}</h4>

@@ -120,6 +120,7 @@ interface SiteContent {
   rqTravelContactTeams: string;
   rqTravelContactWhatsapp: string;
   dataJourneyStats: DataJourneyStat[];
+  gestaoxUrl: string;
 }
 
 interface AdminContextType {

@@ -483,6 +483,7 @@ const FeedbackPage = () => {
                                 <p className="col-span-full text-center text-xs text-muted-foreground/60 py-6">Nenhum relatório cadastrado.</p>
                               )}
                             </div>
+                            </>
                           )}
                           {nomeRelatorio && pickerMode === 'galeria' && (
                             <p className="mt-2 text-xs text-accent">Selecionado: <b>{nomeRelatorio}</b></p>

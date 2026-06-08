@@ -232,6 +232,7 @@ const DEFAULT_CONTENT: SiteContent = {
     { id: '3', value: '100%', label: 'Governança de dados', icon: 'Sparkles' },
     { id: '4', value: '24/7', label: 'Insights disponíveis', icon: 'LineChart' },
   ],
+  gestaoxUrl: 'https://gestaox.aec.com.br',
 };
 
 const ADMIN_PASSWORD = 'Guisantos88';

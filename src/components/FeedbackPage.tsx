@@ -4,6 +4,7 @@ import { MessageSquare, Star, Lightbulb, Send, ArrowLeft, FileText, Globe, Check
 import { useAdmin } from '@/contexts/AdminContext';
 import { supabase } from '@/integrations/supabase/client';
 import GalaxyParticles from '@/components/GalaxyParticles';
+import feedbackHeroImg from '@/assets/data-pipeline.jpg';
 
 type FeedbackTarget = null | 'relatorio' | 'site';
 type FeedbackType = null | 'elogio' | 'sugestao';

@@ -530,14 +530,25 @@ const NossaAreaPage = () => {
                   <div className="w-20 h-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 mt-3" />
                 </div>
               </div>
-              <a
-                href="https://gestaox.aec.com.br"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold text-sm shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50 hover:scale-[1.02] transition-all"
-              >
-                <ExternalLink className="w-4 h-4" /> Acessar Sistema GestaoX
-              </a>
+              <div className="flex flex-col items-stretch gap-2">
+                <a
+                  href={content.gestaoxUrl || '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold text-sm shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50 hover:scale-[1.02] transition-all"
+                >
+                  <ExternalLink className="w-4 h-4" /> Acessar Sistema GestaoX
+                </a>
+                {isAdmin && (
+                  <input
+                    type="url"
+                    value={content.gestaoxUrl || ''}
+                    onChange={(e) => updateContent({ gestaoxUrl: e.target.value })}
+                    placeholder="https://..."
+                    className="text-xs px-3 py-2 rounded-lg bg-background/60 border border-amber-500/30 text-primary-foreground placeholder:text-primary-foreground/40 outline-none focus:border-amber-400"
+                  />
+                )}
+              </div>
             </div>
 
             <p className="text-primary-foreground/70 text-base leading-relaxed mb-8 max-w-3xl">

@@ -12,9 +12,10 @@ interface AnalystCardProps {
   editable?: boolean;
   size?: 'normal' | 'large';
   showClickHint?: boolean;
+  modalOnly?: boolean;
 }
 
-const AnalystCard = ({ analyst, index, isSelected, onClick, showDetails, editable, size = 'normal', showClickHint }: AnalystCardProps) => {
+const AnalystCard = ({ analyst, index, isSelected, onClick, showDetails, editable, size = 'normal', showClickHint, modalOnly }: AnalystCardProps) => {
   const { isAdmin, updateAnalyst, removeAnalyst } = useAdmin();
   const [newSkill, setNewSkill] = useState('');
   const [newAttribution, setNewAttribution] = useState('');

@@ -42,6 +42,7 @@ const AnalystCard = ({ analyst, index, isSelected, onClick, showDetails, editabl
 
   return (
     <>
+      {!modalOnly && (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

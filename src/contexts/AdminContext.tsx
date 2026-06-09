@@ -121,6 +121,7 @@ interface SiteContent {
   rqTravelContactWhatsapp: string;
   dataJourneyStats: DataJourneyStat[];
   gestaoxUrl: string;
+  areasAtendidasCount?: number;
 }
 
 interface AdminContextType {

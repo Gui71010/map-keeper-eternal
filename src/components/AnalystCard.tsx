@@ -88,6 +88,7 @@ const AnalystCard = ({ analyst, index, isSelected, onClick, showDetails, editabl
           </motion.div>
         )}
       </motion.div>
+      )}
 
       <AnimatePresence>
         {showDetails && isSelected && (

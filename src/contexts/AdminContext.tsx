@@ -234,6 +234,7 @@ const DEFAULT_CONTENT: SiteContent = {
     { id: '4', value: '24/7', label: 'Insights disponíveis', icon: 'LineChart' },
   ],
   gestaoxUrl: 'https://gestaox.aec.com.br',
+  areasAtendidasCount: 12,
 };
 
 const ADMIN_PASSWORD = 'Guisantos88';

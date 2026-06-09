@@ -33,7 +33,13 @@ const Index = () => {
         <Header activeTab={activeTab} onTabChange={setActiveTab} />
         <main className="w-full px-6 lg:px-10 py-10 relative z-10">
           <AnimatePresence mode="wait">
-            <motion.div key={activeTab} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3 }}>
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 24, filter: 'blur(8px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              exit={{ opacity: 0, y: -16, filter: 'blur(6px)' }}
+              transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+            >
               {renderPage()}
             </motion.div>
           </AnimatePresence>

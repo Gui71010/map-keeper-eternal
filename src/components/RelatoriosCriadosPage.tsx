@@ -11,8 +11,7 @@ type FilterMode = 'analyst' | 'area';
 
 const RelatoriosCriadosPage = () => {
   const { content, isAdmin, updateContent, updateAnalyst, addReport } = useAdmin();
-  // Mantemos o filterMode fixo em 'area' para preservar a lógica interna do seu componente
-  const [filterMode, setFilterMode] = useState<FilterMode>('area');
+  const [filterMode, setFilterMode] = useState<FilterMode>('analyst');
   const [selectedAnalystId, setSelectedAnalystId] = useState<string | null>(null);
   const [selectedArea, setSelectedArea] = useState<string | null>(null);
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
@@ -27,20 +26,28 @@ const RelatoriosCriadosPage = () => {
     return Array.from(set);
   }, [biAnalysts]);
 
-  const filteredReports = content.reports
-    .filter((r) => {
-      if (filterMode === 'analyst') return !selectedAnalystId || r.creatorId === selectedAnalystId;
-      if (filterMode === 'area') {
-        if (!selectedArea) return true;
-        const creator = content.analysts.find((a) => a.id === r.creatorId);
-        return creator?.area === selectedArea;
-      }
-      return true;
-    })
-    .filter((r) => !searchQuery || r.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  // Filtro de relatórios refinado (com useMemo para performance e reatividade)
+  const filteredReports = useMemo(() => {
+    return content.reports
+      .filter((r) => {
+        if (filterMode === 'analyst') return !selectedAnalystId || r.creatorId === selectedAnalystId;
+        if (filterMode === 'area') {
+          if (!selectedArea) return true;
+          const creator = content.analysts.find((a) => a.id === r.creatorId);
+          return creator?.area === selectedArea;
+        }
+        return true;
+      })
+      .filter((r) => !searchQuery || r.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  }, [content.reports, filterMode, selectedAnalystId, selectedArea, searchQuery, content.analysts]);
 
   const getCreatorName = (id: string) => content.analysts.find((a) => a.id === id)?.name || 'Desconhecido';
-  const selectedReport = content.reports.find((r) => r.id === selectedReportId);
+  
+  // Busca o relatório selecionado diretamente da lista geral pelo ID correto
+  const selectedReport = useMemo(() => {
+    return content.reports.find((r) => r.id === selectedReportId) || null;
+  }, [content.reports, selectedReportId]);
+
   const navigateReport = (direction: 'prev' | 'next') => {
     const idx = filteredReports.findIndex((r) => r.id === selectedReportId);
     if (idx === -1) return;
@@ -49,7 +56,18 @@ const RelatoriosCriadosPage = () => {
   };
   const currentIdx = filteredReports.findIndex((r) => r.id === selectedReportId);
 
-  const areasCount = content.areasAtendidasCount ?? new Set(content.reports.flatMap((r) => r.eligibleAreas || [])).size;
+  // Calcula dinamicamente a quantidade de áreas ativas com base nos relatórios exibidos na tela
+  const dynamicAreasCount = useMemo(() => {
+    const activeAreas = new Set(
+      filteredReports.map((r) => {
+        const creator = content.analysts.find((a) => a.id === r.creatorId);
+        return creator?.area;
+      }).filter(Boolean)
+    );
+    return activeAreas.size;
+  }, [filteredReports, content.analysts]);
+
+  const areasCount = content.areasAtendidasCount ?? dynamicAreasCount;
 
   return (
     <div className="space-y-12">
@@ -71,12 +89,12 @@ const RelatoriosCriadosPage = () => {
         </div>
       </motion.section>
 
-      {/* Stats */}
+      {/* Stats - Agora 100% dinâmicos respondendo aos filtros de Analista, Área e Busca */}
       {(() => {
         const selectedAnalyst = selectedAnalystId ? content.analysts.find((a) => a.id === selectedAnalystId) : null;
-        const reportsForSelected = selectedAnalystId
-          ? content.reports.filter((r) => r.creatorId === selectedAnalystId).length
-          : content.reports.length;
+        // CORREÇÃO: O contador agora reflete exatamente o total da lista filtrada atual da tela
+        const reportsForSelected = filteredReports.length;
+        
         return (
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.5 }} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* Card 1: Reports */}
@@ -87,7 +105,9 @@ const RelatoriosCriadosPage = () => {
               </div>
               <div className="min-w-0">
                 <p className="font-display font-bold text-accent text-3xl">{reportsForSelected}</p>
-                <p className="text-muted-foreground text-sm">{selectedAnalyst ? 'Relatórios deste analista' : 'Relatórios criados'}</p>
+                <p className="text-muted-foreground text-sm">
+                  {selectedAnalyst ? 'Relatórios deste analista' : selectedArea ? 'Relatórios desta área' : 'Relatórios criados'}
+                </p>
               </div>
             </motion.div>
 
@@ -100,12 +120,16 @@ const RelatoriosCriadosPage = () => {
                 </div>
               ) : (
                 <div className="rounded-xl bg-primary/15 flex items-center justify-center shrink-0" style={{ width: '3.25rem', height: '3.25rem' }}>
-                  <Filter className="w-6 h-6 text-primary" />
+                  <User className="w-6 h-6 text-primary" />
                 </div>
               )}
               <div className="min-w-0">
-                <p className={`font-display font-bold text-primary ${selectedAnalyst ? 'text-xl leading-tight truncate' : 'text-3xl'}`}>{selectedAnalyst ? selectedAnalyst.name : 'Todas as Áreas'}</p>
-                <p className="text-muted-foreground text-sm">{selectedAnalyst ? 'Analista selecionado' : 'Filtro ativo'}</p>
+                <p className={`font-display font-bold text-primary ${selectedAnalyst || selectedArea ? 'text-xl leading-tight truncate' : 'text-3xl'}`}>
+                  {selectedAnalyst ? selectedAnalyst.name : selectedArea ? selectedArea : biAnalysts.length}
+                </p>
+                <p className="text-muted-foreground text-sm">
+                  {selectedAnalyst ? 'Analista selecionado' : selectedArea ? 'Área selecionada' : 'Total de Analistas'}
+                </p>
               </div>
             </motion.div>
 
@@ -126,56 +150,108 @@ const RelatoriosCriadosPage = () => {
                     onChange={(e) => updateContent({ areasAtendidasCount: Number(e.target.value) || 0 })}
                   />
                 ) : (
-                  <p className="font-display font-bold text-emerald-400 text-3xl">{areasCount}</p>
+                  <p className="font-display font-bold text-emerald-400 text-3xl">{selectedArea ? 1 : areasCount}</p>
                 )}
-                <p className="text-muted-foreground text-sm">{selectedAnalyst ? 'Area de atuação' : 'Áreas atendidas'}</p>
+                <p className="text-muted-foreground text-sm">{selectedAnalyst ? 'Área de atuação' : 'Áreas atendidas'}</p>
               </div>
             </motion.div>
           </motion.div>
         );
       })()}
 
-      {/* Exibição Fixa do Filtro por Área (Visual Original de Ícones) */}
-      <AnimatePresence mode="wait">
-        <motion.section
-          key="filter-area"
-          initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+      {/* Filter mode toggle */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18, duration: 0.4 }} className="flex items-center gap-3 flex-wrap">
+        <div className="flex items-center gap-2 text-muted-foreground text-sm mr-2">
+          <Filter className="w-4 h-4" /> Filtrar por:
+        </div>
+        <button
+          onClick={() => { setFilterMode('analyst'); setSelectedArea(null); }}
+          className={`px-5 py-2.5 rounded-xl text-sm font-semibold smooth-hover border ${filterMode === 'analyst' ? 'gradient-accent text-accent-foreground border-transparent shadow-lg shadow-accent/25' : 'bg-card/50 text-foreground border-border/40 hover:border-accent/40'}`}
         >
-          <h3 className="text-xl font-display font-bold text-foreground mb-6">Filtrar por Área</h3>
-          <div className="flex flex-wrap gap-3.5">
-            <button onClick={() => setSelectedArea(null)}
-              className={`flex items-center gap-3 px-6 py-3.5 rounded-2xl text-base font-semibold smooth-hover border ${!selectedArea ? 'gradient-accent text-accent-foreground shadow-lg shadow-accent/25 border-transparent' : 'bg-card/50 text-foreground border-border/30 hover:border-accent/40 hover:shadow-lg'}`}
-            >
-              <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center"><Layers className="w-5 h-5" /></div>
-              Todas
-            </button>
-            {areas.map((area) => {
-              const count = content.reports.filter((r) => {
-                const c = content.analysts.find((a) => a.id === r.creatorId);
-                return c?.area === area;
-              }).length;
-              const active = selectedArea === area;
-              return (
-                <button
-                  key={area}
-                  onClick={() => setSelectedArea(active ? null : area)}
-                  className={`flex items-center gap-3.5 px-5 py-3.5 rounded-2xl text-base font-medium smooth-hover border ${active ? 'gradient-accent text-accent-foreground shadow-lg shadow-accent/25 border-transparent' : 'bg-card/50 text-foreground border-border/30 hover:border-accent/40 hover:shadow-lg'}`}
-                >
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${active ? 'bg-white/15' : 'bg-accent/10'}`}>
-                    <Layers className={`w-5 h-5 ${active ? 'text-accent-foreground' : 'text-accent'}`} />
-                  </div>
-                  <div className="text-left min-w-0">
-                    <span className="block font-display font-semibold text-base leading-tight truncate">{area}</span>
-                    <span className={`text-xs block leading-tight mt-0.5 ${active ? 'text-accent-foreground/75' : 'text-muted-foreground'}`}>{count} relatório{count !== 1 ? 's' : ''}</span>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </motion.section>
+          Analista
+        </button>
+        <button
+          onClick={() => { setFilterMode('area'); setSelectedAnalystId(null); }}
+          className={`px-5 py-2.5 rounded-xl text-sm font-semibold smooth-hover border ${filterMode === 'area' ? 'gradient-accent text-accent-foreground border-transparent shadow-lg shadow-accent/25' : 'bg-card/50 text-foreground border-border/40 hover:border-accent/40'}`}
+        >
+          Área
+        </button>
+      </motion.div>
+
+      {/* Filter content — animated */}
+      <AnimatePresence mode="wait">
+        {filterMode === 'analyst' ? (
+          <motion.section
+            key="filter-analyst"
+            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {isAdmin ? <input className="text-xl font-display font-bold text-foreground mb-6 bg-transparent border-b border-border outline-none focus:border-accent block" value={content.filterByAnalystTitle} onChange={(e) => updateContent({ filterByAnalystTitle: e.target.value })} /> : <h3 className="text-xl font-display font-bold text-foreground mb-6">{content.filterByAnalystTitle}</h3>}
+            <div className="flex flex-wrap gap-3.5">
+              <button onClick={() => setSelectedAnalystId(null)}
+                className={`flex items-center gap-3 px-6 py-3.5 rounded-2xl text-base font-semibold smooth-hover border ${!selectedAnalystId ? 'gradient-accent text-accent-foreground shadow-lg shadow-accent/25 border-transparent' : 'bg-card/50 text-foreground border-border/30 hover:border-accent/40 hover:shadow-lg'}`}
+              >
+                <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center"><User className="w-5 h-5" /></div>
+                Todos
+              </button>
+              {biAnalysts.map((a) => (
+                <div key={a.id} className="relative group">
+                  <button onClick={() => setSelectedAnalystId(selectedAnalystId === a.id ? null : a.id)}
+                    className={`flex items-center gap-3.5 px-5 py-3.5 rounded-2xl text-base font-medium smooth-hover border ${selectedAnalystId === a.id ? 'gradient-accent text-accent-foreground shadow-lg shadow-accent/25 border-transparent' : 'bg-card/50 text-foreground border-border/30 hover:border-accent/40 hover:shadow-lg'}`}
+                  >
+                    <div className="w-12 h-12 rounded-full overflow-hidden bg-muted shrink-0 flex items-center justify-center border border-accent/20 ring-1 ring-accent/10">
+                      {a.photo ? <img src={a.photo} alt="" className="w-full h-full object-cover" /> : <User className="w-6 h-6 text-muted-foreground" />}
+                    </div>
+                    <div className="text-left min-w-0">
+                      <span className="block font-display font-semibold text-base leading-tight truncate">{a.name}</span>
+                      <span className={`text-xs block leading-tight mt-0.5 ${selectedAnalystId === a.id ? 'text-accent-foreground/75' : 'text-muted-foreground'}`}>{a.area}</span>
+                    </div>
+                  </button>
+                  {isAdmin && <div className="absolute top-full left-0 mt-1 z-20 hidden group-hover:block"><div className="glass-card rounded-lg p-3 shadow-xl w-64 space-y-2"><label className="text-xs text-muted-foreground">URL da Foto</label><input className="w-full p-2 rounded-lg border border-border bg-background text-foreground text-xs" value={a.photo} onChange={(e) => updateAnalyst(a.id, { photo: e.target.value })} onClick={(e) => e.stopPropagation()} /></div></div>}
+                </div>
+              ))}
+            </div>
+          </motion.section>
+        ) : (
+          <motion.section
+            key="filter-area"
+            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <h3 className="text-xl font-display font-bold text-foreground mb-6">Filtrar por Área</h3>
+            <div className="flex flex-wrap gap-3.5">
+              <button onClick={() => setSelectedArea(null)}
+                className={`flex items-center gap-3 px-6 py-3.5 rounded-2xl text-base font-semibold smooth-hover border ${!selectedArea ? 'gradient-accent text-accent-foreground shadow-lg shadow-accent/25 border-transparent' : 'bg-card/50 text-foreground border-border/30 hover:border-accent/40 hover:shadow-lg'}`}
+              >
+                <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center"><Layers className="w-5 h-5" /></div>
+                Todas
+              </button>
+              {areas.map((area) => {
+                const count = content.reports.filter((r) => {
+                  const c = content.analysts.find((a) => a.id === r.creatorId);
+                  return c?.area === area;
+                }).length;
+                const active = selectedArea === area;
+                return (
+                  <button
+                    key={area}
+                    onClick={() => setSelectedArea(active ? null : area)}
+                    className={`flex items-center gap-3.5 px-5 py-3.5 rounded-2xl text-base font-medium smooth-hover border ${active ? 'gradient-accent text-accent-foreground shadow-lg shadow-accent/25 border-transparent' : 'bg-card/50 text-foreground border-border/30 hover:border-accent/40 hover:shadow-lg'}`}
+                  >
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${active ? 'bg-white/15' : 'bg-accent/10'}`}>
+                      <Layers className={`w-5 h-5 ${active ? 'text-accent-foreground' : 'text-accent'}`} />
+                    </div>
+                    <div className="text-left min-w-0">
+                      <span className="block font-display font-semibold text-base leading-tight truncate">{area}</span>
+                      <span className={`text-xs block leading-tight mt-0.5 ${active ? 'text-accent-foreground/75' : 'text-muted-foreground'}`}>{count} relatório{count !== 1 ? 's' : ''}</span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </motion.section>
+        )}
       </AnimatePresence>
 
-      {/* Busca */}
+      {/* Search */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.4 }} className="relative">
         <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
         <input type="text" placeholder="Buscar relatório pelo nome..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
@@ -212,7 +288,24 @@ const RelatoriosCriadosPage = () => {
         </motion.div>
       </motion.section>
 
-      <AnimatePresence>{selectedReport && <ReportDetailModal report={selectedReport} creatorName={getCreatorName(selectedReport.creatorId)} onClose={() => setSelectedReportId(null)} showMetrics={false} onNavigate={navigateReport} hasPrev={currentIdx > 0} hasNext={currentIdx < filteredReports.length - 1} />}</AnimatePresence>
+      {/* CORREÇÃO DO MODAL: Envolvido em um container isolado com z-index absoluto de tela cheia */}
+      <AnimatePresence>
+        {selectedReport && (
+          <div className="fixed inset-0 z-[9999] pointer-events-none">
+            <div className="pointer-events-auto w-full h-full flex items-center justify-center">
+              <ReportDetailModal 
+                report={selectedReport} 
+                creatorName={getCreatorName(selectedReport.creatorId)} 
+                onClose={() => setSelectedReportId(null)} 
+                showMetrics={false} 
+                onNavigate={navigateReport} 
+                hasPrev={currentIdx > 0} 
+                hasNext={currentIdx < filteredReports.length - 1} 
+              />
+            </div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

@@ -7,41 +7,46 @@ import ReportCard from '@/components/ReportCard';
 import ReportDetailModal from '@/components/ReportDetailModal';
 import GalaxyParticles from '@/components/GalaxyParticles';
 
-type FilterMode = 'analyst' | 'area';
+type FilterMode = 'analyst' | 'eligibleArea';
 
 const RelatoriosCriadosPage = () => {
   const { content, isAdmin, updateContent, updateAnalyst, addReport } = useAdmin();
+  
+  // Estados para gerenciar o tipo de filtro ativo
   const [filterMode, setFilterMode] = useState<FilterMode>('analyst');
   const [selectedAnalystId, setSelectedAnalystId] = useState<string | null>(null);
-  const [selectedArea, setSelectedArea] = useState<string | null>(null);
+  const [selectedEligibleArea, setSelectedEligibleArea] = useState<string | null>(null);
+  
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   const biAnalysts = content.analysts.filter((a) => a.type === 'bi');
 
-  // Extrai dinamicamente as áreas exclusivas dos analistas de BI
-  const areas = useMemo(() => {
+  // Mapeia e extrai dinamicamente todas as Áreas Elegíveis únicas presentes nos relatórios
+  const allEligibleAreas = useMemo(() => {
     const set = new Set<string>();
-    biAnalysts.forEach((a) => a.area && set.add(a.area));
+    content.reports.forEach((r) => {
+      if (Array.isArray(r.eligibleAreas)) {
+        r.eligibleAreas.forEach((area) => set.add(area));
+      }
+    });
     return Array.from(set);
-  }, [biAnalysts]);
+  }, [content.reports]);
 
-  // Filtro inteligente e unificado de relatórios
+  // Filtro combinado de relatórios (Analista OR Área Elegível) + Busca por texto
   const filteredReports = useMemo(() => {
     return content.reports
       .filter((r) => {
         if (filterMode === 'analyst') {
           return !selectedAnalystId || r.creatorId === selectedAnalystId;
         }
-        if (filterMode === 'area') {
-          if (!selectedArea) return true;
-          const creator = content.analysts.find((a) => a.id === r.creatorId);
-          return creator?.area === selectedArea;
+        if (filterMode === 'eligibleArea') {
+          return !selectedEligibleArea || (r.eligibleAreas && r.eligibleAreas.includes(selectedEligibleArea));
         }
         return true;
       })
       .filter((r) => !searchQuery || r.name.toLowerCase().includes(searchQuery.toLowerCase()));
-  }, [content.reports, filterMode, selectedAnalystId, selectedArea, searchQuery, content.analysts]);
+  }, [content.reports, filterMode, selectedAnalystId, selectedEligibleArea, searchQuery]);
 
   const getCreatorName = (id: string) => content.analysts.find((a) => a.id === id)?.name || 'Desconhecido';
   
@@ -78,42 +83,39 @@ const RelatoriosCriadosPage = () => {
         </div>
       </motion.section>
 
-      {/* Stats Dinâmicos baseados no filtro atual */}
+      {/* Stats Adaptados */}
       {(() => {
         const selectedAnalyst = selectedAnalystId ? content.analysts.find(a => a.id === selectedAnalystId) : null;
         
-        // Calcula a quantidade de áreas afetadas pelos relatórios visíveis
-        const activeAreasCount = new Set(
-          filteredReports.map((r) => content.analysts.find((a) => a.id === r.creatorId)?.area).filter(Boolean)
-        ).size;
+        // Conta dinamicamente quantas áreas elegíveis distintas existem no escopo atual
+        const totalAreasCount = new Set(filteredReports.flatMap(r => r.eligibleAreas || [])).size;
 
         const stats = [
           {
             icon: FileText,
             value: filteredReports.length,
-            label: selectedAnalyst ? 'Relatórios deste analista' : selectedArea ? 'Relatórios desta área' : 'Relatórios criados',
+            label: selectedAnalyst ? 'Relatórios deste analista' : selectedEligibleArea ? 'Relatórios para esta área' : 'Relatórios criados',
             color: 'text-accent',
             bg: 'bg-accent/15',
           },
           {
             icon: User,
-            value: selectedAnalyst ? selectedAnalyst.name : selectedArea ? selectedArea : biAnalysts.length,
-            label: selectedAnalyst ? 'Analista selecionado' : selectedArea ? 'Área selecionada' : 'Analistas de BI',
+            value: selectedAnalyst ? selectedAnalyst.name : selectedEligibleArea ? selectedEligibleArea : biAnalysts.length,
+            label: selectedAnalyst ? 'Analista selecionado' : selectedEligibleArea ? 'Área com permissão' : 'Analistas de BI',
             color: 'text-primary',
             bg: 'bg-primary/15',
-            isText: !!selectedAnalyst || !!selectedArea,
+            isText: !!selectedAnalyst || !!selectedEligibleArea,
             avatar: selectedAnalyst?.photo,
           },
           {
             icon: BarChart3,
-            value: selectedAnalyst ? selectedAnalyst.area : selectedArea ? 'Área Ativa' : activeAreasCount,
-            label: selectedAnalyst ? 'Área de atuação' : 'Áreas atendidas',
+            value: selectedAnalyst ? selectedAnalyst.area : totalAreasCount,
+            label: selectedAnalyst ? 'Área de atuação' : 'Áreas com acesso',
             color: 'text-emerald-400',
             bg: 'bg-emerald-500/15',
-            isText: !!selectedAnalyst || !!selectedArea,
+            isText: selectedAnalyst ? true : false,
           },
         ];
-
         return (
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.5 }} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {stats.map((stat, i) => (
@@ -146,31 +148,31 @@ const RelatoriosCriadosPage = () => {
         );
       })()}
 
-      {/* Abas de Modo de Filtro (Alternar entre Analista e Área) */}
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18, duration: 0.4 }} className="flex items-center gap-3 flex-wrap">
-        <div className="flex items-center gap-2 text-muted-foreground text-sm mr-2">
-          <Filter className="w-4 h-4" /> Filtrar por:
+      {/* Chaves de Seleção de Filtro (Abas Analistas / Áreas Elegíveis) */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18, duration: 0.4 }} className="flex items-center gap-3 flex-wrap border-b border-border/20 pb-4">
+        <div className="flex items-center gap-2 text-muted-foreground text-sm mr-2 font-medium">
+          <Filter className="w-4 h-4 text-accent" /> Escolha o tipo de filtro:
         </div>
         <button
-          onClick={() => { setFilterMode('analyst'); setSelectedArea(null); }}
-          className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 border ${filterMode === 'analyst' ? 'gradient-accent text-accent-foreground border-transparent shadow-lg shadow-accent/25' : 'bg-card/50 text-foreground border-border/40 hover:border-accent/40'}`}
+          onClick={() => { setFilterMode('analyst'); setSelectedEligibleArea(null); }}
+          className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 border ${filterMode === 'analyst' ? 'gradient-accent text-accent-foreground border-transparent shadow-lg shadow-accent/25' : 'bg-card/50 text-foreground border-border/30 hover:border-accent/30'}`}
         >
-          Analista
+          Filtrar por Analista
         </button>
         <button
-          onClick={() => { setFilterMode('area'); setSelectedAnalystId(null); }}
-          className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 border ${filterMode === 'area' ? 'gradient-accent text-accent-foreground border-transparent shadow-lg shadow-accent/25' : 'bg-card/50 text-foreground border-border/40 hover:border-accent/40'}`}
+          onClick={() => { setFilterMode('eligibleArea'); setSelectedAnalystId(null); }}
+          className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 border ${filterMode === 'eligibleArea' ? 'gradient-accent text-accent-foreground border-transparent shadow-lg shadow-accent/25' : 'bg-card/50 text-foreground border-border/30 hover:border-accent/30'}`}
         >
-          Área
+          Filtrar por Área Elegível
         </button>
       </motion.div>
 
-      {/* Conteúdo Dinâmico dos Filtros */}
+      {/* Renderização Condicional dos Filtros com Animação Perfeita */}
       <AnimatePresence mode="wait">
         {filterMode === 'analyst' ? (
           <motion.section
-            key="filter-analyst"
-            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.35 }}
+            key="analyst-section"
+            initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }}
           >
             {isAdmin ? <input className="text-xl font-display font-bold text-foreground mb-6 bg-transparent border-b border-border outline-none focus:border-accent block" value={content.filterByAnalystTitle} onChange={(e) => updateContent({ filterByAnalystTitle: e.target.value })} /> : <h3 className="text-xl font-display font-bold text-foreground mb-6">{content.filterByAnalystTitle}</h3>}
             <div className="flex flex-wrap gap-3.5">
@@ -178,7 +180,7 @@ const RelatoriosCriadosPage = () => {
                 className={`flex items-center gap-3 px-6 py-3.5 rounded-2xl text-base font-semibold transition-all duration-300 border ${!selectedAnalystId ? 'gradient-accent text-accent-foreground shadow-lg shadow-accent/25 border-transparent' : 'bg-card/50 text-foreground border-border/30 hover:border-accent/40 hover:shadow-lg'}`}
               >
                 <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center"><User className="w-5 h-5" /></div>
-                Todos
+                Todos os Analistas
               </button>
               {biAnalysts.map((a) => (
                 <div key={a.id} className="relative group">
@@ -200,33 +202,32 @@ const RelatoriosCriadosPage = () => {
           </motion.section>
         ) : (
           <motion.section
-            key="filter-area"
-            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.35 }}
+            key="eligible-area-section"
+            initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }}
           >
-            <h3 className="text-xl font-display font-bold text-foreground mb-6">Filtrar por Área</h3>
+            <h3 className="text-xl font-display font-bold text-foreground mb-6">Filtrar por Setor com Permissão</h3>
             <div className="flex flex-wrap gap-3.5">
-              <button onClick={() => setSelectedArea(null)}
-                className={`flex items-center gap-3 px-6 py-3.5 rounded-2xl text-base font-semibold transition-all duration-300 border ${!selectedArea ? 'gradient-accent text-accent-foreground shadow-lg shadow-accent/25 border-transparent' : 'bg-card/50 text-foreground border-border/30 hover:border-accent/40 hover:shadow-lg'}`}
+              <button onClick={() => setSelectedEligibleArea(null)}
+                className={`flex items-center gap-3 px-6 py-3.5 rounded-2xl text-base font-semibold transition-all duration-300 border ${!selectedEligibleArea ? 'gradient-accent text-accent-foreground shadow-lg shadow-accent/25 border-transparent' : 'bg-card/50 text-foreground border-border/30 hover:border-accent/40 hover:shadow-lg'}`}
               >
                 <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center"><Layers className="w-5 h-5" /></div>
-                Todas as Áreas
+                Todos os Setores
               </button>
-              {areas.map((area) => {
-                const count = content.reports.filter((r) => {
-                  const c = content.analysts.find((a) => a.id === r.creatorId);
-                  return c?.area === area;
-                }).length;
-                const isSelected = selectedArea === area;
+              {allEligibleAreas.map((area) => {
+                const totalReportsInArea = content.reports.filter((r) => r.eligibleAreas && r.eligibleAreas.includes(area)).length;
+                const isSelected = selectedEligibleArea === area;
                 return (
                   <button
                     key={area}
-                    onClick={() => setSelectedArea(isSelected ? null : area)}
+                    onClick={() => setSelectedEligibleArea(isSelected ? null : area)}
                     className={`flex items-center gap-3.5 px-5 py-3.5 rounded-2xl text-base font-medium transition-all duration-300 border ${isSelected ? 'gradient-accent text-accent-foreground shadow-lg shadow-accent/25 border-transparent' : 'bg-card/50 text-foreground border-border/30 hover:border-accent/40 hover:shadow-lg'}`}
                   >
-                    <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center text-accent"><Layers className="w-5 h-5" /></div>
+                    <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center text-accent shrink-0">
+                      <Layers className="w-5 h-5" />
+                    </div>
                     <div className="text-left min-w-0">
                       <span className="block font-display font-semibold text-base leading-tight truncate">{area}</span>
-                      <span className={`text-xs block leading-tight mt-0.5 ${isSelected ? 'text-accent-foreground/75' : 'text-muted-foreground'}`}>{count} relatório{count !== 1 ? 's' : ''}</span>
+                      <span className={`text-xs block leading-tight mt-0.5 ${isSelected ? 'text-accent-foreground/75' : 'text-muted-foreground'}`}>{totalReportsInArea} relatório{totalReportsInArea !== 1 ? 's' : ''}</span>
                     </div>
                   </button>
                 );
@@ -275,22 +276,18 @@ const RelatoriosCriadosPage = () => {
         </div>
       </motion.section>
 
-      {/* Modal Isolado com Tela Cheia Controlada */}
+      {/* Modal Renderizado Seguro */}
       <AnimatePresence>
         {selectedReport && (
-          <div className="fixed inset-0 z-[9999] pointer-events-none">
-            <div className="pointer-events-auto w-full h-full flex items-center justify-center">
-              <ReportDetailModal 
-                report={selectedReport} 
-                creatorName={getCreatorName(selectedReport.creatorId)} 
-                onClose={() => setSelectedReportId(null)} 
-                showMetrics={false} 
-                onNavigate={navigateReport} 
-                hasPrev={currentIdx > 0} 
-                hasNext={currentIdx < filteredReports.length - 1} 
-              />
-            </div>
-          </div>
+          <ReportDetailModal 
+            report={selectedReport} 
+            creatorName={getCreatorName(selectedReport.creatorId)} 
+            onClose={() => setSelectedReportId(null)} 
+            showMetrics={false} 
+            onNavigate={navigateReport} 
+            hasPrev={currentIdx > 0} 
+            hasNext={currentIdx < filteredReports.length - 1} 
+          />
         )}
       </AnimatePresence>
     </div>

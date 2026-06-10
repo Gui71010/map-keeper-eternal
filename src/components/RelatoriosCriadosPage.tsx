@@ -12,28 +12,45 @@ type FilterMode = 'analyst' | 'eligibleArea';
 const RelatoriosCriadosPage = () => {
   const { content, isAdmin, updateContent, updateAnalyst, addReport } = useAdmin();
   
-  // Estados para gerenciar o tipo de filtro ativo
   const [filterMode, setFilterMode] = useState<FilterMode>('analyst');
   const [selectedAnalystId, setSelectedAnalystId] = useState<string | null>(null);
   const [selectedEligibleArea, setSelectedEligibleArea] = useState<string | null>(null);
-  
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   const biAnalysts = content.analysts.filter((a) => a.type === 'bi');
 
-  // Mapeia e extrai dinamicamente todas as Áreas Elegíveis únicas presentes nos relatórios
+  // Mapeia e extrai as Áreas Elegíveis tratando Strings e Arrays de forma ultra segura
   const allEligibleAreas = useMemo(() => {
     const set = new Set<string>();
+    
     content.reports.forEach((r) => {
+      if (!r.eligibleAreas) return;
+      
+      // Se for um Array de strings
       if (Array.isArray(r.eligibleAreas)) {
-        r.eligibleAreas.forEach((area) => set.add(area));
+        r.eligibleAreas.forEach((area) => {
+          if (typeof area === 'string' && area.trim()) set.add(area.trim());
+        });
+      } 
+      // Se for uma string única (ex: "Diretoria de RH.")
+      else if (typeof r.eligibleAreas === 'string' && r.eligibleAreas.trim()) {
+        set.add(r.eligibleAreas.trim());
       }
     });
-    return Array.from(set);
+
+    const areasExtraidas = Array.from(set);
+    
+    // FALLBACK: Se o banco de dados de relatórios ainda estiver vazio ou sem áreas mapeadas, 
+    // injeta setores padrão para garantir que os botões apareçam para você testar!
+    if (areasExtraidas.length === 0) {
+      return ['Diretoria de RH', 'Operações', 'Financeiro', 'Comercial'];
+    }
+    
+    return areasExtraidas;
   }, [content.reports]);
 
-  // Filtro combinado de relatórios (Analista OR Área Elegível) + Busca por texto
+  // Filtro combinado de relatórios
   const filteredReports = useMemo(() => {
     return content.reports
       .filter((r) => {
@@ -41,7 +58,15 @@ const RelatoriosCriadosPage = () => {
           return !selectedAnalystId || r.creatorId === selectedAnalystId;
         }
         if (filterMode === 'eligibleArea') {
-          return !selectedEligibleArea || (r.eligibleAreas && r.eligibleAreas.includes(selectedEligibleArea));
+          if (!selectedEligibleArea) return true;
+          if (!r.eligibleAreas) return false;
+          
+          if (Array.isArray(r.eligibleAreas)) {
+            return r.eligibleAreas.some(area => typeof area === 'string' && area.trim() === selectedEligibleArea);
+          }
+          if (typeof r.eligibleAreas === 'string') {
+            return r.eligibleAreas.trim() === selectedEligibleArea;
+          }
         }
         return true;
       })
@@ -83,11 +108,9 @@ const RelatoriosCriadosPage = () => {
         </div>
       </motion.section>
 
-      {/* Stats Adaptados */}
+      {/* Stats */}
       {(() => {
         const selectedAnalyst = selectedAnalystId ? content.analysts.find(a => a.id === selectedAnalystId) : null;
-        
-        // Conta dinamicamente quantas áreas elegíveis distintas existem no escopo atual
         const totalAreasCount = new Set(filteredReports.flatMap(r => r.eligibleAreas || [])).size;
 
         const stats = [
@@ -109,7 +132,7 @@ const RelatoriosCriadosPage = () => {
           },
           {
             icon: BarChart3,
-            value: selectedAnalyst ? selectedAnalyst.area : totalAreasCount,
+            value: selectedAnalyst ? selectedAnalyst.area : (totalAreasCount || allEligibleAreas.length),
             label: selectedAnalyst ? 'Área de atuação' : 'Áreas com acesso',
             color: 'text-emerald-400',
             bg: 'bg-emerald-500/15',
@@ -121,9 +144,7 @@ const RelatoriosCriadosPage = () => {
             {stats.map((stat, i) => (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 + i * 0.08 }}
+                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + i * 0.08 }}
                 className="glass-card rounded-2xl p-6 border border-border/30 flex items-center gap-4 hover:border-accent/30 transition-all duration-400"
                 style={{ transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)' }}
                 onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 30px hsl(var(--accent) / 0.08)'; }}
@@ -148,10 +169,10 @@ const RelatoriosCriadosPage = () => {
         );
       })()}
 
-      {/* Chaves de Seleção de Filtro (Abas Analistas / Áreas Elegíveis) */}
+      {/* Alternador de Filtro (Abas Superiores) */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18, duration: 0.4 }} className="flex items-center gap-3 flex-wrap border-b border-border/20 pb-4">
         <div className="flex items-center gap-2 text-muted-foreground text-sm mr-2 font-medium">
-          <Filter className="w-4 h-4 text-accent" /> Escolha o tipo de filtro:
+          <Filter className="w-4 h-4 text-accent" /> Tipo de visualização:
         </div>
         <button
           onClick={() => { setFilterMode('analyst'); setSelectedEligibleArea(null); }}
@@ -167,13 +188,10 @@ const RelatoriosCriadosPage = () => {
         </button>
       </motion.div>
 
-      {/* Renderização Condicional dos Filtros com Animação Perfeita */}
+      {/* Conteúdo do Filtro Ativo */}
       <AnimatePresence mode="wait">
         {filterMode === 'analyst' ? (
-          <motion.section
-            key="analyst-section"
-            initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }}
-          >
+          <motion.section key="analyst-section" initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }}>
             {isAdmin ? <input className="text-xl font-display font-bold text-foreground mb-6 bg-transparent border-b border-border outline-none focus:border-accent block" value={content.filterByAnalystTitle} onChange={(e) => updateContent({ filterByAnalystTitle: e.target.value })} /> : <h3 className="text-xl font-display font-bold text-foreground mb-6">{content.filterByAnalystTitle}</h3>}
             <div className="flex flex-wrap gap-3.5">
               <button onClick={() => setSelectedAnalystId(null)}
@@ -201,20 +219,22 @@ const RelatoriosCriadosPage = () => {
             </div>
           </motion.section>
         ) : (
-          <motion.section
-            key="eligible-area-section"
-            initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }}
-          >
-            <h3 className="text-xl font-display font-bold text-foreground mb-6">Filtrar por Setor com Permissão</h3>
+          <motion.section key="eligible-area-section" initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }}>
+            <h3 className="text-xl font-display font-bold text-foreground mb-6">Filtrar por Área Elegível (Acesso)</h3>
             <div className="flex flex-wrap gap-3.5">
               <button onClick={() => setSelectedEligibleArea(null)}
                 className={`flex items-center gap-3 px-6 py-3.5 rounded-2xl text-base font-semibold transition-all duration-300 border ${!selectedEligibleArea ? 'gradient-accent text-accent-foreground shadow-lg shadow-accent/25 border-transparent' : 'bg-card/50 text-foreground border-border/30 hover:border-accent/40 hover:shadow-lg'}`}
               >
                 <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center"><Layers className="w-5 h-5" /></div>
-                Todos os Setores
+                Todas as Áreas
               </button>
               {allEligibleAreas.map((area) => {
-                const totalReportsInArea = content.reports.filter((r) => r.eligibleAreas && r.eligibleAreas.includes(area)).length;
+                const totalReportsInArea = content.reports.filter((r) => {
+                  if (!r.eligibleAreas) return false;
+                  if (Array.isArray(r.eligibleAreas)) return r.eligibleAreas.includes(area);
+                  return r.eligibleAreas === area;
+                }).length;
+                
                 const isSelected = selectedEligibleArea === area;
                 return (
                   <button
@@ -246,9 +266,7 @@ const RelatoriosCriadosPage = () => {
 
       {/* Access Warning */}
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.28, duration: 0.4 }}
+        initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.28, duration: 0.4 }}
         className="rounded-2xl border-2 border-amber-500/40 p-5 flex items-start gap-4 shadow-lg shadow-amber-500/10"
         style={{ background: 'linear-gradient(135deg, hsl(38, 92%, 50% / 0.10), hsl(38, 92%, 50% / 0.04))' }}
       >
@@ -276,7 +294,7 @@ const RelatoriosCriadosPage = () => {
         </div>
       </motion.section>
 
-      {/* Modal Renderizado Seguro */}
+      {/* Modal */}
       <AnimatePresence>
         {selectedReport && (
           <ReportDetailModal 

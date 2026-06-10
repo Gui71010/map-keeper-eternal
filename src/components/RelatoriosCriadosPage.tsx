@@ -26,7 +26,7 @@ const RelatoriosCriadosPage = () => {
     return Array.from(set);
   }, [biAnalysts]);
 
-  // Filtro corrigido para garantir que a seleção e a listagem conversem perfeitamente
+  // Filtro de relatórios refinado
   const filteredReports = useMemo(() => {
     return content.reports
       .filter((r) => {
@@ -45,8 +45,9 @@ const RelatoriosCriadosPage = () => {
 
   const getCreatorName = (id: string) => content.analysts.find((a) => a.id === id)?.name || 'Desconhecido';
   
-  // Encontra o relatório selecionado de forma estável na lista geral do contexto
+  // Localiza o relatório selecionado de forma direta para o modal
   const selectedReport = useMemo(() => {
+    if (!selectedReportId) return null;
     return content.reports.find((r) => r.id === selectedReportId) || null;
   }, [content.reports, selectedReportId]);
 
@@ -60,7 +61,26 @@ const RelatoriosCriadosPage = () => {
   };
   
   const currentIdx = filteredReports.findIndex((r) => r.id === selectedReportId);
-  const areasCount = content.areasAtendidasCount ?? new Set(content.reports.flatMap((r) => r.eligibleAreas || [])).size;
+
+  // Big Numbers Dinâmicos: calculando os totais com base no que está na tela
+  const stats = useMemo(() => {
+    const totalReports = filteredReports.length;
+    
+    // Conta quantas áreas distintas estão presentes nos relatórios filtrados atualmente
+    const activeAreas = new Set(
+      filteredReports.map(r => {
+        const creator = content.analysts.find(a => a.id === r.creatorId);
+        return creator?.area;
+      }).filter(Boolean)
+    );
+
+    return {
+      totalReports,
+      totalAreas: activeAreas.size || 0
+    };
+  }, [filteredReports, content.analysts]);
+
+  const selectedAnalyst = selectedAnalystId ? content.analysts.find((a) => a.id === selectedAnalystId) : null;
 
   return (
     <div className="space-y-12">
@@ -82,69 +102,65 @@ const RelatoriosCriadosPage = () => {
         </div>
       </motion.section>
 
-      {/* Stats */}
-      {(() => {
-        const selectedAnalyst = selectedAnalystId ? content.analysts.find((a) => a.id === selectedAnalystId) : null;
-        const reportsForSelected = selectedAnalystId
-          ? content.reports.filter((r) => r.creatorId === selectedAnalystId).length
-          : content.reports.length;
-        return (
-          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.5 }} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {/* Card 1: Reports */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-              className="glass-card rounded-2xl p-6 border border-border/30 flex items-center gap-4 smooth-hover hover:border-accent/40">
-              <div className="rounded-xl bg-accent/15 flex items-center justify-center shrink-0" style={{ width: '3.25rem', height: '3.25rem' }}>
-                <FileText className="w-6 h-6 text-accent" />
-              </div>
-              <div className="min-w-0">
-                <p className="font-display font-bold text-accent text-3xl">{reportsForSelected}</p>
-                <p className="text-muted-foreground text-sm">{selectedAnalyst ? 'Relatórios deste analista' : 'Relatórios criados'}</p>
-              </div>
-            </motion.div>
+      {/* Stats (Big Numbers Filtrados) */}
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.5 }} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {/* Card 1: Relatórios Criados (Dinâmico) */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+          className="glass-card rounded-2xl p-6 border border-border/30 flex items-center gap-4 smooth-hover hover:border-accent/40">
+          <div className="rounded-xl bg-accent/15 flex items-center justify-center shrink-0" style={{ width: '3.25rem', height: '3.25rem' }}>
+            <FileText className="w-6 h-6 text-accent" />
+          </div>
+          <div className="min-w-0">
+            <p className="font-display font-bold text-accent text-3xl">{stats.totalReports}</p>
+            <p className="text-muted-foreground text-sm">
+              {selectedAnalystId ? 'Relatórios do analista' : selectedArea ? 'Relatórios da área' : 'Relatórios criados'}
+            </p>
+          </div>
+        </motion.div>
 
-            {/* Card 2: Analyst / count */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }}
-              className="glass-card rounded-2xl p-6 border border-border/30 flex items-center gap-4 smooth-hover hover:border-accent/40">
-              {selectedAnalyst?.photo ? (
-                <div className="rounded-xl overflow-hidden shrink-0 ring-2 ring-primary/30" style={{ width: '3.25rem', height: '3.25rem' }}>
-                  <img src={selectedAnalyst.photo} alt="" className="w-full h-full object-cover" />
-                </div>
-              ) : (
-                <div className="rounded-xl bg-primary/15 flex items-center justify-center shrink-0" style={{ width: '3.25rem', height: '3.25rem' }}>
-                  <User className="w-6 h-6 text-primary" />
-                </div>
-              )}
-              <div className="min-w-0">
-                <p className={`font-display font-bold text-primary ${selectedAnalyst ? 'text-xl leading-tight truncate' : 'text-3xl'}`}>{selectedAnalyst ? selectedAnalyst.name : biAnalysts.length}</p>
-                <p className="text-muted-foreground text-sm">{selectedAnalyst ? 'Analista selecionado' : 'Analistas'}</p>
-              </div>
-            </motion.div>
+        {/* Card 2: Filtro Ativo */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }}
+          className="glass-card rounded-2xl p-6 border border-border/30 flex items-center gap-4 smooth-hover hover:border-accent/40">
+          {selectedAnalyst?.photo ? (
+            <div className="rounded-xl overflow-hidden shrink-0 ring-2 ring-primary/30" style={{ width: '3.25rem', height: '3.25rem' }}>
+              <img src={selectedAnalyst.photo} alt="" className="w-full h-full object-cover" />
+            </div>
+          ) : (
+            <div className="rounded-xl bg-primary/15 flex items-center justify-center shrink-0" style={{ width: '3.25rem', height: '3.25rem' }}>
+              <User className="w-6 h-6 text-primary" />
+            </div>
+          )}
+          <div className="min-w-0">
+            <p className={`font-display font-bold text-primary ${selectedAnalyst || selectedArea ? 'text-xl leading-tight truncate' : 'text-3xl'}`}>
+              {selectedAnalyst ? selectedAnalyst.name : selectedArea ? selectedArea : 'Todas as Áreas'}
+            </p>
+            <p className="text-muted-foreground text-sm">Filtro ativo</p>
+          </div>
+        </motion.div>
 
-            {/* Card 3: Áreas atendidas */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.26 }}
-              className="glass-card rounded-2xl p-6 border border-border/30 flex items-center gap-4 smooth-hover hover:border-emerald-500/40">
-              <div className="rounded-xl bg-emerald-500/15 flex items-center justify-center shrink-0" style={{ width: '3.25rem', height: '3.25rem' }}>
-                <BarChart3 className="w-6 h-6 text-emerald-400" />
-              </div>
-              <div className="min-w-0 flex-1">
-                {selectedAnalyst ? (
-                  <p className="font-display font-bold text-emerald-400 text-xl leading-tight truncate">{selectedAnalyst.area}</p>
-                ) : isAdmin ? (
-                  <input
-                    type="number"
-                    className="font-display font-bold text-emerald-400 text-3xl bg-transparent border-b border-emerald-500/30 outline-none focus:border-emerald-400 w-24"
-                    value={content.areasAtendidasCount ?? areasCount}
-                    onChange={(e) => updateContent({ areasAtendidasCount: Number(e.target.value) || 0 })}
-                  />
-                ) : (
-                  <p className="font-display font-bold text-emerald-400 text-3xl">{areasCount}</p>
-                )}
-                <p className="text-muted-foreground text-sm">{selectedAnalyst ? 'Área de atuação' : 'Áreas atendidas'}</p>
-              </div>
-            </motion.div>
-          </motion.div>
-        );
-      })()}
+        {/* Card 3: Áreas Atendidas (Dinâmico) */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.26 }}
+          className="glass-card rounded-2xl p-6 border border-border/30 flex items-center gap-4 smooth-hover hover:border-emerald-500/40">
+          <div className="rounded-xl bg-emerald-500/15 flex items-center justify-center shrink-0" style={{ width: '3.25rem', height: '3.25rem' }}>
+            <BarChart3 className="w-6 h-6 text-emerald-400" />
+          </div>
+          <div className="min-w-0 flex-1">
+            {selectedAnalyst ? (
+              <p className="font-display font-bold text-emerald-400 text-xl leading-tight truncate">{selectedAnalyst.area}</p>
+            ) : isAdmin ? (
+              <input
+                type="number"
+                className="font-display font-bold text-emerald-400 text-3xl bg-transparent border-b border-emerald-500/30 outline-none focus:border-emerald-400 w-24"
+                value={content.areasAtendidasCount ?? stats.totalAreas}
+                onChange={(e) => updateContent({ areasAtendidasCount: Number(e.target.value) || 0 })}
+              />
+            ) : (
+              <p className="font-display font-bold text-emerald-400 text-3xl">{selectedArea ? 1 : stats.totalAreas}</p>
+            )}
+            <p className="text-muted-foreground text-sm">{selectedAnalyst ? 'Área de atuação' : 'Áreas atendidas'}</p>
+          </div>
+        </motion.div>
+      </motion.div>
 
       {/* Filter mode toggle */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18, duration: 0.4 }} className="flex items-center gap-3 flex-wrap">
@@ -283,9 +299,9 @@ const RelatoriosCriadosPage = () => {
         </motion.div>
       </motion.section>
 
-      {/* Modal de Detalhes */}
+      {/* Modal de Detalhes - Renderização limpa e isolada */}
       <AnimatePresence>
-        {selectedReport && (
+        {selectedReportId && selectedReport && (
           <ReportDetailModal 
             report={selectedReport} 
             creatorName={getCreatorName(selectedReport.creatorId)} 

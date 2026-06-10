@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { createPortal } from 'react-dom'; // Importação necessária para corrigir a centralização
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, User, Search, FileText, BarChart3, Layers, Filter } from 'lucide-react';
 import dataFlowImg from '@/assets/data-flow.jpg';
@@ -26,7 +27,7 @@ const RelatoriosCriadosPage = () => {
     return Array.from(set);
   }, [biAnalysts]);
 
-  // Filtro de relatórios refinado
+  // Filtro de relatórios
   const filteredReports = useMemo(() => {
     return content.reports
       .filter((r) => {
@@ -66,7 +67,6 @@ const RelatoriosCriadosPage = () => {
   const stats = useMemo(() => {
     const totalReports = filteredReports.length;
     
-    // Conta quantas áreas distintas estão presentes nos relatórios filtrados atualmente
     const activeAreas = new Set(
       filteredReports.map(r => {
         const creator = content.analysts.find(a => a.id === r.creatorId);
@@ -299,9 +299,9 @@ const RelatoriosCriadosPage = () => {
         </motion.div>
       </motion.section>
 
-      {/* Modal de Detalhes - Renderização limpa e isolada */}
+      {/* Modal de Detalhes - Renderizado via Portal direto no Body */}
       <AnimatePresence>
-        {selectedReportId && selectedReport && (
+        {selectedReportId && selectedReport && createPortal(
           <ReportDetailModal 
             report={selectedReport} 
             creatorName={getCreatorName(selectedReport.creatorId)} 
@@ -310,7 +310,8 @@ const RelatoriosCriadosPage = () => {
             onNavigate={navigateReport} 
             hasPrev={currentIdx > 0} 
             hasNext={currentIdx < filteredReports.length - 1} 
-          />
+          />,
+          document.body
         )}
       </AnimatePresence>
     </div>

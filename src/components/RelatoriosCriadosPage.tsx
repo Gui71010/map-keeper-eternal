@@ -7,39 +7,33 @@ import ReportCard from '@/components/ReportCard';
 import ReportDetailModal from '@/components/ReportDetailModal';
 import GalaxyParticles from '@/components/GalaxyParticles';
 
-type FilterMode = 'analyst' | 'area';
-
 const RelatoriosCriadosPage = () => {
   const { content, isAdmin, updateContent, updateAnalyst, addReport } = useAdmin();
-  const [filterMode, setFilterMode] = useState<FilterMode>('analyst');
-  const [selectedAnalystId, setSelectedAnalystId] = useState<string | null>(null);
   const [selectedArea, setSelectedArea] = useState<string | null>(null);
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   const biAnalysts = content.analysts.filter((a) => a.type === 'bi');
 
-  // Unique list of areas derived from BI analysts
+  // Lista única de áreas extraídas dinamicamente dos analistas de BI
   const areas = useMemo(() => {
     const set = new Set<string>();
     biAnalysts.forEach((a) => a.area && set.add(a.area));
     return Array.from(set);
   }, [biAnalysts]);
 
+  // Filtra os relatórios baseando-se diretamente na área selecionada e na busca por texto
   const filteredReports = content.reports
     .filter((r) => {
-      if (filterMode === 'analyst') return !selectedAnalystId || r.creatorId === selectedAnalystId;
-      if (filterMode === 'area') {
-        if (!selectedArea) return true;
-        const creator = content.analysts.find((a) => a.id === r.creatorId);
-        return creator?.area === selectedArea;
-      }
-      return true;
+      if (!selectedArea) return true;
+      const creator = content.analysts.find((a) => a.id === r.creatorId);
+      return creator?.area === selectedArea;
     })
     .filter((r) => !searchQuery || r.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
   const getCreatorName = (id: string) => content.analysts.find((a) => a.id === id)?.name || 'Desconhecido';
   const selectedReport = content.reports.find((r) => r.id === selectedReportId);
+  
   const navigateReport = (direction: 'prev' | 'next') => {
     const idx = filteredReports.findIndex((r) => r.id === selectedReportId);
     if (idx === -1) return;
@@ -72,10 +66,7 @@ const RelatoriosCriadosPage = () => {
 
       {/* Stats */}
       {(() => {
-        const selectedAnalyst = selectedAnalystId ? content.analysts.find((a) => a.id === selectedAnalystId) : null;
-        const reportsForSelected = selectedAnalystId
-          ? content.reports.filter((r) => r.creatorId === selectedAnalystId).length
-          : content.reports.length;
+        const reportsForSelected = content.reports.length;
         return (
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.5 }} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* Card 1: Reports */}
@@ -85,39 +76,31 @@ const RelatoriosCriadosPage = () => {
                 <FileText className="w-6 h-6 text-accent" />
               </div>
               <div className="min-w-0">
-                <p className="font-display font-bold text-accent text-3xl">{reportsForSelected}</p>
-                <p className="text-muted-foreground text-sm">{selectedAnalyst ? 'Relatórios deste analista' : 'Relatórios criados'}</p>
+                <p className="font-display font-bold text-accent text-3xl">{filteredReports.length}</p>
+                <p className="text-muted-foreground text-sm">{selectedArea ? 'Relatórios nesta área' : 'Relatórios criados'}</p>
               </div>
             </motion.div>
 
-            {/* Card 2: Analyst / count */}
+            {/* Card 2: Filtro Atual Ativo */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }}
               className="glass-card rounded-2xl p-6 border border-border/30 flex items-center gap-4 smooth-hover hover:border-accent/40">
-              {selectedAnalyst?.photo ? (
-                <div className="rounded-xl overflow-hidden shrink-0 ring-2 ring-primary/30" style={{ width: '3.25rem', height: '3.25rem' }}>
-                  <img src={selectedAnalyst.photo} alt="" className="w-full h-full object-cover" />
-                </div>
-              ) : (
-                <div className="rounded-xl bg-primary/15 flex items-center justify-center shrink-0" style={{ width: '3.25rem', height: '3.25rem' }}>
-                  <User className="w-6 h-6 text-primary" />
-                </div>
-              )}
+              <div className="rounded-xl bg-primary/15 flex items-center justify-center shrink-0" style={{ width: '3.25rem', height: '3.25rem' }}>
+                <Filter className="w-6 h-6 text-primary" />
+              </div>
               <div className="min-w-0">
-                <p className={`font-display font-bold text-primary ${selectedAnalyst ? 'text-xl leading-tight truncate' : 'text-3xl'}`}>{selectedAnalyst ? selectedAnalyst.name : biAnalysts.length}</p>
-                <p className="text-muted-foreground text-sm">{selectedAnalyst ? 'Analista selecionado' : 'Analistas'}</p>
+                <p className="font-display font-bold text-primary text-xl leading-tight truncate">{selectedArea ? selectedArea : 'Todas as Áreas'}</p>
+                <p className="text-muted-foreground text-sm">Filtro ativo</p>
               </div>
             </motion.div>
 
-            {/* Card 3: Áreas atendidas — editable */}
+            {/* Card 3: Áreas atendidas */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.26 }}
               className="glass-card rounded-2xl p-6 border border-border/30 flex items-center gap-4 smooth-hover hover:border-emerald-500/40">
               <div className="rounded-xl bg-emerald-500/15 flex items-center justify-center shrink-0" style={{ width: '3.25rem', height: '3.25rem' }}>
                 <BarChart3 className="w-6 h-6 text-emerald-400" />
               </div>
               <div className="min-w-0 flex-1">
-                {selectedAnalyst ? (
-                  <p className="font-display font-bold text-emerald-400 text-xl leading-tight truncate">{selectedAnalyst.area}</p>
-                ) : isAdmin ? (
+                {isAdmin ? (
                   <input
                     type="number"
                     className="font-display font-bold text-emerald-400 text-3xl bg-transparent border-b border-emerald-500/30 outline-none focus:border-emerald-400 w-24"
@@ -127,106 +110,62 @@ const RelatoriosCriadosPage = () => {
                 ) : (
                   <p className="font-display font-bold text-emerald-400 text-3xl">{areasCount}</p>
                 )}
-                <p className="text-muted-foreground text-sm">{selectedAnalyst ? 'Área de atuação' : 'Áreas atendidas'}</p>
+                <p className="text-muted-foreground text-sm">Áreas atendidas</p>
               </div>
             </motion.div>
           </motion.div>
         );
       })()}
 
-      {/* Filter mode toggle */}
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18, duration: 0.4 }} className="flex items-center gap-3 flex-wrap">
-        <div className="flex items-center gap-2 text-muted-foreground text-sm mr-2">
-          <Filter className="w-4 h-4" /> Filtrar por:
-        </div>
-        <button
-          onClick={() => { setFilterMode('analyst'); setSelectedArea(null); }}
-          className={`px-5 py-2.5 rounded-xl text-sm font-semibold smooth-hover border ${filterMode === 'analyst' ? 'gradient-accent text-accent-foreground border-transparent shadow-lg shadow-accent/25' : 'bg-card/50 text-foreground border-border/40 hover:border-accent/40'}`}
-        >
-          Analista
-        </button>
-        <button
-          onClick={() => { setFilterMode('area'); setSelectedAnalystId(null); }}
-          className={`px-5 py-2.5 rounded-xl text-sm font-semibold smooth-hover border ${filterMode === 'area' ? 'gradient-accent text-accent-foreground border-transparent shadow-lg shadow-accent/25' : 'bg-card/50 text-foreground border-border/40 hover:border-accent/40'}`}
-        >
-          Área
-        </button>
-      </motion.div>
-
-      {/* Filter content — animated */}
-      <AnimatePresence mode="wait">
-        {filterMode === 'analyst' ? (
-          <motion.section
-            key="filter-analyst"
-            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+      {/* Seção Principal de Filtro Modificada para Áreas */}
+      <motion.section
+        initial={{ opacity: 0, y: 16 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <h3 className="text-xl font-display font-bold text-foreground mb-6">Filtrar por Área</h3>
+        <div className="flex flex-wrap gap-3.5">
+          {/* Botão para limpar o filtro e exibir tudo */}
+          <button 
+            onClick={() => setSelectedArea(null)}
+            className={`flex items-center gap-3 px-6 py-3.5 rounded-2xl text-base font-semibold smooth-hover border ${!selectedArea ? 'gradient-accent text-accent-foreground shadow-lg shadow-accent/25 border-transparent' : 'bg-card/50 text-foreground border-border/30 hover:border-accent/40 hover:shadow-lg'}`}
           >
-            {isAdmin ? <input className="text-xl font-display font-bold text-foreground mb-6 bg-transparent border-b border-border outline-none focus:border-accent block" value={content.filterByAnalystTitle} onChange={(e) => updateContent({ filterByAnalystTitle: e.target.value })} /> : <h3 className="text-xl font-display font-bold text-foreground mb-6">{content.filterByAnalystTitle}</h3>}
-            <div className="flex flex-wrap gap-3.5">
-              <button onClick={() => setSelectedAnalystId(null)}
-                className={`flex items-center gap-3 px-6 py-3.5 rounded-2xl text-base font-semibold smooth-hover border ${!selectedAnalystId ? 'gradient-accent text-accent-foreground shadow-lg shadow-accent/25 border-transparent' : 'bg-card/50 text-foreground border-border/30 hover:border-accent/40 hover:shadow-lg'}`}
+            <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
+              <Layers className="w-5 h-5" />
+            </div>
+            Todas
+          </button>
+
+          {/* Listagem das Áreas dinâmicas corporativas */}
+          {areas.map((area) => {
+            const count = content.reports.filter((r) => {
+              const c = content.analysts.find((a) => a.id === r.creatorId);
+              return c?.area === area;
+            }).length;
+            const active = selectedArea === area;
+
+            return (
+              <button
+                key={area}
+                onClick={() => setSelectedArea(active ? null : area)}
+                className={`flex items-center gap-3.5 px-5 py-3.5 rounded-2xl text-base font-medium smooth-hover border ${active ? 'gradient-accent text-accent-foreground shadow-lg shadow-accent/25 border-transparent' : 'bg-card/50 text-foreground border-border/30 hover:border-accent/40 hover:shadow-lg'}`}
               >
-                <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center"><User className="w-5 h-5" /></div>
-                Todos
-              </button>
-              {biAnalysts.map((a) => (
-                <div key={a.id} className="relative group">
-                  <button onClick={() => setSelectedAnalystId(selectedAnalystId === a.id ? null : a.id)}
-                    className={`flex items-center gap-3.5 px-5 py-3.5 rounded-2xl text-base font-medium smooth-hover border ${selectedAnalystId === a.id ? 'gradient-accent text-accent-foreground shadow-lg shadow-accent/25 border-transparent' : 'bg-card/50 text-foreground border-border/30 hover:border-accent/40 hover:shadow-lg'}`}
-                  >
-                    <div className="w-12 h-12 rounded-full overflow-hidden bg-muted shrink-0 flex items-center justify-center border border-accent/20 ring-1 ring-accent/10">
-                      {a.photo ? <img src={a.photo} alt="" className="w-full h-full object-cover" /> : <User className="w-6 h-6 text-muted-foreground" />}
-                    </div>
-                    <div className="text-left min-w-0">
-                      <span className="block font-display font-semibold text-base leading-tight truncate">{a.name}</span>
-                      <span className={`text-xs block leading-tight mt-0.5 ${selectedAnalystId === a.id ? 'text-accent-foreground/75' : 'text-muted-foreground'}`}>{a.area}</span>
-                    </div>
-                  </button>
-                  {isAdmin && <div className="absolute top-full left-0 mt-1 z-20 hidden group-hover:block"><div className="glass-card rounded-lg p-3 shadow-xl w-64 space-y-2"><label className="text-xs text-muted-foreground">URL da Foto</label><input className="w-full p-2 rounded-lg border border-border bg-background text-foreground text-xs" value={a.photo} onChange={(e) => updateAnalyst(a.id, { photo: e.target.value })} onClick={(e) => e.stopPropagation()} /></div></div>}
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${active ? 'bg-white/15' : 'bg-accent/10'}`}>
+                  <Layers className={`w-5 h-5 ${active ? 'text-accent-foreground' : 'text-accent'}`} />
                 </div>
-              ))}
-            </div>
-          </motion.section>
-        ) : (
-          <motion.section
-            key="filter-area"
-            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <h3 className="text-xl font-display font-bold text-foreground mb-6">Filtrar por Área</h3>
-            <div className="flex flex-wrap gap-3.5">
-              <button onClick={() => setSelectedArea(null)}
-                className={`flex items-center gap-3 px-6 py-3.5 rounded-2xl text-base font-semibold smooth-hover border ${!selectedArea ? 'gradient-accent text-accent-foreground shadow-lg shadow-accent/25 border-transparent' : 'bg-card/50 text-foreground border-border/30 hover:border-accent/40 hover:shadow-lg'}`}
-              >
-                <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center"><Layers className="w-5 h-5" /></div>
-                Todas
+                <div className="text-left min-w-0">
+                  <span className="block font-display font-semibold text-base leading-tight truncate">{area}</span>
+                  <span className={`text-xs block leading-tight mt-0.5 ${active ? 'text-accent-foreground/75' : 'text-muted-foreground'}`}>
+                    {count} relatório{count !== 1 ? 's' : ''}
+                  </span>
+                </div>
               </button>
-              {areas.map((area) => {
-                const count = content.reports.filter((r) => {
-                  const c = content.analysts.find((a) => a.id === r.creatorId);
-                  return c?.area === area;
-                }).length;
-                const active = selectedArea === area;
-                return (
-                  <button
-                    key={area}
-                    onClick={() => setSelectedArea(active ? null : area)}
-                    className={`flex items-center gap-3.5 px-5 py-3.5 rounded-2xl text-base font-medium smooth-hover border ${active ? 'gradient-accent text-accent-foreground shadow-lg shadow-accent/25 border-transparent' : 'bg-card/50 text-foreground border-border/30 hover:border-accent/40 hover:shadow-lg'}`}
-                  >
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${active ? 'bg-white/15' : 'bg-accent/10'}`}>
-                      <Layers className={`w-5 h-5 ${active ? 'text-accent-foreground' : 'text-accent'}`} />
-                    </div>
-                    <div className="text-left min-w-0">
-                      <span className="block font-display font-semibold text-base leading-tight truncate">{area}</span>
-                      <span className={`text-xs block leading-tight mt-0.5 ${active ? 'text-accent-foreground/75' : 'text-muted-foreground'}`}>{count} relatório{count !== 1 ? 's' : ''}</span>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </motion.section>
-        )}
-      </AnimatePresence>
+            );
+          })}
+        </div>
+      </motion.section>
 
-      {/* Search */}
+      {/* Busca */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.4 }} className="relative">
         <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
         <input type="text" placeholder="Buscar relatório pelo nome..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}

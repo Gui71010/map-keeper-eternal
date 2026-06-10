@@ -7,33 +7,40 @@ import ReportCard from '@/components/ReportCard';
 import ReportDetailModal from '@/components/ReportDetailModal';
 import GalaxyParticles from '@/components/GalaxyParticles';
 
+type FilterMode = 'analyst' | 'area';
+
 const RelatoriosCriadosPage = () => {
   const { content, isAdmin, updateContent, updateAnalyst, addReport } = useAdmin();
+  // Mantemos o filterMode fixo em 'area' para preservar a lógica interna do seu componente
+  const [filterMode, setFilterMode] = useState<FilterMode>('area');
+  const [selectedAnalystId, setSelectedAnalystId] = useState<string | null>(null);
   const [selectedArea, setSelectedArea] = useState<string | null>(null);
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   const biAnalysts = content.analysts.filter((a) => a.type === 'bi');
 
-  // Lista única de áreas extraídas dinamicamente dos analistas de BI
+  // Unique list of areas derived from BI analysts
   const areas = useMemo(() => {
     const set = new Set<string>();
     biAnalysts.forEach((a) => a.area && set.add(a.area));
     return Array.from(set);
   }, [biAnalysts]);
 
-  // Filtra os relatórios baseando-se diretamente na área selecionada e na busca por texto
   const filteredReports = content.reports
     .filter((r) => {
-      if (!selectedArea) return true;
-      const creator = content.analysts.find((a) => a.id === r.creatorId);
-      return creator?.area === selectedArea;
+      if (filterMode === 'analyst') return !selectedAnalystId || r.creatorId === selectedAnalystId;
+      if (filterMode === 'area') {
+        if (!selectedArea) return true;
+        const creator = content.analysts.find((a) => a.id === r.creatorId);
+        return creator?.area === selectedArea;
+      }
+      return true;
     })
     .filter((r) => !searchQuery || r.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
   const getCreatorName = (id: string) => content.analysts.find((a) => a.id === id)?.name || 'Desconhecido';
   const selectedReport = content.reports.find((r) => r.id === selectedReportId);
-  
   const navigateReport = (direction: 'prev' | 'next') => {
     const idx = filteredReports.findIndex((r) => r.id === selectedReportId);
     if (idx === -1) return;
@@ -66,7 +73,10 @@ const RelatoriosCriadosPage = () => {
 
       {/* Stats */}
       {(() => {
-        const reportsForSelected = content.reports.length;
+        const selectedAnalyst = selectedAnalystId ? content.analysts.find((a) => a.id === selectedAnalystId) : null;
+        const reportsForSelected = selectedAnalystId
+          ? content.reports.filter((r) => r.creatorId === selectedAnalystId).length
+          : content.reports.length;
         return (
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.5 }} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* Card 1: Reports */}
@@ -76,31 +86,39 @@ const RelatoriosCriadosPage = () => {
                 <FileText className="w-6 h-6 text-accent" />
               </div>
               <div className="min-w-0">
-                <p className="font-display font-bold text-accent text-3xl">{filteredReports.length}</p>
-                <p className="text-muted-foreground text-sm">{selectedArea ? 'Relatórios nesta área' : 'Relatórios criados'}</p>
+                <p className="font-display font-bold text-accent text-3xl">{reportsForSelected}</p>
+                <p className="text-muted-foreground text-sm">{selectedAnalyst ? 'Relatórios deste analista' : 'Relatórios criados'}</p>
               </div>
             </motion.div>
 
-            {/* Card 2: Filtro Atual Ativo */}
+            {/* Card 2: Analyst / count */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }}
               className="glass-card rounded-2xl p-6 border border-border/30 flex items-center gap-4 smooth-hover hover:border-accent/40">
-              <div className="rounded-xl bg-primary/15 flex items-center justify-center shrink-0" style={{ width: '3.25rem', height: '3.25rem' }}>
-                <Filter className="w-6 h-6 text-primary" />
-              </div>
+              {selectedAnalyst?.photo ? (
+                <div className="rounded-xl overflow-hidden shrink-0 ring-2 ring-primary/30" style={{ width: '3.25rem', height: '3.25rem' }}>
+                  <img src={selectedAnalyst.photo} alt="" className="w-full h-full object-cover" />
+                </div>
+              ) : (
+                <div className="rounded-xl bg-primary/15 flex items-center justify-center shrink-0" style={{ width: '3.25rem', height: '3.25rem' }}>
+                  <Filter className="w-6 h-6 text-primary" />
+                </div>
+              )}
               <div className="min-w-0">
-                <p className="font-display font-bold text-primary text-xl leading-tight truncate">{selectedArea ? selectedArea : 'Todas as Áreas'}</p>
-                <p className="text-muted-foreground text-sm">Filtro ativo</p>
+                <p className={`font-display font-bold text-primary ${selectedAnalyst ? 'text-xl leading-tight truncate' : 'text-3xl'}`}>{selectedAnalyst ? selectedAnalyst.name : 'Todas as Áreas'}</p>
+                <p className="text-muted-foreground text-sm">{selectedAnalyst ? 'Analista selecionado' : 'Filtro ativo'}</p>
               </div>
             </motion.div>
 
-            {/* Card 3: Áreas atendidas */}
+            {/* Card 3: Áreas atendidas — editable */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.26 }}
               className="glass-card rounded-2xl p-6 border border-border/30 flex items-center gap-4 smooth-hover hover:border-emerald-500/40">
               <div className="rounded-xl bg-emerald-500/15 flex items-center justify-center shrink-0" style={{ width: '3.25rem', height: '3.25rem' }}>
                 <BarChart3 className="w-6 h-6 text-emerald-400" />
               </div>
               <div className="min-w-0 flex-1">
-                {isAdmin ? (
+                {selectedAnalyst ? (
+                  <p className="font-display font-bold text-emerald-400 text-xl leading-tight truncate">{selectedAnalyst.area}</p>
+                ) : isAdmin ? (
                   <input
                     type="number"
                     className="font-display font-bold text-emerald-400 text-3xl bg-transparent border-b border-emerald-500/30 outline-none focus:border-emerald-400 w-24"
@@ -110,60 +128,52 @@ const RelatoriosCriadosPage = () => {
                 ) : (
                   <p className="font-display font-bold text-emerald-400 text-3xl">{areasCount}</p>
                 )}
-                <p className="text-muted-foreground text-sm">Áreas atendidas</p>
+                <p className="text-muted-foreground text-sm">{selectedAnalyst ? 'Area de atuação' : 'Áreas atendidas'}</p>
               </div>
             </motion.div>
           </motion.div>
         );
       })()}
 
-      {/* Seção Principal de Filtro Modificada para Áreas */}
-      <motion.section
-        initial={{ opacity: 0, y: 16 }} 
-        animate={{ opacity: 1, y: 0 }} 
-        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <h3 className="text-xl font-display font-bold text-foreground mb-6">Filtrar por Área</h3>
-        <div className="flex flex-wrap gap-3.5">
-          {/* Botão para limpar o filtro e exibir tudo */}
-          <button 
-            onClick={() => setSelectedArea(null)}
-            className={`flex items-center gap-3 px-6 py-3.5 rounded-2xl text-base font-semibold smooth-hover border ${!selectedArea ? 'gradient-accent text-accent-foreground shadow-lg shadow-accent/25 border-transparent' : 'bg-card/50 text-foreground border-border/30 hover:border-accent/40 hover:shadow-lg'}`}
-          >
-            <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
-              <Layers className="w-5 h-5" />
-            </div>
-            Todas
-          </button>
-
-          {/* Listagem das Áreas dinâmicas corporativas */}
-          {areas.map((area) => {
-            const count = content.reports.filter((r) => {
-              const c = content.analysts.find((a) => a.id === r.creatorId);
-              return c?.area === area;
-            }).length;
-            const active = selectedArea === area;
-
-            return (
-              <button
-                key={area}
-                onClick={() => setSelectedArea(active ? null : area)}
-                className={`flex items-center gap-3.5 px-5 py-3.5 rounded-2xl text-base font-medium smooth-hover border ${active ? 'gradient-accent text-accent-foreground shadow-lg shadow-accent/25 border-transparent' : 'bg-card/50 text-foreground border-border/30 hover:border-accent/40 hover:shadow-lg'}`}
-              >
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${active ? 'bg-white/15' : 'bg-accent/10'}`}>
-                  <Layers className={`w-5 h-5 ${active ? 'text-accent-foreground' : 'text-accent'}`} />
-                </div>
-                <div className="text-left min-w-0">
-                  <span className="block font-display font-semibold text-base leading-tight truncate">{area}</span>
-                  <span className={`text-xs block leading-tight mt-0.5 ${active ? 'text-accent-foreground/75' : 'text-muted-foreground'}`}>
-                    {count} relatório{count !== 1 ? 's' : ''}
-                  </span>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </motion.section>
+      {/* Exibição Fixa do Filtro por Área (Visual Original de Ícones) */}
+      <AnimatePresence mode="wait">
+        <motion.section
+          key="filter-area"
+          initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <h3 className="text-xl font-display font-bold text-foreground mb-6">Filtrar por Área</h3>
+          <div className="flex flex-wrap gap-3.5">
+            <button onClick={() => setSelectedArea(null)}
+              className={`flex items-center gap-3 px-6 py-3.5 rounded-2xl text-base font-semibold smooth-hover border ${!selectedArea ? 'gradient-accent text-accent-foreground shadow-lg shadow-accent/25 border-transparent' : 'bg-card/50 text-foreground border-border/30 hover:border-accent/40 hover:shadow-lg'}`}
+            >
+              <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center"><Layers className="w-5 h-5" /></div>
+              Todas
+            </button>
+            {areas.map((area) => {
+              const count = content.reports.filter((r) => {
+                const c = content.analysts.find((a) => a.id === r.creatorId);
+                return c?.area === area;
+              }).length;
+              const active = selectedArea === area;
+              return (
+                <button
+                  key={area}
+                  onClick={() => setSelectedArea(active ? null : area)}
+                  className={`flex items-center gap-3.5 px-5 py-3.5 rounded-2xl text-base font-medium smooth-hover border ${active ? 'gradient-accent text-accent-foreground shadow-lg shadow-accent/25 border-transparent' : 'bg-card/50 text-foreground border-border/30 hover:border-accent/40 hover:shadow-lg'}`}
+                >
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${active ? 'bg-white/15' : 'bg-accent/10'}`}>
+                    <Layers className={`w-5 h-5 ${active ? 'text-accent-foreground' : 'text-accent'}`} />
+                  </div>
+                  <div className="text-left min-w-0">
+                    <span className="block font-display font-semibold text-base leading-tight truncate">{area}</span>
+                    <span className={`text-xs block leading-tight mt-0.5 ${active ? 'text-accent-foreground/75' : 'text-muted-foreground'}`}>{count} relatório{count !== 1 ? 's' : ''}</span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </motion.section>
+      </AnimatePresence>
 
       {/* Busca */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.4 }} className="relative">

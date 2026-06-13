@@ -244,6 +244,36 @@ const DEFAULT_CONTENT: SiteContent = {
   ],
   gestaoxUrl: 'https://gestaox.aec.com.br',
   eligibleAreasOptions: ['Diretoria de RH', 'Talent Aquisition', 'ReS Sites', 'ReS Nic', 'Treinamento', 'Medicina', 'Corporativo', 'Recrutamento', 'Administrativo', 'Business Partner'],
+  pythonTag: 'Python · Automação',
+  pythonTitle: 'Automações em Python',
+  pythonDescription: 'Desenvolvemos scripts e robôs em Python que automatizam tarefas repetitivas e auxiliam diretamente as áreas de Recrutamento & Seleção, Treinamento e demais frentes da Diretoria — entregando mais velocidade, menos erros e tempo livre para o que realmente importa: análise.',
+  pythonCards: [
+    { id: '1', title: 'ReS', subtitle: 'Recrutamento & Seleção', desc: 'Robôs que processam currículos, atualizam funis admissionais e geram extrações automáticas de candidatos por etapa.', tag: 'Bots' },
+    { id: '2', title: 'Treinamento', subtitle: 'Desenvolvimento de Pessoas', desc: 'Scripts que consolidam horas, presenças e eficácia de treinamentos a partir de múltiplas fontes em um único output limpo.', tag: 'ETL' },
+    { id: '3', title: 'Relatórios', subtitle: 'Distribuição automática', desc: 'Pipelines agendados que geram, atualizam e disparam relatórios para os squads — sem intervenção manual.', tag: 'Agendado' },
+  ],
+  pythonCodeFilename: 'automacao_res.py',
+  pythonCode: `import pandas as pd
+from automations.res import funil_admissional
+
+# Coleta dados de múltiplas fontes
+candidatos = funil_admissional.extrair()
+
+# Processa, consolida e valida
+df = (candidatos
+      .pipe(funil_admissional.limpar)
+      .pipe(funil_admissional.consolidar))
+
+# Distribui o relatório automaticamente
+funil_admissional.publicar(df, destino="ReS")
+print(f"✓ {len(df)} registros processados")`,
+  pythonImpactTitle: 'Impacto direto',
+  pythonImpactItems: [
+    { id: '1', t: 'Horas economizadas', d: 'Tarefas que levavam dias rodam em minutos.' },
+    { id: '2', t: 'Zero retrabalho', d: 'Pipelines validados removem erros manuais.' },
+    { id: '3', t: 'Escala sob demanda', d: 'Mesmo script atende uma ou todas as unidades.' },
+    { id: '4', t: 'Integração transparente', d: 'Resultados entregues prontos para os relatórios e dashboards.' },
+  ],
 };
 
 const ADMIN_PASSWORD = 'Guisantos88';

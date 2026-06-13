@@ -10,11 +10,14 @@ import GalaxyParticles from '@/components/GalaxyParticles';
 const RelatoriosCriadosPage = () => {
   const { content, isAdmin, updateContent, updateAnalyst, addReport } = useAdmin();
   const [selectedAnalystId, setSelectedAnalystId] = useState<string | null>(null);
+  const [selectedAreaFilter, setSelectedAreaFilter] = useState<string | null>(null);
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const biAnalysts = content.analysts.filter((a) => a.type === 'bi');
+  const eligibleAreasOptions = content.eligibleAreasOptions || [];
   const filteredReports = content.reports
     .filter((r) => !selectedAnalystId || r.creatorId === selectedAnalystId)
+    .filter((r) => !selectedAreaFilter || (r.eligibleAreas || []).includes(selectedAreaFilter))
     .filter((r) => !searchQuery || r.name.toLowerCase().includes(searchQuery.toLowerCase()));
   const getCreatorName = (id: string) => content.analysts.find((a) => a.id === id)?.name || 'Desconhecido';
   const selectedReport = content.reports.find((r) => r.id === selectedReportId);
@@ -135,6 +138,51 @@ const RelatoriosCriadosPage = () => {
                 </div>
               </button>
               {isAdmin && <div className="absolute top-full left-0 mt-1 z-20 hidden group-hover:block"><div className="glass-card rounded-lg p-3 shadow-xl w-64 space-y-2"><label className="text-xs text-muted-foreground">URL da Foto</label><input className="w-full p-2 rounded-lg border border-border bg-background text-foreground text-xs" value={a.photo} onChange={(e) => updateAnalyst(a.id, { photo: e.target.value })} onClick={(e) => e.stopPropagation()} /></div></div>}
+            </div>
+          ))}
+        </div>
+      </motion.section>
+
+      {/* Area filter */}
+      <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.22, duration: 0.5 }}>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-xl font-display font-bold text-foreground flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-fuchsia-400 shadow-[0_0_8px_hsl(290_80%_60%)]" />
+            Filtrar por Área Elegível
+          </h3>
+          {isAdmin && (
+            <button
+              onClick={() => {
+                const novo = prompt('Nome da nova área elegível:');
+                if (novo && novo.trim()) updateContent({ eligibleAreasOptions: [...eligibleAreasOptions, novo.trim()] });
+              }}
+              className="px-3 py-1.5 rounded-lg bg-fuchsia-500/20 text-fuchsia-200 border border-fuchsia-400/40 text-xs font-medium hover:bg-fuchsia-500/30 transition flex items-center gap-1"
+            >
+              <Plus className="w-3 h-3" /> Nova área
+            </button>
+          )}
+        </div>
+        <div className="flex flex-wrap gap-2.5">
+          <button
+            onClick={() => setSelectedAreaFilter(null)}
+            className={`px-4 py-2 rounded-xl text-sm font-semibold border transition-all ${!selectedAreaFilter ? 'bg-fuchsia-500/25 text-fuchsia-100 border-fuchsia-400/60 shadow-md shadow-fuchsia-500/20' : 'bg-card/40 text-foreground/80 border-border/40 hover:border-fuchsia-400/40'}`}
+          >
+            Todas
+          </button>
+          {eligibleAreasOptions.map((area) => (
+            <div key={area} className="relative group">
+              <button
+                onClick={() => setSelectedAreaFilter(selectedAreaFilter === area ? null : area)}
+                className={`px-4 py-2 rounded-xl text-sm font-semibold border transition-all ${selectedAreaFilter === area ? 'bg-fuchsia-500/25 text-fuchsia-100 border-fuchsia-400/60 shadow-md shadow-fuchsia-500/20' : 'bg-card/40 text-foreground/80 border-border/40 hover:border-fuchsia-400/40'}`}
+              >
+                {area}
+              </button>
+              {isAdmin && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); if (confirm(`Remover a área "${area}"?`)) updateContent({ eligibleAreasOptions: eligibleAreasOptions.filter(a => a !== area) }); }}
+                  className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold opacity-0 group-hover:opacity-100 transition"
+                >×</button>
+              )}
             </div>
           ))}
         </div>

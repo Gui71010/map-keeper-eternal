@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { User, Shield, BarChart3, Briefcase, Palette, MousePointerClick, Sparkles, UserCheck } from 'lucide-react';
+import { User, Shield, BarChart3, Briefcase, Palette, MousePointerClick, Sparkles, UserCheck, GraduationCap } from 'lucide-react';
 import { Analyst } from '@/contexts/AdminContext';
 
 interface OrgChartProps {
@@ -8,6 +8,7 @@ interface OrgChartProps {
   adminAnalysts: Analyst[];
   designAnalysts: Analyst[];
   assistantAnalysts: Analyst[];
+  internAnalysts: Analyst[];
   onAnalystClick?: (id: string) => void;
 }
 
@@ -174,7 +175,7 @@ const AreaGroup = ({
   </motion.div>
 );
 
-const OrgChart = ({ manager, biAnalysts, adminAnalysts, designAnalysts, assistantAnalysts, onAnalystClick }: OrgChartProps) => {
+const OrgChart = ({ manager, biAnalysts, adminAnalysts, designAnalysts, assistantAnalysts, internAnalysts, onAnalystClick }: OrgChartProps) => {
   return (
     <div className="relative w-full py-8">
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -212,11 +213,12 @@ const OrgChart = ({ manager, biAnalysts, adminAnalysts, designAnalysts, assistan
           <div className="h-px w-full bg-gradient-to-r from-transparent via-accent/20 to-transparent" />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 max-w-7xl mx-auto px-4 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-5 max-w-7xl mx-auto px-4 items-start">
           <AreaGroup title="Analistas de BI" icon={BarChart3} analysts={biAnalysts} gradientFrom="hsl(210, 90%, 50%)" gradientTo="hsl(195, 85%, 45%)" glowColor="hsl(210, 90%, 55%)" delay={0.25} onAnalystClick={onAnalystClick} />
           <AreaGroup title="Administrativo" icon={Briefcase} analysts={adminAnalysts} gradientFrom="hsl(160, 70%, 40%)" gradientTo="hsl(145, 65%, 45%)" glowColor="hsl(155, 70%, 45%)" delay={0.35} onAnalystClick={onAnalystClick} />
           <AreaGroup title="Assistente de Pessoas" icon={UserCheck} analysts={assistantAnalysts} gradientFrom="hsl(35, 90%, 55%)" gradientTo="hsl(20, 85%, 50%)" glowColor="hsl(30, 90%, 55%)" delay={0.4} onAnalystClick={onAnalystClick} />
           <AreaGroup title="Design" icon={Palette} analysts={designAnalysts} gradientFrom="hsl(270, 65%, 55%)" gradientTo="hsl(285, 60%, 50%)" glowColor="hsl(275, 65%, 55%)" delay={0.45} onAnalystClick={onAnalystClick} />
+          <AreaGroup title="Estagiários" icon={GraduationCap} analysts={internAnalysts} gradientFrom="hsl(190, 85%, 50%)" gradientTo="hsl(170, 75%, 45%)" glowColor="hsl(180, 80%, 50%)" delay={0.5} onAnalystClick={onAnalystClick} />
         </div>
       </div>
     </div>

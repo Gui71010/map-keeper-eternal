@@ -367,22 +367,23 @@ const FeedbackPage = () => {
                         <button
                           key={opt.key}
                           onClick={() => setTarget(opt.key)}
-                          className="group relative rounded-2xl p-8 border border-border/30 hover:border-accent/40 hover:-translate-y-0.5 transition-all duration-300 text-left overflow-hidden"
+                          className="group relative min-h-[176px] rounded-[28px] px-8 py-9 md:px-10 md:py-10 border border-border/30 hover:border-accent/40 hover:-translate-y-1 transition-all duration-300 text-left overflow-hidden shadow-[0_18px_50px_-24px_hsl(var(--primary)/0.5)]"
                           style={{ background: 'hsl(215, 25%, 12% / 0.5)' }}
                         >
-                          <div className="flex items-center gap-5">
+                          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: `linear-gradient(135deg, ${opt.colorFrom}18, ${opt.colorTo}10)` }} />
+                          <div className="relative flex items-center gap-6 pr-12">
                             <div
-                              className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300 shrink-0"
+                              className="w-20 h-20 rounded-[22px] flex items-center justify-center shadow-xl group-hover:scale-105 transition-transform duration-300 shrink-0"
                               style={{ background: `linear-gradient(135deg, ${opt.colorFrom}, ${opt.colorTo})` }}
                             >
-                              <opt.icon className="w-8 h-8 text-white" />
+                              <opt.icon className="w-10 h-10 text-white" />
                             </div>
                             <div className="min-w-0 flex-1">
-                              <h4 className="text-xl font-display font-bold text-foreground leading-tight">{opt.title}</h4>
-                              <p className="text-muted-foreground text-sm mt-1">{opt.desc}</p>
+                              <h4 className="text-[1.65rem] font-display font-bold text-foreground leading-tight">{opt.title}</h4>
+                              <p className="text-muted-foreground text-base mt-2 leading-relaxed">{opt.desc}</p>
                             </div>
-                            <MousePointerClick className="w-5 h-5 text-accent/70 shrink-0 animate-bounce" style={{ animationDuration: '1.6s' }} />
                           </div>
+                          <MousePointerClick className="absolute bottom-5 right-5 w-7 h-7 text-foreground/80 animate-bounce" style={{ animationDuration: '1.6s' }} />
                         </button>
                       ))}
                     </div>

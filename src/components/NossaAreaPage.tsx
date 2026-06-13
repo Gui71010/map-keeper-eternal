@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, ImageIcon, MapPin, Crown, Palette, Briefcase, BarChart3, Globe, ChevronLeft, ChevronRight, Trash2, Rocket, FileText, DollarSign, User, ChevronDown, Mail, Phone, MessageCircle, Plane, Database, Workflow, LineChart, Layers, Sparkles, Cpu, ExternalLink, LifeBuoy, AlertCircle, FileEdit, FilePlus, FileCheck, FileX, Flame, UserCheck } from 'lucide-react';
+import { Plus, ImageIcon, MapPin, Crown, Palette, Briefcase, BarChart3, Globe, ChevronLeft, ChevronRight, Trash2, Rocket, FileText, DollarSign, User, ChevronDown, Mail, Phone, MessageCircle, Plane, Database, Workflow, LineChart, Layers, Sparkles, Cpu, ExternalLink, LifeBuoy, AlertCircle, FileEdit, FilePlus, FileCheck, FileX, Flame, UserCheck, Code2, Zap, Bot, GitBranch } from 'lucide-react';
 import { useAdmin } from '@/contexts/AdminContext';
 import AnalystCard from '@/components/AnalystCard';
 import GalaxyParticles from '@/components/GalaxyParticles';
@@ -18,6 +18,10 @@ import stackPowerBiImg from '@/assets/stack-powerbi.jpg';
 import stackSqlImg from '@/assets/stack-sql.jpg';
 import stackExcelImg from '@/assets/stack-excel.jpg';
 import stackOrbiImg from '@/assets/stack-orbi.jpg';
+import pythonHeroImg from '@/assets/python-automation-hero.jpg';
+import pythonAutoTreinamentoImg from '@/assets/python-auto-treinamento.jpg';
+import pythonAutoResImg from '@/assets/python-auto-res.jpg';
+import pythonAutoRelatoriosImg from '@/assets/python-auto-relatorios.jpg';
 
 const NossaAreaPage = () => {
   const { content, isAdmin, updateContent, addAnalyst, addProject, updateProject, removeProject, addAreaReportCard, updateAreaReportCard, removeAreaReportCard } = useAdmin();
@@ -29,9 +33,16 @@ const NossaAreaPage = () => {
   const adminAnalysts = content.analysts.filter((a) => a.type === 'admin');
   const designAnalysts = content.analysts.filter((a) => a.type === 'design');
   const assistantAnalysts = content.analysts.filter((a) => a.type === 'assistant');
+  const internAnalysts = content.analysts.filter((a) => a.type === 'intern');
   const orgImage = content.orgChartUrl || '';
   const projects = content.projects || [];
   const areaReportCards = content.areaReportCards || [];
+  const eligibleAreasOptions = content.eligibleAreasOptions || [];
+  // Auto-derive count from reports per area (so cards "conversam" com áreas elegíveis)
+  const computedAreaCounts = areaReportCards.reduce<Record<string, number>>((acc, c) => {
+    acc[c.id] = content.reports.filter(r => (r.eligibleAreas || []).includes(c.area)).length;
+    return acc;
+  }, {});
 
   useEffect(() => {
     if (projects.length <= 1 || isAdmin) return;
@@ -109,6 +120,7 @@ const NossaAreaPage = () => {
             adminAnalysts={adminAnalysts}
             designAnalysts={designAnalysts}
             assistantAnalysts={assistantAnalysts}
+            internAnalysts={internAnalysts}
             onAnalystClick={(id) => setSelectedAnalyst(selectedAnalyst === id ? null : id)}
           />
         </div>

@@ -363,47 +363,26 @@ const FeedbackPage = () => {
                       {[
                         { key: 'site' as const, icon: Globe, title: 'Site', desc: 'Experiência geral do site', colorFrom: 'hsl(199, 89%, 48%)', colorTo: 'hsl(217, 91%, 60%)' },
                         { key: 'relatorio' as const, icon: FileText, title: 'Relatórios', desc: 'Sobre um relatório específico', colorFrom: 'hsl(280, 75%, 60%)', colorTo: 'hsl(330, 80%, 58%)' },
-                      ].map((opt, optIdx) => (
-                        <motion.button
+                      ].map((opt) => (
+                        <button
                           key={opt.key}
                           onClick={() => setTarget(opt.key)}
-                          animate={{ y: [0, -3, 0] }}
-                          transition={{ duration: 2.4, repeat: Infinity, delay: optIdx * 0.4, ease: 'easeInOut' }}
-                          className="group relative rounded-2xl p-8 border border-border/30 hover:border-accent/40 transition-all duration-400 text-left overflow-hidden"
+                          className="group relative rounded-2xl p-6 border border-border/30 hover:border-accent/40 hover:-translate-y-0.5 transition-all duration-300 text-left overflow-hidden"
                           style={{ background: 'hsl(215, 25%, 12% / 0.5)' }}
                         >
-                          {/* Animated shine sweep */}
-                          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none" style={{ background: `linear-gradient(110deg, transparent 30%, ${opt.colorFrom}25 50%, transparent 70%)`, animation: 'shine 1.6s ease-in-out infinite' }} />
-                          {/* Pulse rings */}
-                          <motion.div
-                            className="absolute top-8 left-8 w-16 h-16 rounded-2xl pointer-events-none"
-                            animate={{ scale: [1, 1.6], opacity: [0.4, 0] }}
-                            transition={{ duration: 1.8, repeat: Infinity, delay: optIdx * 0.5 }}
-                            style={{ background: `linear-gradient(135deg, ${opt.colorFrom}, ${opt.colorTo})` }}
-                          />
-                          <motion.div
-                            className="absolute top-8 left-8 w-16 h-16 rounded-2xl pointer-events-none"
-                            animate={{ scale: [1, 2.2], opacity: [0.25, 0] }}
-                            transition={{ duration: 1.8, repeat: Infinity, delay: optIdx * 0.5 + 0.4 }}
-                            style={{ background: `linear-gradient(135deg, ${opt.colorFrom}, ${opt.colorTo})` }}
-                          />
-                          <div className="relative w-16 h-16 rounded-2xl flex items-center justify-center mb-5 shadow-xl group-hover:scale-105 transition-transform duration-300" style={{ background: `linear-gradient(135deg, ${opt.colorFrom}, ${opt.colorTo})` }}>
-                            <opt.icon className="w-8 h-8 text-white" />
-                          </div>
-                          {/* Animated cursor hint */}
-                          <motion.div
-                            className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none"
-                            animate={{ x: [0, -8, 0, -8, 0], opacity: [0.6, 1, 0.6, 1, 0.6] }}
-                            transition={{ duration: 2.2, repeat: Infinity, delay: optIdx * 0.6, ease: 'easeInOut' }}
-                          >
-                            <div className="flex flex-col items-center gap-1">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent drop-shadow-[0_0_6px_hsl(var(--accent))]"><path d="M9 11V6a2 2 0 0 1 4 0v6"/><path d="M9 11l-1.5-1.5a2.121 2.121 0 0 0-3 3L11 19h6a4 4 0 0 0 4-4v-3a2 2 0 0 0-4 0"/></svg>
-                              <span className="text-[9px] font-bold uppercase tracking-wider text-accent">Clique</span>
+                          <div className="flex items-center gap-4">
+                            <div
+                              className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300 shrink-0"
+                              style={{ background: `linear-gradient(135deg, ${opt.colorFrom}, ${opt.colorTo})` }}
+                            >
+                              <opt.icon className="w-6 h-6 text-white" />
                             </div>
-                          </motion.div>
-                          <h4 className="relative text-xl font-display font-bold text-foreground mb-1">{opt.title}</h4>
-                          <p className="relative text-muted-foreground text-sm">{opt.desc}</p>
-                        </motion.button>
+                            <div className="min-w-0">
+                              <h4 className="text-lg font-display font-bold text-foreground leading-tight">{opt.title}</h4>
+                              <p className="text-muted-foreground text-sm">{opt.desc}</p>
+                            </div>
+                          </div>
+                        </button>
                       ))}
                     </div>
                   </motion.div>

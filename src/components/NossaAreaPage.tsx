@@ -175,26 +175,21 @@ const NossaAreaPage = () => {
                   </button>
                 )}
               </div>
-              <div className="grid grid-cols-1 gap-3">
-                {areaReportCards.map((card, i) => {
-                  const autoCount = computedAreaCounts[card.id] ?? 0;
-                  return (
-                  <motion.div
-                    key={card.id}
-                    initial={{ opacity: 0, x: 30 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.4 + i * 0.1, duration: 0.4 }}
-                    className="glass-card rounded-xl p-4 border border-accent/10 relative overflow-hidden group hover:border-accent/30 hover:shadow-lg hover:shadow-accent/5 transition-all duration-300"
-                  >
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: 'radial-gradient(circle at 50% 50%, hsl(var(--accent) / 0.08), transparent 70%)' }} />
-                    <div className="relative flex items-center gap-4">
-                      {isAdmin ? (
+              {isAdmin ? (
+                <div className="grid grid-cols-1 gap-3">
+                  {areaReportCards.map((card, i) => {
+                    const autoCount = computedAreaCounts[card.id] ?? 0;
+                    return (
+                    <motion.div
+                      key={card.id}
+                      initial={{ opacity: 0, x: 30 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.4 + i * 0.1, duration: 0.4 }}
+                      className="glass-card rounded-xl p-4 border border-accent/10 relative overflow-hidden group hover:border-accent/30 transition-all duration-300"
+                    >
+                      <div className="relative flex items-center gap-4">
                         <input className="text-2xl w-10 bg-transparent border-b border-border text-center outline-none focus:border-accent" value={card.icon} onChange={(e) => updateAreaReportCard(card.id, { icon: e.target.value })} />
-                      ) : (
-                        <span className="text-2xl">{card.icon}</span>
-                      )}
-                      <div className="flex-1 min-w-0">
-                        {isAdmin ? (
+                        <div className="flex-1 min-w-0">
                           <select
                             className="font-display font-semibold text-foreground text-sm bg-background border border-border rounded w-full px-2 py-1 outline-none focus:border-accent"
                             value={card.area}
@@ -203,22 +198,38 @@ const NossaAreaPage = () => {
                             {!eligibleAreasOptions.includes(card.area) && <option value={card.area}>{card.area}</option>}
                             {eligibleAreasOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                           </select>
-                        ) : (
-                          <p className="font-display font-semibold text-foreground text-sm truncate">{card.area}</p>
-                        )}
-                        <div className="flex items-baseline gap-1 mt-0.5">
-                          <span className="text-xl font-display font-bold text-accent">{autoCount}</span>
-                          <span className="text-foreground/50 text-xs">relatórios elegíveis</span>
+                          <div className="flex items-baseline gap-1 mt-0.5">
+                            <span className="text-xl font-display font-bold text-accent">{autoCount}</span>
+                            <span className="text-foreground/50 text-xs">relatórios elegíveis</span>
+                          </div>
                         </div>
-                      </div>
-                      {isAdmin && (
                         <button onClick={() => removeAreaReportCard(card.id)} className="text-destructive/60 hover:text-destructive transition"><Trash2 className="w-3.5 h-3.5" /></button>
-                      )}
-                    </div>
-                  </motion.div>
-                  );
-                })}
-              </div>
+                      </div>
+                    </motion.div>
+                    );
+                  })}
+                </div>
+              ) : areaReportCards.length > 0 ? (
+                <div className="relative overflow-hidden rounded-xl" style={{ maskImage: 'linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent)', WebkitMaskImage: 'linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent)' }}>
+                  <div className="flex gap-3 animate-[marquee_28s_linear_infinite] hover:[animation-play-state:paused] w-max">
+                    {[...areaReportCards, ...areaReportCards].map((card, i) => {
+                      const autoCount = computedAreaCounts[card.id] ?? 0;
+                      return (
+                        <div key={`${card.id}-${i}`} className="glass-card rounded-xl px-4 py-3 border border-accent/10 hover:border-accent/40 transition-colors flex items-center gap-3 min-w-[220px] shrink-0">
+                          <span className="text-2xl shrink-0">{card.icon}</span>
+                          <div className="min-w-0">
+                            <p className="font-display font-semibold text-foreground text-sm truncate">{card.area}</p>
+                            <div className="flex items-baseline gap-1">
+                              <span className="text-lg font-display font-bold text-accent leading-none">{autoCount}</span>
+                              <span className="text-foreground/50 text-[11px]">relatórios</span>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : null}
             </div>
           </div>
         </div>
@@ -554,50 +565,78 @@ const NossaAreaPage = () => {
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-400 to-blue-500 flex items-center justify-center shadow-xl shadow-yellow-500/30 shrink-0">
                 <Code2 className="w-8 h-8 text-white" />
               </div>
-              <div>
+              <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[11px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-yellow-500/15 text-yellow-300 border border-yellow-500/30">Python · Automação</span>
+                  {isAdmin ? (
+                    <input value={content.pythonTag} onChange={(e) => updateContent({ pythonTag: e.target.value })} className="text-[11px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-yellow-500/15 text-yellow-300 border border-yellow-500/30 bg-transparent outline-none" />
+                  ) : (
+                    <span className="text-[11px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-yellow-500/15 text-yellow-300 border border-yellow-500/30">{content.pythonTag}</span>
+                  )}
                 </div>
-                <h3 className="text-3xl md:text-4xl font-display font-bold text-primary-foreground">Automações em Python</h3>
+                {isAdmin ? (
+                  <input value={content.pythonTitle} onChange={(e) => updateContent({ pythonTitle: e.target.value })} className="text-3xl md:text-4xl font-display font-bold text-primary-foreground bg-transparent border-b border-primary-foreground/20 outline-none focus:border-yellow-400 w-full" />
+                ) : (
+                  <h3 className="text-3xl md:text-4xl font-display font-bold text-primary-foreground">{content.pythonTitle}</h3>
+                )}
                 <div className="w-24 h-1 rounded-full bg-gradient-to-r from-yellow-400 to-blue-500 mt-2" />
               </div>
             </div>
-            <p className="text-primary-foreground/75 text-lg leading-relaxed max-w-3xl mb-10">
-              Desenvolvemos scripts e robôs em <span className="text-yellow-300 font-semibold">Python</span> que automatizam tarefas repetitivas e auxiliam diretamente as áreas de
-              <span className="text-blue-300 font-semibold"> Recrutamento &amp; Seleção</span>,
-              <span className="text-blue-300 font-semibold"> Treinamento</span> e demais frentes da Diretoria — entregando mais velocidade, menos erros e tempo livre para o que realmente importa: análise.
-            </p>
+            {isAdmin ? (
+              <textarea value={content.pythonDescription} onChange={(e) => updateContent({ pythonDescription: e.target.value })} className="text-primary-foreground/75 text-lg leading-relaxed max-w-3xl mb-10 bg-transparent border border-primary-foreground/10 rounded-lg p-3 w-full min-h-[100px] outline-none focus:border-yellow-400" />
+            ) : (
+              <p className="text-primary-foreground/75 text-lg leading-relaxed max-w-3xl mb-10">{content.pythonDescription}</p>
+            )}
 
             {/* Highlight cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
-              {[
-                { icon: Bot, title: 'ReS', subtitle: 'Recrutamento & Seleção', desc: 'Robôs que processam currículos, atualizam funis admissionais e geram extrações automáticas de candidatos por etapa.', image: pythonAutoResImg, color: 'from-amber-500 to-orange-500', tag: 'Bots' },
-                { icon: GraduationCap, title: 'Treinamento', subtitle: 'Desenvolvimento de Pessoas', desc: 'Scripts que consolidam horas, presenças e eficácia de treinamentos a partir de múltiplas fontes em um único output limpo.', image: pythonAutoTreinamentoImg, color: 'from-blue-500 to-cyan-500', tag: 'ETL' },
-                { icon: Zap, title: 'Relatórios', subtitle: 'Distribuição automática', desc: 'Pipelines agendados que geram, atualizam e disparam relatórios para os squads — sem intervenção manual.', image: pythonAutoRelatoriosImg, color: 'from-teal-500 to-emerald-500', tag: 'Agendado' },
-              ].map((c, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 + i * 0.1 }}
-                  className="group rounded-2xl border border-primary-foreground/10 overflow-hidden hover:border-yellow-500/50 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-yellow-500/15"
-                  style={{ background: 'linear-gradient(160deg, hsl(220, 42%, 10%), hsl(220, 38%, 8%))' }}
-                >
-                  <div className="relative h-36 overflow-hidden">
-                    <img src={c.image} alt={c.title} className="w-full h-full object-cover opacity-75 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" loading="lazy" width={800} height={600} />
-                    <div className="absolute inset-0 bg-gradient-to-t from-card via-card/55 to-transparent" />
-                    <div className={`absolute top-3 left-3 w-11 h-11 rounded-xl bg-gradient-to-br ${c.color} flex items-center justify-center shadow-xl ring-2 ring-white/10`}>
-                      <c.icon className="w-5 h-5 text-white" />
+              {content.pythonCards.map((c, i) => {
+                const images = [pythonAutoResImg, pythonAutoTreinamentoImg, pythonAutoRelatoriosImg];
+                const icons = [Bot, GraduationCap, Zap];
+                const colors = ['from-amber-500 to-orange-500', 'from-blue-500 to-cyan-500', 'from-teal-500 to-emerald-500'];
+                const Icon = icons[i % icons.length];
+                return (
+                  <motion.div
+                    key={c.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 + i * 0.1 }}
+                    className="group rounded-2xl border border-primary-foreground/10 overflow-hidden hover:border-yellow-500/50 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-yellow-500/15 relative"
+                    style={{ background: 'linear-gradient(160deg, hsl(220, 42%, 10%), hsl(220, 38%, 8%))' }}
+                  >
+                    <div className="relative h-36 overflow-hidden">
+                      <img src={images[i % images.length]} alt={c.title} className="w-full h-full object-cover opacity-75 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" loading="lazy" width={800} height={600} />
+                      <div className="absolute inset-0 bg-gradient-to-t from-card via-card/55 to-transparent" />
+                      <div className={`absolute top-3 left-3 w-11 h-11 rounded-xl bg-gradient-to-br ${colors[i % colors.length]} flex items-center justify-center shadow-xl ring-2 ring-white/10`}>
+                        <Icon className="w-5 h-5 text-white" />
+                      </div>
+                      {isAdmin ? (
+                        <input value={c.tag} onChange={(e) => updateContent({ pythonCards: content.pythonCards.map(x => x.id === c.id ? { ...x, tag: e.target.value } : x) })} className="absolute top-3 right-3 text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-black/40 text-primary-foreground/90 backdrop-blur-sm border border-white/10 w-20 outline-none" />
+                      ) : (
+                        <span className="absolute top-3 right-3 text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-black/40 text-primary-foreground/90 backdrop-blur-sm border border-white/10">{c.tag}</span>
+                      )}
                     </div>
-                    <span className="absolute top-3 right-3 text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-black/40 text-primary-foreground/90 backdrop-blur-sm border border-white/10">{c.tag}</span>
-                  </div>
-                  <div className="p-5">
-                    <h4 className="font-display font-bold text-primary-foreground text-lg leading-tight">{c.title}</h4>
-                    <p className="text-yellow-300/80 text-xs font-medium uppercase tracking-wider mt-0.5">{c.subtitle}</p>
-                    <p className="text-primary-foreground/65 text-sm leading-relaxed mt-3">{c.desc}</p>
-                  </div>
-                </motion.div>
-              ))}
+                    <div className="p-5">
+                      {isAdmin ? (
+                        <>
+                          <input value={c.title} onChange={(e) => updateContent({ pythonCards: content.pythonCards.map(x => x.id === c.id ? { ...x, title: e.target.value } : x) })} className="font-display font-bold text-primary-foreground text-lg leading-tight bg-transparent border-b border-primary-foreground/15 w-full outline-none focus:border-yellow-400" />
+                          <input value={c.subtitle} onChange={(e) => updateContent({ pythonCards: content.pythonCards.map(x => x.id === c.id ? { ...x, subtitle: e.target.value } : x) })} className="text-yellow-300/80 text-xs font-medium uppercase tracking-wider mt-1 bg-transparent border-b border-primary-foreground/10 w-full outline-none focus:border-yellow-400" />
+                          <textarea value={c.desc} onChange={(e) => updateContent({ pythonCards: content.pythonCards.map(x => x.id === c.id ? { ...x, desc: e.target.value } : x) })} className="text-primary-foreground/65 text-sm leading-relaxed mt-3 bg-transparent border border-primary-foreground/10 rounded-lg p-2 w-full min-h-[80px] outline-none focus:border-yellow-400" />
+                          <button onClick={() => updateContent({ pythonCards: content.pythonCards.filter(x => x.id !== c.id) })} className="mt-2 text-xs text-destructive/70 hover:text-destructive flex items-center gap-1"><Trash2 className="w-3 h-3" /> Remover</button>
+                        </>
+                      ) : (
+                        <>
+                          <h4 className="font-display font-bold text-primary-foreground text-lg leading-tight">{c.title}</h4>
+                          <p className="text-yellow-300/80 text-xs font-medium uppercase tracking-wider mt-0.5">{c.subtitle}</p>
+                          <p className="text-primary-foreground/65 text-sm leading-relaxed mt-3">{c.desc}</p>
+                        </>
+                      )}
+                    </div>
+                  </motion.div>
+                );
+              })}
+              {isAdmin && content.pythonCards.length < 3 && (
+                <button onClick={() => updateContent({ pythonCards: [...content.pythonCards, { id: Date.now().toString(), title: 'Novo', subtitle: 'Subtítulo', desc: 'Descrição.', tag: 'Tag' }] })} className="rounded-2xl border-2 border-dashed border-yellow-500/30 text-yellow-300/80 hover:bg-yellow-500/5 transition flex items-center justify-center gap-2 p-8 text-sm font-medium"><Plus className="w-4 h-4" /> Adicionar card</button>
+              )}
             </div>
 
             {/* Code snippet stylized */}
@@ -609,48 +648,55 @@ const NossaAreaPage = () => {
                     <div className="w-2.5 h-2.5 rounded-full bg-amber-500/70" />
                     <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/70" />
                   </div>
-                  <span className="text-[11px] font-mono text-primary-foreground/50 ml-2">automacao_res.py</span>
+                  {isAdmin ? (
+                    <input value={content.pythonCodeFilename} onChange={(e) => updateContent({ pythonCodeFilename: e.target.value })} className="text-[11px] font-mono text-primary-foreground/50 ml-2 bg-transparent border-b border-primary-foreground/10 outline-none" />
+                  ) : (
+                    <span className="text-[11px] font-mono text-primary-foreground/50 ml-2">{content.pythonCodeFilename}</span>
+                  )}
                   <GitBranch className="w-3.5 h-3.5 text-primary-foreground/30 ml-auto" />
                   <span className="text-[10px] font-mono text-primary-foreground/40">main</span>
                 </div>
-                <pre className="p-5 text-[12.5px] leading-relaxed font-mono text-primary-foreground/85 overflow-x-auto">
-{`import pandas as pd
-from automations.res import funil_admissional
-
-# Coleta dados de múltiplas fontes
-candidatos = funil_admissional.extrair()
-
-# Processa, consolida e valida
-df = (candidatos
-      .pipe(funil_admissional.limpar)
-      .pipe(funil_admissional.consolidar))
-
-# Distribui o relatório automaticamente
-funil_admissional.publicar(df, destino="ReS")
-print(f"✓ {len(df)} registros processados")`}
-                </pre>
+                {isAdmin ? (
+                  <textarea value={content.pythonCode} onChange={(e) => updateContent({ pythonCode: e.target.value })} className="p-5 text-[12.5px] leading-relaxed font-mono text-primary-foreground/85 w-full min-h-[280px] bg-transparent outline-none focus:bg-black/20" />
+                ) : (
+                  <pre className="p-5 text-[12.5px] leading-relaxed font-mono text-primary-foreground/85 overflow-x-auto">{content.pythonCode}</pre>
+                )}
               </div>
 
               <div className="rounded-2xl border border-primary-foreground/10 p-6 flex flex-col gap-4" style={{ background: 'hsl(220, 38%, 10% / 0.7)' }}>
                 <div className="flex items-center gap-3">
                   <Zap className="w-5 h-5 text-yellow-400" />
-                  <h4 className="font-display font-bold text-primary-foreground text-lg">Impacto direto</h4>
+                  {isAdmin ? (
+                    <input value={content.pythonImpactTitle} onChange={(e) => updateContent({ pythonImpactTitle: e.target.value })} className="font-display font-bold text-primary-foreground text-lg bg-transparent border-b border-primary-foreground/15 outline-none focus:border-yellow-400 flex-1" />
+                  ) : (
+                    <h4 className="font-display font-bold text-primary-foreground text-lg">{content.pythonImpactTitle}</h4>
+                  )}
+                  {isAdmin && (
+                    <button onClick={() => updateContent({ pythonImpactItems: [...content.pythonImpactItems, { id: Date.now().toString(), t: 'Novo', d: 'Descrição.' }] })} className="text-xs text-yellow-300 hover:text-yellow-200 flex items-center gap-1"><Plus className="w-3 h-3" /></button>
+                  )}
                 </div>
                 <ul className="space-y-3 text-sm text-primary-foreground/80">
-                  {[
-                    { t: 'Horas economizadas', d: 'Tarefas que levavam dias rodam em minutos.' },
-                    { t: 'Zero retrabalho', d: 'Pipelines validados removem erros manuais.' },
-                    { t: 'Escala sob demanda', d: 'Mesmo script atende uma ou todas as unidades.' },
-                    { t: 'Integração transparente', d: 'Resultados entregues prontos para os relatórios e dashboards.' },
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-start gap-3 rounded-xl p-3 border border-primary-foreground/5 hover:border-yellow-500/30 transition-colors" style={{ background: 'hsl(220, 35%, 8% / 0.6)' }}>
+                  {content.pythonImpactItems.map((item) => (
+                    <li key={item.id} className="flex items-start gap-3 rounded-xl p-3 border border-primary-foreground/5 hover:border-yellow-500/30 transition-colors" style={{ background: 'hsl(220, 35%, 8% / 0.6)' }}>
                       <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-yellow-400 to-blue-500 flex items-center justify-center shrink-0 shadow-md">
                         <Sparkles className="w-3.5 h-3.5 text-white" />
                       </div>
-                      <div>
-                        <p className="font-semibold text-primary-foreground">{item.t}</p>
-                        <p className="text-primary-foreground/65 text-xs leading-relaxed">{item.d}</p>
+                      <div className="flex-1 min-w-0">
+                        {isAdmin ? (
+                          <>
+                            <input value={item.t} onChange={(e) => updateContent({ pythonImpactItems: content.pythonImpactItems.map(x => x.id === item.id ? { ...x, t: e.target.value } : x) })} className="font-semibold text-primary-foreground bg-transparent border-b border-primary-foreground/10 w-full outline-none focus:border-yellow-400" />
+                            <textarea value={item.d} onChange={(e) => updateContent({ pythonImpactItems: content.pythonImpactItems.map(x => x.id === item.id ? { ...x, d: e.target.value } : x) })} className="text-primary-foreground/65 text-xs leading-relaxed bg-transparent border border-primary-foreground/10 rounded p-1.5 w-full mt-1 outline-none focus:border-yellow-400" />
+                          </>
+                        ) : (
+                          <>
+                            <p className="font-semibold text-primary-foreground">{item.t}</p>
+                            <p className="text-primary-foreground/65 text-xs leading-relaxed">{item.d}</p>
+                          </>
+                        )}
                       </div>
+                      {isAdmin && (
+                        <button onClick={() => updateContent({ pythonImpactItems: content.pythonImpactItems.filter(x => x.id !== item.id) })} className="text-destructive/60 hover:text-destructive shrink-0"><Trash2 className="w-3 h-3" /></button>
+                      )}
                     </li>
                   ))}
                 </ul>

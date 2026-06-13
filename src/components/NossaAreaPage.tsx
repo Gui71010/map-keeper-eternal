@@ -538,6 +538,130 @@ const NossaAreaPage = () => {
         )}
       </motion.section>
 
+      {/* === AUTOMAÇÕES EM PYTHON === */}
+      <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.65, duration: 0.6 }} className="relative">
+        <div className="relative overflow-hidden rounded-2xl border border-yellow-500/25" style={{ background: 'linear-gradient(160deg, hsl(220, 50%, 7%), hsl(220, 40%, 11%))' }}>
+          <img src={pythonHeroImg} alt="" className="absolute inset-0 w-full h-full object-cover opacity-25 mix-blend-screen pointer-events-none" loading="lazy" width={1280} height={720} />
+          <div className="absolute inset-0 bg-gradient-to-br from-navy via-navy/80 to-navy/40 pointer-events-none" />
+          <GalaxyParticles />
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute -top-20 -left-10 w-96 h-96 rounded-full bg-yellow-500/10 blur-[150px]" />
+            <div className="absolute -bottom-20 -right-10 w-96 h-96 rounded-full bg-blue-500/10 blur-[150px]" />
+          </div>
+
+          <div className="relative z-10 p-8 md:p-12">
+            <div className="flex items-start gap-4 mb-3">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-400 to-blue-500 flex items-center justify-center shadow-xl shadow-yellow-500/30 shrink-0">
+                <Code2 className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-[11px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-yellow-500/15 text-yellow-300 border border-yellow-500/30">Python · Automação</span>
+                </div>
+                <h3 className="text-3xl md:text-4xl font-display font-bold text-primary-foreground">Automações em Python</h3>
+                <div className="w-24 h-1 rounded-full bg-gradient-to-r from-yellow-400 to-blue-500 mt-2" />
+              </div>
+            </div>
+            <p className="text-primary-foreground/75 text-lg leading-relaxed max-w-3xl mb-10">
+              Desenvolvemos scripts e robôs em <span className="text-yellow-300 font-semibold">Python</span> que automatizam tarefas repetitivas e auxiliam diretamente as áreas de
+              <span className="text-blue-300 font-semibold"> Recrutamento &amp; Seleção</span>,
+              <span className="text-blue-300 font-semibold"> Treinamento</span> e demais frentes da Diretoria — entregando mais velocidade, menos erros e tempo livre para o que realmente importa: análise.
+            </p>
+
+            {/* Highlight cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
+              {[
+                { icon: Bot, title: 'ReS', subtitle: 'Recrutamento & Seleção', desc: 'Robôs que processam currículos, atualizam funis admissionais e geram extrações automáticas de candidatos por etapa.', image: pythonAutoResImg, color: 'from-amber-500 to-orange-500', tag: 'Bots' },
+                { icon: GraduationCap, title: 'Treinamento', subtitle: 'Desenvolvimento de Pessoas', desc: 'Scripts que consolidam horas, presenças e eficácia de treinamentos a partir de múltiplas fontes em um único output limpo.', image: pythonAutoTreinamentoImg, color: 'from-blue-500 to-cyan-500', tag: 'ETL' },
+                { icon: Zap, title: 'Relatórios', subtitle: 'Distribuição automática', desc: 'Pipelines agendados que geram, atualizam e disparam relatórios para os squads — sem intervenção manual.', image: pythonAutoRelatoriosImg, color: 'from-teal-500 to-emerald-500', tag: 'Agendado' },
+              ].map((c, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 + i * 0.1 }}
+                  className="group rounded-2xl border border-primary-foreground/10 overflow-hidden hover:border-yellow-500/50 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-yellow-500/15"
+                  style={{ background: 'linear-gradient(160deg, hsl(220, 42%, 10%), hsl(220, 38%, 8%))' }}
+                >
+                  <div className="relative h-36 overflow-hidden">
+                    <img src={c.image} alt={c.title} className="w-full h-full object-cover opacity-75 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" loading="lazy" width={800} height={600} />
+                    <div className="absolute inset-0 bg-gradient-to-t from-card via-card/55 to-transparent" />
+                    <div className={`absolute top-3 left-3 w-11 h-11 rounded-xl bg-gradient-to-br ${c.color} flex items-center justify-center shadow-xl ring-2 ring-white/10`}>
+                      <c.icon className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="absolute top-3 right-3 text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-black/40 text-primary-foreground/90 backdrop-blur-sm border border-white/10">{c.tag}</span>
+                  </div>
+                  <div className="p-5">
+                    <h4 className="font-display font-bold text-primary-foreground text-lg leading-tight">{c.title}</h4>
+                    <p className="text-yellow-300/80 text-xs font-medium uppercase tracking-wider mt-0.5">{c.subtitle}</p>
+                    <p className="text-primary-foreground/65 text-sm leading-relaxed mt-3">{c.desc}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Code snippet stylized */}
+            <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-6 items-stretch">
+              <div className="rounded-2xl border border-yellow-500/25 overflow-hidden shadow-2xl" style={{ background: 'hsl(220, 50%, 5%)' }}>
+                <div className="flex items-center gap-2 px-4 py-2.5 border-b border-yellow-500/15 bg-black/30">
+                  <div className="flex gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-rose-500/70" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-amber-500/70" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/70" />
+                  </div>
+                  <span className="text-[11px] font-mono text-primary-foreground/50 ml-2">automacao_res.py</span>
+                  <GitBranch className="w-3.5 h-3.5 text-primary-foreground/30 ml-auto" />
+                  <span className="text-[10px] font-mono text-primary-foreground/40">main</span>
+                </div>
+                <pre className="p-5 text-[12.5px] leading-relaxed font-mono text-primary-foreground/85 overflow-x-auto">
+{`import pandas as pd
+from automations.res import funil_admissional
+
+# Coleta dados de múltiplas fontes
+candidatos = funil_admissional.extrair()
+
+# Processa, consolida e valida
+df = (candidatos
+      .pipe(funil_admissional.limpar)
+      .pipe(funil_admissional.consolidar))
+
+# Distribui o relatório automaticamente
+funil_admissional.publicar(df, destino="ReS")
+print(f"✓ {len(df)} registros processados")`}
+                </pre>
+              </div>
+
+              <div className="rounded-2xl border border-primary-foreground/10 p-6 flex flex-col gap-4" style={{ background: 'hsl(220, 38%, 10% / 0.7)' }}>
+                <div className="flex items-center gap-3">
+                  <Zap className="w-5 h-5 text-yellow-400" />
+                  <h4 className="font-display font-bold text-primary-foreground text-lg">Impacto direto</h4>
+                </div>
+                <ul className="space-y-3 text-sm text-primary-foreground/80">
+                  {[
+                    { t: 'Horas economizadas', d: 'Tarefas que levavam dias rodam em minutos.' },
+                    { t: 'Zero retrabalho', d: 'Pipelines validados removem erros manuais.' },
+                    { t: 'Escala sob demanda', d: 'Mesmo script atende uma ou todas as unidades.' },
+                    { t: 'Integração transparente', d: 'Resultados entregues prontos para os relatórios e dashboards.' },
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-3 rounded-xl p-3 border border-primary-foreground/5 hover:border-yellow-500/30 transition-colors" style={{ background: 'hsl(220, 35%, 8% / 0.6)' }}>
+                      <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-yellow-400 to-blue-500 flex items-center justify-center shrink-0 shadow-md">
+                        <Sparkles className="w-3.5 h-3.5 text-white" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-primary-foreground">{item.t}</p>
+                        <p className="text-primary-foreground/65 text-xs leading-relaxed">{item.d}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.section>
+
+
+
       {/* === CHAMADOS / SERVICE DESK === */}
       <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7, duration: 0.6 }} className="relative">
         <div className="relative overflow-hidden rounded-2xl border border-accent/20" style={{ background: 'linear-gradient(160deg, hsl(220, 45%, 9%), hsl(220, 35%, 12%))' }}>

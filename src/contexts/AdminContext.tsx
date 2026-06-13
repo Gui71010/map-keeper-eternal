@@ -310,7 +310,14 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
         if (data && data.content && typeof data.content === 'object' && Object.keys(data.content as object).length > 0) {
           const dbContent = data.content as Record<string, unknown>;
-          setContent({ ...DEFAULT_CONTENT, ...dbContent } as SiteContent);
+          const merged = { ...DEFAULT_CONTENT, ...dbContent } as SiteContent;
+          // Sanitize report.eligibleAreas: keep only entries that exist in eligibleAreasOptions
+          const validOpts = new Set(merged.eligibleAreasOptions || []);
+          merged.reports = (merged.reports || []).map(r => ({
+            ...r,
+            eligibleAreas: (r.eligibleAreas || []).filter(a => validOpts.has(a)),
+          }));
+          setContent(merged);
         }
         setLoaded(true);
       } catch (err) {

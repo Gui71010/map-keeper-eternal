@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, Star, Lightbulb, Send, ArrowLeft, FileText, Globe, CheckCircle, Sparkles, Heart, Quote, Search, ChevronDown, Check, ShieldCheck, HelpCircle, TrendingUp } from 'lucide-react';
+import { MessageSquare, Star, Lightbulb, Send, ArrowLeft, FileText, Globe, CheckCircle, Sparkles, Heart, Quote, Search, ChevronDown, Check, ShieldCheck, HelpCircle, TrendingUp, MousePointerClick } from 'lucide-react';
 import { useAdmin } from '@/contexts/AdminContext';
 import { supabase } from '@/integrations/supabase/client';
 import GalaxyParticles from '@/components/GalaxyParticles';
@@ -361,8 +361,8 @@ const FeedbackPage = () => {
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                       {[
-                        { key: 'site' as const, icon: Globe, title: 'Site', desc: 'Experiência geral do site', colorFrom: 'hsl(199, 89%, 48%)', colorTo: 'hsl(217, 91%, 60%)' },
-                        { key: 'relatorio' as const, icon: FileText, title: 'Relatórios', desc: 'Sobre um relatório específico', colorFrom: 'hsl(280, 75%, 60%)', colorTo: 'hsl(330, 80%, 58%)' },
+                        { key: 'site' as const, icon: Globe, title: 'Site', desc: 'Experiência geral do site' },
+                        { key: 'relatorio' as const, icon: FileText, title: 'Relatórios', desc: 'Sobre um relatório específico' },
                       ].map((opt) => (
                         <button
                           key={opt.key}
@@ -371,16 +371,14 @@ const FeedbackPage = () => {
                           style={{ background: 'hsl(215, 25%, 12% / 0.5)' }}
                         >
                           <div className="flex items-center gap-4">
-                            <div
-                              className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300 shrink-0"
-                              style={{ background: `linear-gradient(135deg, ${opt.colorFrom}, ${opt.colorTo})` }}
-                            >
-                              <opt.icon className="w-6 h-6 text-white" />
+                            <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300 shrink-0 gradient-accent">
+                              <opt.icon className="w-6 h-6 text-accent-foreground" />
                             </div>
-                            <div className="min-w-0">
+                            <div className="min-w-0 flex-1">
                               <h4 className="text-lg font-display font-bold text-foreground leading-tight">{opt.title}</h4>
                               <p className="text-muted-foreground text-sm">{opt.desc}</p>
                             </div>
+                            <MousePointerClick className="w-5 h-5 text-accent/70 shrink-0 animate-bounce" style={{ animationDuration: '1.6s' }} />
                           </div>
                         </button>
                       ))}

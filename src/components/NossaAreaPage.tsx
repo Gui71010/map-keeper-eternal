@@ -176,7 +176,9 @@ const NossaAreaPage = () => {
                 )}
               </div>
               <div className="grid grid-cols-1 gap-3">
-                {areaReportCards.map((card, i) => (
+                {areaReportCards.map((card, i) => {
+                  const autoCount = computedAreaCounts[card.id] ?? 0;
+                  return (
                   <motion.div
                     key={card.id}
                     initial={{ opacity: 0, x: 30 }}
@@ -193,17 +195,20 @@ const NossaAreaPage = () => {
                       )}
                       <div className="flex-1 min-w-0">
                         {isAdmin ? (
-                          <input className="font-display font-semibold text-foreground text-sm bg-transparent border-b border-border w-full outline-none focus:border-accent" value={card.area} onChange={(e) => updateAreaReportCard(card.id, { area: e.target.value })} />
+                          <select
+                            className="font-display font-semibold text-foreground text-sm bg-background border border-border rounded w-full px-2 py-1 outline-none focus:border-accent"
+                            value={card.area}
+                            onChange={(e) => updateAreaReportCard(card.id, { area: e.target.value })}
+                          >
+                            {!eligibleAreasOptions.includes(card.area) && <option value={card.area}>{card.area}</option>}
+                            {eligibleAreasOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                          </select>
                         ) : (
                           <p className="font-display font-semibold text-foreground text-sm truncate">{card.area}</p>
                         )}
                         <div className="flex items-baseline gap-1 mt-0.5">
-                          {isAdmin ? (
-                            <input type="number" className="text-xl font-display font-bold text-accent w-16 bg-transparent border-b border-border outline-none focus:border-accent" value={card.count} onChange={(e) => updateAreaReportCard(card.id, { count: parseInt(e.target.value) || 0 })} />
-                          ) : (
-                            <span className="text-xl font-display font-bold text-accent">{card.count}</span>
-                          )}
-                          <span className="text-foreground/50 text-xs">relatórios</span>
+                          <span className="text-xl font-display font-bold text-accent">{autoCount}</span>
+                          <span className="text-foreground/50 text-xs">relatórios elegíveis</span>
                         </div>
                       </div>
                       {isAdmin && (
@@ -211,7 +216,8 @@ const NossaAreaPage = () => {
                       )}
                     </div>
                   </motion.div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -228,6 +234,7 @@ const NossaAreaPage = () => {
           <button onClick={() => addAnalyst({ id: Date.now().toString(), name: 'Novo Admin', role: 'Analista Administrativo', area: 'Administrativo', photo: '', bio: 'Descrição.', type: 'admin' })} className="px-4 py-2 rounded-lg gradient-accent text-accent-foreground text-sm font-medium hover:opacity-90 transition flex items-center gap-2"><Plus className="w-4 h-4" /> Analista Admin</button>
           <button onClick={() => addAnalyst({ id: Date.now().toString(), name: 'Novo Designer', role: 'Designer', area: 'Design', photo: '', bio: 'Descrição.', type: 'design' })} className="px-4 py-2 rounded-lg gradient-accent text-accent-foreground text-sm font-medium hover:opacity-90 transition flex items-center gap-2"><Plus className="w-4 h-4" /> Designer</button>
           <button onClick={() => addAnalyst({ id: Date.now().toString(), name: 'Novo Assistente', role: 'Assistente de Pessoas', area: 'People Analytics', photo: '', bio: 'Descrição.', type: 'assistant' })} className="px-4 py-2 rounded-lg gradient-accent text-accent-foreground text-sm font-medium hover:opacity-90 transition flex items-center gap-2"><Plus className="w-4 h-4" /> Assistente</button>
+          <button onClick={() => addAnalyst({ id: Date.now().toString(), name: 'Novo Estagiário', role: 'Estagiário', area: 'People Analytics', photo: '', bio: 'Descrição.', type: 'intern' })} className="px-4 py-2 rounded-lg gradient-accent text-accent-foreground text-sm font-medium hover:opacity-90 transition flex items-center gap-2"><Plus className="w-4 h-4" /> Estagiário</button>
         </motion.section>
       )}
 

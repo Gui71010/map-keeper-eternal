@@ -12,10 +12,9 @@ interface AnalystCardProps {
   editable?: boolean;
   size?: 'normal' | 'large';
   showClickHint?: boolean;
-  modalOnly?: boolean;
 }
 
-const AnalystCard = ({ analyst, index, isSelected, onClick, showDetails, editable, size = 'normal', showClickHint, modalOnly }: AnalystCardProps) => {
+const AnalystCard = ({ analyst, index, isSelected, onClick, showDetails, editable, size = 'normal', showClickHint }: AnalystCardProps) => {
   const { isAdmin, updateAnalyst, removeAnalyst } = useAdmin();
   const [newSkill, setNewSkill] = useState('');
   const [newAttribution, setNewAttribution] = useState('');
@@ -42,7 +41,6 @@ const AnalystCard = ({ analyst, index, isSelected, onClick, showDetails, editabl
 
   return (
     <>
-      {!modalOnly && (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -88,7 +86,6 @@ const AnalystCard = ({ analyst, index, isSelected, onClick, showDetails, editabl
           </motion.div>
         )}
       </motion.div>
-      )}
 
       <AnimatePresence>
         {showDetails && isSelected && (

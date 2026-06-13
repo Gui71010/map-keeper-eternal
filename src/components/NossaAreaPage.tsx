@@ -126,7 +126,6 @@ const NossaAreaPage = () => {
               showDetails
               editable
               size="normal"
-              modalOnly
             />
           )}
         </div>

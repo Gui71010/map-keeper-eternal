@@ -8,7 +8,7 @@ export interface Analyst {
   area: string;
   photo: string;
   bio: string;
-  type?: 'bi' | 'admin' | 'design' | 'manager' | 'assistant';
+  type?: 'bi' | 'admin' | 'design' | 'manager' | 'assistant' | 'intern';
   age?: string;
   attributions?: string[];
   skills?: string[];
@@ -121,6 +121,7 @@ interface SiteContent {
   rqTravelContactWhatsapp: string;
   dataJourneyStats: DataJourneyStat[];
   gestaoxUrl: string;
+  eligibleAreasOptions: string[];
 }
 
 interface AdminContextType {
@@ -191,6 +192,7 @@ const DEFAULT_CONTENT: SiteContent = {
     { id: '6', name: 'Henrique', role: 'Analista Administrativo', area: 'Administrativo', photo: '', bio: 'Analista administrativo da equipe de People Analytics.', type: 'admin' },
     { id: '7', name: 'Junior', role: 'Analista de Design Gráfico', area: 'Design', photo: '', bio: 'Analista de design gráfico da equipe de People Analytics.', type: 'design' },
     { id: '8', name: 'Novo Assistente', role: 'Assistente de Pessoas', area: 'People Analytics', photo: '', bio: 'Assistente de Pessoas da equipe de People Analytics.', type: 'assistant' },
+    { id: '9', name: 'Novo Estagiário', role: 'Estagiário', area: 'People Analytics', photo: '', bio: 'Estagiário da equipe de People Analytics.', type: 'intern' },
   ],
   reports: [
     { id: '1', name: 'Gestão Candidato SOU', creatorId: '3', description: 'Funil admissional completo com métricas de inscritos, aprovados e contratados.', images: [], metrics: ['Inscritos Vaga: 10.691', 'Aprovados: 10.428', 'Doc Aprovado: 4.294', 'Assinatura Contrato: 3.566'], link: '', eligibleAreas: [] },
@@ -233,6 +235,7 @@ const DEFAULT_CONTENT: SiteContent = {
     { id: '4', value: '24/7', label: 'Insights disponíveis', icon: 'LineChart' },
   ],
   gestaoxUrl: 'https://gestaox.aec.com.br',
+  eligibleAreasOptions: ['Diretoria de RH', 'Talent Aquisition', 'ReS Sites', 'ReS Nic', 'Treinamento', 'Medicina', 'Corporativo', 'Recrutamento', 'Administrativo', 'Business Partner'],
 };
 
 const ADMIN_PASSWORD = 'Guisantos88';

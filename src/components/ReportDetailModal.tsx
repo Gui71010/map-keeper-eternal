@@ -139,20 +139,43 @@ const ReportDetailModal = ({ report, creatorName, onClose, showMetrics = true, o
             </div>
 
             {/* Eligible areas */}
-            <div className="rounded-2xl p-5 border border-border/20" style={{ background: 'hsl(215, 25%, 12% / 0.5)' }}>
+            <div className="rounded-2xl p-5 border-2 border-fuchsia-500/30" style={{ background: 'linear-gradient(135deg, hsl(290, 60%, 14% / 0.55), hsl(260, 50%, 12% / 0.55))' }}>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-9 h-9 rounded-lg bg-accent/15 flex items-center justify-center">
-                  <Tag className="w-4 h-4 text-accent" />
+                <div className="w-9 h-9 rounded-lg bg-fuchsia-500/20 flex items-center justify-center ring-1 ring-fuchsia-500/40">
+                  <Tag className="w-4 h-4 text-fuchsia-300" />
                 </div>
-                <span className="text-sm text-foreground font-display font-bold">Áreas elegíveis</span>
+                <span className="text-sm text-fuchsia-200 font-display font-bold uppercase tracking-wider">Áreas elegíveis</span>
               </div>
               {isAdmin ? (
-                <textarea className="w-full p-3 rounded-xl border border-border bg-background text-foreground text-sm min-h-[80px]" value={(report.eligibleAreas || []).join('\n')} onChange={(e) => updateReport(report.id, { eligibleAreas: e.target.value.split('\n').filter(Boolean) })} placeholder="Uma área por linha" />
+                <div className="space-y-2">
+                  <p className="text-xs text-muted-foreground">Selecione as áreas que podem visualizar este relatório:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {(content.eligibleAreasOptions || []).map((opt) => {
+                      const selected = (report.eligibleAreas || []).includes(opt);
+                      return (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => {
+                            const cur = report.eligibleAreas || [];
+                            updateReport(report.id, { eligibleAreas: selected ? cur.filter(a => a !== opt) : [...cur, opt] });
+                          }}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${selected ? 'bg-fuchsia-500/25 text-fuchsia-200 border-fuchsia-400/60 shadow-md shadow-fuchsia-500/20' : 'bg-muted/20 text-muted-foreground border-border/40 hover:border-fuchsia-400/40'}`}
+                        >
+                          {opt}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {(content.eligibleAreasOptions || []).length === 0 && (
+                    <p className="text-xs text-amber-300/80">Cadastre as opções de áreas no painel admin da página de Relatórios.</p>
+                  )}
+                </div>
               ) : (
                 (report.eligibleAreas && report.eligibleAreas.length > 0) ? (
                   <div className="flex flex-wrap gap-2">
                     {report.eligibleAreas.map((area, i) => (
-                      <span key={i} className="px-4 py-2 rounded-lg bg-accent/10 text-accent border border-accent/20 text-sm font-semibold">
+                      <span key={i} className="px-4 py-2 rounded-lg bg-fuchsia-500/15 text-fuchsia-200 border border-fuchsia-400/40 text-sm font-semibold shadow-sm shadow-fuchsia-500/10">
                         {area}
                       </span>
                     ))}

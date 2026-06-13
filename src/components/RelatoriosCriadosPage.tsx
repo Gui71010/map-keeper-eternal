@@ -185,8 +185,10 @@ const RelatoriosCriadosPage = () => {
               </button>
               {isAdmin && (
                 <button
-                  onClick={(e) => { e.stopPropagation(); if (confirm(`Remover a área "${area}"?`)) updateContent({ eligibleAreasOptions: eligibleAreasOptions.filter(a => a !== area) }); }}
-                  className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold opacity-0 group-hover:opacity-100 transition"
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); e.preventDefault(); if (confirm(`Remover a área "${area}"?`)) { updateContent({ eligibleAreasOptions: eligibleAreasOptions.filter(a => a !== area) }); if (selectedAreaFilter === area) setSelectedAreaFilter(null); } }}
+                  title="Remover área"
+                  className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-destructive text-destructive-foreground text-[11px] font-bold flex items-center justify-center shadow-md border border-background z-10 hover:scale-110 transition"
                 >×</button>
               )}
             </div>

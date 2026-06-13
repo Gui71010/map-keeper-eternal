@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, Star, Lightbulb, Send, ArrowLeft, FileText, Globe, CheckCircle, Sparkles, Heart, Quote, Search, ChevronDown, Check, ShieldCheck, HelpCircle, TrendingUp } from 'lucide-react';
+import { MessageSquare, Star, Lightbulb, Send, ArrowLeft, FileText, Globe, CheckCircle, Sparkles, Heart, Quote, Search, ChevronDown, Check, ShieldCheck, HelpCircle, TrendingUp, MousePointerClick } from 'lucide-react';
 import { useAdmin } from '@/contexts/AdminContext';
 import { supabase } from '@/integrations/supabase/client';
 import GalaxyParticles from '@/components/GalaxyParticles';

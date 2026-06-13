@@ -112,6 +112,13 @@
     50% { transform: translateY(0%); }
     100% { transform: translateY(-50%); }
   }
+  @keyframes shine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(200%); }
+  }
+  .animate-shine {
+    animation: shine 2.5s ease-in-out infinite;
+  }
   .galaxy-bg {
     position: relative;
     overflow: hidden;

@@ -122,6 +122,14 @@ interface SiteContent {
   dataJourneyStats: DataJourneyStat[];
   gestaoxUrl: string;
   eligibleAreasOptions: string[];
+  pythonTag: string;
+  pythonTitle: string;
+  pythonDescription: string;
+  pythonCards: { id: string; title: string; subtitle: string; desc: string; tag: string }[];
+  pythonCodeFilename: string;
+  pythonCode: string;
+  pythonImpactTitle: string;
+  pythonImpactItems: { id: string; t: string; d: string }[];
 }
 
 interface AdminContextType {

@@ -47,12 +47,18 @@ const RelatoriosCriadosPage = () => {
       {/* Stats */}
       {(() => {
         const selectedAnalyst = selectedAnalystId ? content.analysts.find(a => a.id === selectedAnalystId) : null;
-        const reportsForSelected = selectedAnalystId ? content.reports.filter(r => r.creatorId === selectedAnalystId).length : content.reports.length;
+        const baseReports = content.reports
+          .filter(r => !selectedAnalystId || r.creatorId === selectedAnalystId)
+          .filter(r => !selectedAreaFilter || (r.eligibleAreas || []).includes(selectedAreaFilter));
+        const reportsForSelected = baseReports.length;
+        const areasAtendidas = selectedAreaFilter
+          ? 1
+          : new Set(baseReports.flatMap(r => r.eligibleAreas || [])).size;
         const stats = [
           {
             icon: FileText,
             value: reportsForSelected,
-            label: selectedAnalyst ? 'Relatórios deste analista' : 'Relatórios criados',
+            label: selectedAnalyst ? 'Relatórios deste analista' : selectedAreaFilter ? `Relatórios em ${selectedAreaFilter}` : 'Relatórios criados',
             color: 'text-accent',
             bg: 'bg-accent/15',
           },
@@ -67,11 +73,11 @@ const RelatoriosCriadosPage = () => {
           },
           {
             icon: BarChart3,
-            value: selectedAnalyst ? selectedAnalyst.area : new Set(content.reports.flatMap(r => r.eligibleAreas || [])).size,
-            label: selectedAnalyst ? 'Área de atuação' : 'Áreas atendidas',
+            value: selectedAnalyst ? selectedAnalyst.area : selectedAreaFilter || areasAtendidas,
+            label: selectedAnalyst ? 'Área de atuação' : selectedAreaFilter ? 'Área filtrada' : 'Áreas atendidas',
             color: 'text-emerald-400',
             bg: 'bg-emerald-500/15',
-            isText: !!selectedAnalyst,
+            isText: !!selectedAnalyst || !!selectedAreaFilter,
           },
         ];
         return (

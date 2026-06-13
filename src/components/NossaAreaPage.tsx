@@ -175,61 +175,43 @@ const NossaAreaPage = () => {
                   </button>
                 )}
               </div>
-              {isAdmin ? (
-                <div className="grid grid-cols-1 gap-3">
-                  {areaReportCards.map((card, i) => {
-                    const autoCount = computedAreaCounts[card.id] ?? 0;
-                    return (
-                    <motion.div
-                      key={card.id}
-                      initial={{ opacity: 0, x: 30 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.4 + i * 0.1, duration: 0.4 }}
-                      className="glass-card rounded-xl p-4 border border-accent/10 relative overflow-hidden group hover:border-accent/30 transition-all duration-300"
-                    >
-                      <div className="relative flex items-center gap-4">
+              <div className="grid grid-cols-2 gap-3">
+                {areaReportCards.map((card, i) => (
+                  <motion.div
+                    key={card.id}
+                    initial={{ opacity: 0, x: 30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 + i * 0.1, duration: 0.4 }}
+                    className="glass-card rounded-xl p-4 border border-accent/10 relative overflow-hidden group hover:border-accent/30 transition-all duration-300"
+                  >
+                    <div className="relative flex items-center gap-3">
+                      {isAdmin ? (
                         <input className="text-2xl w-10 bg-transparent border-b border-border text-center outline-none focus:border-accent" value={card.icon} onChange={(e) => updateAreaReportCard(card.id, { icon: e.target.value })} />
-                        <div className="flex-1 min-w-0">
-                          <select
-                            className="font-display font-semibold text-foreground text-sm bg-background border border-border rounded w-full px-2 py-1 outline-none focus:border-accent"
-                            value={card.area}
-                            onChange={(e) => updateAreaReportCard(card.id, { area: e.target.value })}
-                          >
-                            {!eligibleAreasOptions.includes(card.area) && <option value={card.area}>{card.area}</option>}
-                            {eligibleAreasOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                          </select>
-                          <div className="flex items-baseline gap-1 mt-0.5">
-                            <span className="text-xl font-display font-bold text-accent">{autoCount}</span>
-                            <span className="text-foreground/50 text-xs">relatórios elegíveis</span>
-                          </div>
+                      ) : (
+                        <span className="text-2xl shrink-0">{card.icon}</span>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        {isAdmin ? (
+                          <input className="font-display font-semibold text-foreground text-sm bg-transparent border-b border-border w-full outline-none focus:border-accent" value={card.area} onChange={(e) => updateAreaReportCard(card.id, { area: e.target.value })} />
+                        ) : (
+                          <p className="font-display font-semibold text-foreground text-sm truncate">{card.area}</p>
+                        )}
+                        <div className="flex items-baseline gap-1 mt-0.5">
+                          {isAdmin ? (
+                            <input type="number" className="text-xl font-display font-bold text-accent w-16 bg-transparent border-b border-border outline-none focus:border-accent" value={card.count} onChange={(e) => updateAreaReportCard(card.id, { count: parseInt(e.target.value) || 0 })} />
+                          ) : (
+                            <span className="text-xl font-display font-bold text-accent">{card.count}</span>
+                          )}
+                          <span className="text-foreground/50 text-xs">relatórios</span>
                         </div>
-                        <button onClick={() => removeAreaReportCard(card.id)} className="text-destructive/60 hover:text-destructive transition"><Trash2 className="w-3.5 h-3.5" /></button>
                       </div>
-                    </motion.div>
-                    );
-                  })}
-                </div>
-              ) : areaReportCards.length > 0 ? (
-                <div className="relative overflow-hidden rounded-xl" style={{ maskImage: 'linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent)', WebkitMaskImage: 'linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent)' }}>
-                  <div className="flex gap-3 animate-[marquee_28s_linear_infinite] hover:[animation-play-state:paused] w-max">
-                    {[...areaReportCards, ...areaReportCards].map((card, i) => {
-                      const autoCount = computedAreaCounts[card.id] ?? 0;
-                      return (
-                        <div key={`${card.id}-${i}`} className="glass-card rounded-xl px-4 py-3 border border-accent/10 hover:border-accent/40 transition-colors flex items-center gap-3 min-w-[220px] shrink-0">
-                          <span className="text-2xl shrink-0">{card.icon}</span>
-                          <div className="min-w-0">
-                            <p className="font-display font-semibold text-foreground text-sm truncate">{card.area}</p>
-                            <div className="flex items-baseline gap-1">
-                              <span className="text-lg font-display font-bold text-accent leading-none">{autoCount}</span>
-                              <span className="text-foreground/50 text-[11px]">relatórios</span>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              ) : null}
+                      {isAdmin && (
+                        <button onClick={() => removeAreaReportCard(card.id)} className="text-destructive/60 hover:text-destructive transition"><Trash2 className="w-3.5 h-3.5" /></button>
+                      )}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

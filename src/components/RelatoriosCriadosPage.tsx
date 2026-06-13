@@ -140,7 +140,7 @@ const RelatoriosCriadosPage = () => {
                 </div>
                 <div className="text-left min-w-0">
                   <span className="block font-display font-semibold text-base leading-tight truncate">{a.name}</span>
-                  <span className={`text-xs block leading-tight mt-0.5 ${selectedAnalystId === a.id ? 'text-accent-foreground/75' : 'text-muted-foreground'}`}>{a.area}</span>
+                  <span className={`text-xs block leading-tight mt-0.5 ${selectedAnalystId === a.id ? 'text-accent-foreground/75' : 'text-muted-foreground'}`}>{a.age ? `${a.age} anos` : '—'}</span>
                 </div>
               </button>
               {isAdmin && <div className="absolute top-full left-0 mt-1 z-20 hidden group-hover:block"><div className="glass-card rounded-lg p-3 shadow-xl w-64 space-y-2"><label className="text-xs text-muted-foreground">URL da Foto</label><input className="w-full p-2 rounded-lg border border-border bg-background text-foreground text-xs" value={a.photo} onChange={(e) => updateAnalyst(a.id, { photo: e.target.value })} onClick={(e) => e.stopPropagation()} /></div></div>}

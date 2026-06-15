@@ -427,35 +427,68 @@ const NossaAreaPage = () => {
             </div>
 
             <div className="relative z-10 grid md:grid-cols-2 min-h-[750px]">
-              {/* Image side */}
-              <div className="relative overflow-hidden flex items-center justify-center p-4">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={currentProjectIdx}
-                    initial={{ opacity: 0, rotateY: 90 }}
-                    animate={{ opacity: 1, rotateY: 0 }}
-                    exit={{ opacity: 0, rotateY: -90 }}
-                    transition={{ duration: 0.5, ease: 'easeInOut' }}
-                    className="w-full h-full flex items-center justify-center"
-                    style={{ perspective: '1200px' }}
-                  >
-                    {projects[currentProjectIdx]?.imageUrl ? (
-                      <img src={projects[currentProjectIdx].imageUrl} alt={projects[currentProjectIdx].title} className="max-w-full max-h-[700px] object-contain rounded-2xl shadow-2xl" />
-                    ) : (
-                      <div className="w-full h-[700px] flex items-center justify-center bg-muted/10 rounded-2xl">
-                        <Rocket className="w-20 h-20 text-accent/30" />
-                      </div>
-                    )}
-                  </motion.div>
-                </AnimatePresence>
+              {/* Image side — stacked card deck */}
+              <div className="relative overflow-hidden flex items-center justify-center p-6" style={{ perspective: '1800px' }}>
+                <div className="relative w-full h-[700px] flex items-center justify-center" style={{ transformStyle: 'preserve-3d' }}>
+                  {projects.map((project, i) => {
+                    const n = projects.length;
+                    let offset = i - currentProjectIdx;
+                    if (offset > n / 2) offset -= n;
+                    if (offset < -n / 2) offset += n;
+                    const abs = Math.abs(offset);
+                    if (abs > 2) return null;
+                    const x = offset * 110;
+                    const scale = 1 - abs * 0.12;
+                    const rotateY = offset * -18;
+                    const opacity = abs === 0 ? 1 : abs === 1 ? 0.55 : 0.22;
+                    const blur = abs === 0 ? 0 : abs;
+                    const zIndex = 30 - abs * 10;
+                    return (
+                      <motion.button
+                        key={project.id}
+                        onClick={() => {
+                          if (offset === 0) return;
+                          if (projectTimerRef.current) clearInterval(projectTimerRef.current);
+                          setCurrentProjectIdx(i);
+                        }}
+                        animate={{ x, scale, rotateY, opacity, filter: `blur(${blur}px)` }}
+                        transition={{ type: 'spring', stiffness: 200, damping: 28, mass: 0.9 }}
+                        className="absolute w-[88%] h-full rounded-3xl overflow-hidden cursor-pointer"
+                        style={{
+                          zIndex,
+                          transformStyle: 'preserve-3d',
+                          boxShadow: abs === 0
+                            ? '0 30px 80px -20px hsl(190, 90%, 50% / 0.35), 0 0 0 1px hsl(0 0% 100% / 0.08)'
+                            : '0 20px 50px -20px hsl(0 0% 0% / 0.6), 0 0 0 1px hsl(0 0% 100% / 0.05)',
+                          background: 'linear-gradient(160deg, hsl(215, 40%, 14%), hsl(215, 50%, 9%))',
+                        }}
+                        aria-label={project.title}
+                      >
+                        {project.imageUrl ? (
+                          <img src={project.imageUrl} alt={project.title} className="w-full h-full object-contain p-2" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <Rocket className="w-20 h-20 text-accent/30" />
+                          </div>
+                        )}
+                        {abs !== 0 && (
+                          <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-navy/20 to-transparent pointer-events-none" />
+                        )}
+                        {abs === 0 && (
+                          <div className="absolute inset-0 rounded-3xl pointer-events-none ring-1 ring-accent/40" />
+                        )}
+                      </motion.button>
+                    );
+                  })}
+                </div>
 
                 {/* Navigation arrows */}
                 {projects.length > 1 && (
                   <>
-                    <button onClick={() => goToProject('prev')} className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border-2 border-primary-foreground/30 flex items-center justify-center text-primary-foreground/70 hover:border-accent hover:text-accent transition-all backdrop-blur-sm bg-foreground/10">
+                    <button onClick={() => goToProject('prev')} className="absolute left-2 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border-2 border-primary-foreground/30 flex items-center justify-center text-primary-foreground/70 hover:border-accent hover:text-accent transition-all backdrop-blur-sm bg-foreground/10 z-40">
                       <ChevronLeft className="w-6 h-6" />
                     </button>
-                    <button onClick={() => goToProject('next')} className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border-2 border-primary-foreground/30 flex items-center justify-center text-primary-foreground/70 hover:border-accent hover:text-accent transition-all backdrop-blur-sm bg-foreground/10">
+                    <button onClick={() => goToProject('next')} className="absolute right-2 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border-2 border-primary-foreground/30 flex items-center justify-center text-primary-foreground/70 hover:border-accent hover:text-accent transition-all backdrop-blur-sm bg-foreground/10 z-40">
                       <ChevronRight className="w-6 h-6" />
                     </button>
                   </>

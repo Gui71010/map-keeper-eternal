@@ -46,14 +46,14 @@ const NossaAreaPage = () => {
 
   useEffect(() => {
     if (projects.length <= 1 || isAdmin) return;
-    projectTimerRef.current = setInterval(() => {
+    const t = setTimeout(() => {
       setCurrentProjectIdx(prev => (prev + 1) % projects.length);
     }, 5000);
-    return () => { if (projectTimerRef.current) clearInterval(projectTimerRef.current); };
-  }, [projects.length, isAdmin]);
+    projectTimerRef.current = t as unknown as ReturnType<typeof setInterval>;
+    return () => clearTimeout(t);
+  }, [projects.length, isAdmin, currentProjectIdx]);
 
   const goToProject = (dir: 'prev' | 'next') => {
-    if (projectTimerRef.current) clearInterval(projectTimerRef.current);
     setCurrentProjectIdx(prev => {
       if (dir === 'next') return (prev + 1) % projects.length;
       return (prev - 1 + projects.length) % projects.length;

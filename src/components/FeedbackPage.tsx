@@ -577,47 +577,63 @@ const FeedbackPage = () => {
 
         {/* FAQ Sidebar */}
         <motion.aside initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.35 }} className="space-y-4">
-          <div className="rounded-2xl p-6 border border-accent/20 relative overflow-hidden" style={{ background: 'linear-gradient(160deg, hsl(174, 50%, 12% / 0.6), hsl(220, 40%, 10% / 0.8))' }}>
-            <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-accent/15 blur-3xl pointer-events-none" />
+          <div className="rounded-2xl p-6 border border-accent/25 relative overflow-hidden shadow-[0_15px_40px_-15px_hsl(var(--accent)/0.3)]" style={{ background: 'linear-gradient(160deg, hsl(174, 50%, 12% / 0.7), hsl(220, 40%, 10% / 0.9))' }}>
+            <div className="absolute -top-14 -right-14 w-40 h-40 rounded-full bg-accent/20 blur-3xl pointer-events-none" />
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/50 to-transparent" />
             <div className="relative">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent to-primary flex items-center justify-center">
+                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-accent to-primary flex items-center justify-center shadow-[0_8px_20px_-5px_hsl(var(--accent)/0.6)]">
                   <ShieldCheck className="w-5 h-5 text-white" />
                 </div>
-                <h4 className="font-display font-bold text-foreground">Como funciona?</h4>
+                <div>
+                  <h4 className="font-display font-bold text-foreground leading-tight">Como funciona?</h4>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-semibold">3 garantias</p>
+                </div>
               </div>
-              <ul className="space-y-3 text-sm text-foreground/80">
-                <li className="flex gap-2"><span className="text-accent mt-0.5">•</span><span><b>Confidencial:</b> sua matrícula é usada apenas para acompanhamento interno.</span></li>
-                <li className="flex gap-2"><span className="text-accent mt-0.5">•</span><span><b>Resposta rápida:</b> a equipe analisa em até 5 dias úteis.</span></li>
-                <li className="flex gap-2"><span className="text-accent mt-0.5">•</span><span><b>Tudo conta:</b> elogios fortalecem o time e sugestões viram melhorias reais.</span></li>
+              <ul className="space-y-3 text-sm text-foreground/85">
+                {[
+                  { t: 'Confidencial', d: 'sua matrícula é usada apenas para acompanhamento interno.' },
+                  { t: 'Resposta rápida', d: 'a equipe analisa em até 5 dias úteis.' },
+                  { t: 'Tudo conta', d: 'elogios fortalecem o time e sugestões viram melhorias reais.' },
+                ].map((item, idx) => (
+                  <li key={idx} className="flex gap-3 items-start">
+                    <div className="mt-0.5 w-5 h-5 rounded-full bg-accent/15 border border-accent/40 flex items-center justify-center shrink-0">
+                      <Check className="w-3 h-3 text-accent" />
+                    </div>
+                    <span><b className="text-foreground">{item.t}:</b> {item.d}</span>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
 
-          <div className="rounded-2xl p-6 border border-border/30" style={{ background: 'hsl(215, 25%, 10% / 0.6)' }}>
-            <div className="flex items-center gap-3 mb-3">
-              <HelpCircle className="w-5 h-5 text-accent" />
+          <div className="rounded-2xl p-6 border border-border/30 relative overflow-hidden" style={{ background: 'linear-gradient(160deg, hsl(215, 30%, 11% / 0.7), hsl(215, 25%, 8% / 0.9))' }}>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-9 h-9 rounded-lg bg-accent/15 border border-accent/30 flex items-center justify-center">
+                <HelpCircle className="w-4 h-4 text-accent" />
+              </div>
               <h4 className="font-display font-bold text-foreground text-sm">Dúvidas frequentes</h4>
             </div>
-            <div className="space-y-3 text-xs text-muted-foreground">
-              <div>
-                <p className="font-semibold text-foreground/90 mb-1">Posso enviar mais de um?</p>
-                <p>Sim! Pode enviar quantos quiser, sempre que precisar.</p>
-              </div>
-              <div>
-                <p className="font-semibold text-foreground/90 mb-1">Receberei retorno?</p>
-                <p>Sim, sempre que o feedback exigir resposta direta.</p>
-              </div>
-              <div>
-                <p className="font-semibold text-foreground/90 mb-1">É para reportar bug?</p>
-                <p>Use o tipo <b>Sugestão</b> e descreva o problema com detalhes.</p>
-              </div>
+            <div className="space-y-4 text-xs text-muted-foreground">
+              {[
+                { q: 'Posso enviar mais de um?', a: 'Sim! Pode enviar quantos quiser, sempre que precisar.' },
+                { q: 'Receberei retorno?', a: 'Sim, sempre que o feedback exigir resposta direta.' },
+                { q: 'É para reportar bug?', a: 'Use o tipo Sugestão e descreva o problema com detalhes.' },
+              ].map((f, idx) => (
+                <div key={idx} className="pl-3 border-l-2 border-accent/30 hover:border-accent transition-colors">
+                  <p className="font-semibold text-foreground/95 mb-1 text-[13px]">{f.q}</p>
+                  <p className="leading-relaxed">{f.a}</p>
+                </div>
+              ))}
             </div>
           </div>
 
-          <div className="rounded-2xl p-5 border border-accent/15 text-center" style={{ background: 'linear-gradient(135deg, hsl(var(--accent) / 0.1), hsl(var(--primary) / 0.1))' }}>
-            <Sparkles className="w-6 h-6 text-accent mx-auto mb-2" />
-            <p className="text-xs text-foreground/80 leading-relaxed">Cada feedback recebido é lido pela equipe e ajuda a evoluir a nossa entrega.</p>
+          <div className="rounded-2xl p-5 border border-accent/20 text-center relative overflow-hidden" style={{ background: 'linear-gradient(135deg, hsl(var(--accent) / 0.15), hsl(var(--primary) / 0.12))' }}>
+            <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full bg-accent/20 blur-2xl pointer-events-none" />
+            <motion.div animate={{ rotate: [0, 12, 0, -12, 0] }} transition={{ duration: 4, repeat: Infinity }}>
+              <Sparkles className="w-7 h-7 text-accent mx-auto mb-2" />
+            </motion.div>
+            <p className="text-xs text-foreground/85 leading-relaxed relative">Cada feedback recebido é lido pela equipe e ajuda a evoluir a nossa entrega.</p>
           </div>
         </motion.aside>
       </div>

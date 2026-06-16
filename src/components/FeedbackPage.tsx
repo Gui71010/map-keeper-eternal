@@ -278,108 +278,36 @@ const FeedbackPage = () => {
         ))}
       </motion.div>
 
-      {/* Praise mural - celestial dual marquee */}
-      {recentPraise.length > 0 && (() => {
-        const half = Math.ceil(recentPraise.length / 2);
-        const rowA = recentPraise.slice(0, half);
-        const rowB = recentPraise.slice(half);
-        const tagsA = ['Feedback Recebido', 'Impacto Direto', 'Design Review', 'Confiança'];
-        const tagsB = ['UX Excellence', 'Inspiração', 'Excelência', 'Reconhecimento'];
-        return (
-          <motion.section initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="relative">
-            <style>{`
-              @keyframes praise-scroll-left { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-              @keyframes praise-scroll-right { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
-              .praise-scroll-left { animation: praise-scroll-left 50s linear infinite; }
-              .praise-scroll-right { animation: praise-scroll-right 60s linear infinite; }
-              .praise-row:hover .praise-scroll-left,
-              .praise-row:hover .praise-scroll-right { animation-play-state: paused; }
-            `}</style>
-
-            {/* Header */}
-            <div className="mb-8 flex items-center gap-4">
-              <div className="p-3 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-600 shadow-[0_0_24px_hsl(40_96%_50%/0.35)]">
-                <Star className="w-6 h-6 text-white" fill="currentColor" />
-              </div>
-              <div>
-                <h3 className="text-3xl md:text-4xl font-display font-bold text-foreground tracking-tight">Mural de elogios recentes</h3>
-                <p className="text-muted-foreground text-base mt-1">Feedbacks que refletem a excelência e o compromisso do time.</p>
-              </div>
+      {/* Praise mural - marquee */}
+      {recentPraise.length > 0 && (
+        <motion.section initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="relative">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center shadow-lg">
+              <Quote className="w-5 h-5 text-white" />
             </div>
-
-            {/* Dual marquee */}
-            <div className="relative">
-              {/* Ambient glows */}
-              <div className="absolute -top-32 -left-16 w-80 h-80 rounded-full bg-accent/15 blur-[110px] pointer-events-none" />
-              <div className="absolute -bottom-32 -right-16 w-80 h-80 rounded-full bg-primary/15 blur-[110px] pointer-events-none" />
-
-              <div className="space-y-6 relative">
-                {/* Row 1: left */}
-                <div className="overflow-hidden praise-row">
-                  <div className="praise-scroll-left flex gap-6 w-max py-2">
-                    {[...rowA, ...rowA, ...rowA].map((f, i) => (
-                      <article key={`a-${f.id}-${i}`} className="group/card relative w-[400px] shrink-0 rounded-3xl p-7 bg-card/60 backdrop-blur-xl border border-primary/15 shadow-[0_8px_32px_rgba(0,0,0,0.37)] hover:border-accent/50 transition-colors duration-500 overflow-hidden">
-                        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-accent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity" />
-                        <div className="flex items-start gap-3">
-                          <span className="text-5xl text-primary/25 font-serif leading-none -mt-1">"</span>
-                          <p className="text-foreground/90 text-base leading-relaxed italic font-medium whitespace-normal">{f.comentario}</p>
-                        </div>
-                        <div className="mt-5 flex items-center justify-between">
-                          <div className="flex gap-0.5 text-amber-400">
-                            {Array.from({ length: 5 }).map((_, k) => (
-                              <Star key={k} className="w-4 h-4 drop-shadow-[0_0_6px_hsl(40_96%_50%/0.5)]" fill="currentColor" />
-                            ))}
-                          </div>
-                          <span className="text-[10px] uppercase tracking-[0.18em] text-accent font-bold">{tagsA[i % tagsA.length]}</span>
-                        </div>
-                      </article>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Row 2: right */}
-                <div className="overflow-hidden praise-row">
-                  <div className="praise-scroll-right flex gap-6 w-max py-2">
-                    {[...rowB, ...rowB, ...rowB].map((f, i) => (
-                      <article key={`b-${f.id}-${i}`} className="group/card relative w-[450px] shrink-0 rounded-3xl p-7 bg-card/60 backdrop-blur-xl border border-accent/20 shadow-[0_8px_32px_rgba(0,0,0,0.37)] hover:border-primary/50 transition-colors duration-500 overflow-hidden">
-                        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity" />
-                        <div className="flex items-start gap-3">
-                          <span className="text-5xl text-accent/25 font-serif leading-none -mt-1">"</span>
-                          <p className="text-foreground/90 text-base leading-relaxed italic font-medium whitespace-normal">{f.comentario}</p>
-                        </div>
-                        <div className="mt-5 flex items-center justify-between">
-                          <div className="flex gap-0.5 text-amber-400">
-                            {Array.from({ length: 5 }).map((_, k) => (
-                              <Star key={k} className="w-4 h-4 drop-shadow-[0_0_6px_hsl(40_96%_50%/0.5)]" fill="currentColor" />
-                            ))}
-                          </div>
-                          <span className="text-[10px] uppercase tracking-[0.18em] text-primary font-bold">{tagsB[i % tagsB.length]}</span>
-                        </div>
-                      </article>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Side fades */}
-                <div className="absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-                <div className="absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
-              </div>
-
-              {/* Live status pill */}
-              <div className="mt-10 flex items-center justify-center">
-                <div className="px-5 py-2 bg-card/40 backdrop-blur-sm border border-border/40 rounded-full text-xs text-muted-foreground tracking-wider flex items-center gap-4">
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-                    Atualizado em tempo real
-                  </span>
-                  <div className="w-px h-3 bg-border/60" />
-                  <span><b className="text-foreground/80">{elogiosCount}</b> elogios recebidos</span>
-                </div>
-              </div>
+            <div>
+              <h3 className="text-xl font-display font-bold text-foreground">Mural de elogios recentes</h3>
+              <p className="text-xs text-muted-foreground">Alguns exemplos de elogios da equipe</p>
             </div>
-          </motion.section>
-        );
-      })()}
+          </div>
+          <div className="relative overflow-hidden rounded-2xl border border-border/30 py-5" style={{ background: 'linear-gradient(160deg, hsl(222, 40%, 10%), hsl(215, 35%, 7%))' }}>
+            <div className="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-card to-transparent z-10 pointer-events-none" />
+            <div className="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-card to-transparent z-10 pointer-events-none" />
+            <motion.div
+              className="flex gap-4 w-max"
+              animate={{ x: ['0%', '-50%'] }}
+              transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+            >
+              {[...recentPraise, ...recentPraise].map((f, i) => (
+                <div key={`${f.id}-${i}`} className="shrink-0 w-80 rounded-xl p-5 border border-accent/15 bg-muted/10">
+                  <Star className="w-4 h-4 text-amber-400 mb-2" />
+                  <p className="text-foreground/85 text-sm leading-relaxed italic line-clamp-3">"{f.comentario}"</p>
+                </div>
+              ))}
+            </motion.div>
+          </div>
+        </motion.section>
+      )}
 
       {/* Main grid: form + FAQ sidebar */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 max-w-6xl mx-auto w-full">

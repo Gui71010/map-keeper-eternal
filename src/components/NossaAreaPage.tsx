@@ -923,7 +923,7 @@ const NossaAreaPage = () => {
                           style={{ background: 'linear-gradient(135deg, hsl(220, 35%, 12% / 0.6), hsl(220, 40%, 9% / 0.6))' }}
                         >
                           <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${cat.color} flex items-center justify-center shrink-0 shadow-lg ring-1 ring-white/15`}>
-                            <ItemIco className="w-4.5 h-4.5 text-white" />
+                            <ItemIco className="w-5 h-5 text-white" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-primary-foreground text-sm font-semibold leading-snug">{it.name}</p>

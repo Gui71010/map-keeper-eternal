@@ -22,6 +22,7 @@ import pythonHeroImg from '@/assets/python-automation-hero.jpg';
 import pythonAutoTreinamentoImg from '@/assets/python-auto-treinamento.jpg';
 import pythonAutoResImg from '@/assets/python-auto-res.jpg';
 import pythonAutoRelatoriosImg from '@/assets/python-auto-relatorios.jpg';
+import chamadosHeroImg from '@/assets/chamados-hero.jpg';
 
 const NossaAreaPage = () => {
   const { content, isAdmin, updateContent, addAnalyst, addProject, updateProject, removeProject, addAreaReportCard, updateAreaReportCard, removeAreaReportCard, addCustomOrgGroup, updateCustomOrgGroup, removeCustomOrgGroup } = useAdmin();

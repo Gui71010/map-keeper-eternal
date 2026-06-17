@@ -282,6 +282,7 @@ print(f"✓ {len(df)} registros processados")`,
     { id: '3', t: 'Escala sob demanda', d: 'Mesmo script atende uma ou todas as unidades.' },
     { id: '4', t: 'Integração transparente', d: 'Resultados entregues prontos para os relatórios e dashboards.' },
   ],
+  customOrgGroups: [],
 };
 
 const ADMIN_PASSWORD = 'Guisantos88';

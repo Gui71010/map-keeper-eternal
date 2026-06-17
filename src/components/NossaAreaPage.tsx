@@ -24,7 +24,7 @@ import pythonAutoResImg from '@/assets/python-auto-res.jpg';
 import pythonAutoRelatoriosImg from '@/assets/python-auto-relatorios.jpg';
 
 const NossaAreaPage = () => {
-  const { content, isAdmin, updateContent, addAnalyst, addProject, updateProject, removeProject, addAreaReportCard, updateAreaReportCard, removeAreaReportCard } = useAdmin();
+  const { content, isAdmin, updateContent, addAnalyst, addProject, updateProject, removeProject, addAreaReportCard, updateAreaReportCard, removeAreaReportCard, addCustomOrgGroup, updateCustomOrgGroup, removeCustomOrgGroup } = useAdmin();
   const [selectedAnalyst, setSelectedAnalyst] = useState<string | null>(null);
   const [currentProjectIdx, setCurrentProjectIdx] = useState(0);
   const projectTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);

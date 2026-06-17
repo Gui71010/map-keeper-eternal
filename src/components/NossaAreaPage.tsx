@@ -122,6 +122,12 @@ const NossaAreaPage = () => {
             assistantAnalysts={assistantAnalysts}
             internAnalysts={internAnalysts}
             onAnalystClick={(id) => setSelectedAnalyst(selectedAnalyst === id ? null : id)}
+            customGroups={content.customOrgGroups || []}
+            allAnalysts={content.analysts}
+            isAdmin={isAdmin}
+            onAddCustomGroup={() => addCustomOrgGroup({ id: Date.now().toString(), title: 'Novo cargo', color: '#3b82f6', analystIds: [] })}
+            onUpdateCustomGroup={(id, data) => updateCustomOrgGroup(id, data)}
+            onRemoveCustomGroup={(id) => removeCustomOrgGroup(id)}
           />
         </div>
       </motion.section>

@@ -1,6 +1,13 @@
 import { motion } from 'framer-motion';
-import { User, Shield, BarChart3, Briefcase, Palette, MousePointerClick, Sparkles, UserCheck, GraduationCap } from 'lucide-react';
+import { User, Shield, BarChart3, Briefcase, Palette, MousePointerClick, Sparkles, UserCheck, GraduationCap, Users, Trash2, Plus, X } from 'lucide-react';
 import { Analyst } from '@/contexts/AdminContext';
+
+export interface CustomGroupRender {
+  id: string;
+  title: string;
+  color: string;
+  analystIds: string[];
+}
 
 interface OrgChartProps {
   manager: Analyst | undefined;
@@ -10,6 +17,12 @@ interface OrgChartProps {
   assistantAnalysts: Analyst[];
   internAnalysts: Analyst[];
   onAnalystClick?: (id: string) => void;
+  customGroups?: CustomGroupRender[];
+  allAnalysts?: Analyst[];
+  isAdmin?: boolean;
+  onAddCustomGroup?: () => void;
+  onUpdateCustomGroup?: (id: string, data: Partial<CustomGroupRender>) => void;
+  onRemoveCustomGroup?: (id: string) => void;
 }
 
 const OrgNode = ({
@@ -175,7 +188,7 @@ const AreaGroup = ({
   </motion.div>
 );
 
-const OrgChart = ({ manager, biAnalysts, adminAnalysts, designAnalysts, assistantAnalysts, internAnalysts, onAnalystClick }: OrgChartProps) => {
+const OrgChart = ({ manager, biAnalysts, adminAnalysts, designAnalysts, assistantAnalysts, internAnalysts, onAnalystClick, customGroups = [], allAnalysts = [], isAdmin, onAddCustomGroup, onUpdateCustomGroup, onRemoveCustomGroup }: OrgChartProps) => {
   return (
     <div className="relative w-full py-8">
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -188,7 +201,7 @@ const OrgChart = ({ manager, biAnalysts, adminAnalysts, designAnalysts, assistan
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.05, duration: 0.5 }}
-          className="flex justify-center mb-8"
+          className="flex justify-center mb-8 gap-3 flex-wrap"
         >
           <div
             className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full border border-accent/30 backdrop-blur-md shadow-lg shadow-accent/10"
@@ -199,6 +212,14 @@ const OrgChart = ({ manager, biAnalysts, adminAnalysts, designAnalysts, assistan
               Clique em uma pessoa para ver o <span className="text-accent font-semibold">perfil completo</span>
             </span>
           </div>
+          {isAdmin && onAddCustomGroup && (
+            <button
+              onClick={onAddCustomGroup}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-accent/40 bg-accent/10 hover:bg-accent/20 transition text-sm font-semibold text-accent"
+            >
+              <Plus className="w-4 h-4" /> Novo cargo
+            </button>
+          )}
         </motion.div>
 
         <div className="flex justify-center">
@@ -213,12 +234,122 @@ const OrgChart = ({ manager, biAnalysts, adminAnalysts, designAnalysts, assistan
           <div className="h-px w-full bg-gradient-to-r from-transparent via-accent/20 to-transparent" />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-5 max-w-7xl mx-auto px-4 items-start">
+        <div
+          className="gap-5 max-w-7xl mx-auto px-4 items-start grid"
+          style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))' }}
+        >
           <AreaGroup title="Analistas de BI" icon={BarChart3} analysts={biAnalysts} gradientFrom="hsl(210, 90%, 50%)" gradientTo="hsl(195, 85%, 45%)" glowColor="hsl(210, 90%, 55%)" delay={0.25} onAnalystClick={onAnalystClick} />
           <AreaGroup title="Administrativo" icon={Briefcase} analysts={adminAnalysts} gradientFrom="hsl(160, 70%, 40%)" gradientTo="hsl(145, 65%, 45%)" glowColor="hsl(155, 70%, 45%)" delay={0.35} onAnalystClick={onAnalystClick} />
           <AreaGroup title="Assistente de Pessoas" icon={UserCheck} analysts={assistantAnalysts} gradientFrom="hsl(35, 90%, 55%)" gradientTo="hsl(20, 85%, 50%)" glowColor="hsl(30, 90%, 55%)" delay={0.4} onAnalystClick={onAnalystClick} />
           <AreaGroup title="Design" icon={Palette} analysts={designAnalysts} gradientFrom="hsl(270, 65%, 55%)" gradientTo="hsl(285, 60%, 50%)" glowColor="hsl(275, 65%, 55%)" delay={0.45} onAnalystClick={onAnalystClick} />
           <AreaGroup title="Estagiários" icon={GraduationCap} analysts={internAnalysts} gradientFrom="hsl(190, 85%, 50%)" gradientTo="hsl(170, 75%, 45%)" glowColor="hsl(180, 80%, 50%)" delay={0.5} onAnalystClick={onAnalystClick} />
+
+          {customGroups.map((g, idx) => {
+            const analysts = allAnalysts.filter((a) => g.analystIds.includes(a.id));
+            const available = allAnalysts.filter((a) => !g.analystIds.includes(a.id));
+            const color = g.color || 'hsl(200, 80%, 55%)';
+            const colorTo = color;
+            return (
+              <motion.div
+                key={g.id}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.55 + idx * 0.05, duration: 0.6 }}
+                className="flex flex-col items-center"
+              >
+                <VerticalLine height="h-8" />
+                <div
+                  className="px-5 py-2.5 rounded-xl border font-display font-bold text-sm text-white flex items-center gap-2 shadow-lg relative w-full justify-center"
+                  style={{
+                    background: `linear-gradient(135deg, ${color}, ${colorTo})`,
+                    borderColor: `${color}60`,
+                    boxShadow: `0 0 20px ${color}30, 0 4px 16px hsl(0 0% 0% / 0.25)`,
+                  }}
+                >
+                  <Users className="w-4 h-4 shrink-0" />
+                  {isAdmin ? (
+                    <input
+                      value={g.title}
+                      onChange={(e) => onUpdateCustomGroup?.(g.id, { title: e.target.value })}
+                      className="bg-transparent outline-none text-center min-w-0 flex-1 placeholder:text-white/60"
+                      placeholder="Nome do cargo"
+                    />
+                  ) : (
+                    <span>{g.title || 'Novo cargo'}</span>
+                  )}
+                  {isAdmin && onRemoveCustomGroup && (
+                    <button
+                      onClick={() => onRemoveCustomGroup(g.id)}
+                      className="ml-1 p-1 rounded-md bg-black/20 hover:bg-black/40 transition"
+                      title="Remover cargo"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+                {isAdmin && (
+                  <div className="mt-2 w-full flex flex-col gap-2">
+                    <input
+                      type="color"
+                      value={(() => {
+                        // try to convert hsl(...) to readable; fallback default
+                        const m = (g.color || '').match(/^#([0-9a-f]{6})$/i);
+                        return m ? g.color : '#3b82f6';
+                      })()}
+                      onChange={(e) => onUpdateCustomGroup?.(g.id, { color: e.target.value })}
+                      className="h-8 w-full rounded cursor-pointer bg-transparent border border-border/30"
+                      title="Cor do cargo"
+                    />
+                    {available.length > 0 && (
+                      <select
+                        value=""
+                        onChange={(e) => {
+                          if (!e.target.value) return;
+                          onUpdateCustomGroup?.(g.id, { analystIds: [...g.analystIds, e.target.value] });
+                        }}
+                        className="text-xs px-2 py-1.5 rounded-md bg-background/60 border border-border/40 text-foreground outline-none focus:border-accent"
+                      >
+                        <option value="">+ adicionar analista...</option>
+                        {available.map((a) => (
+                          <option key={a.id} value={a.id}>{a.name} ({a.role})</option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
+                )}
+                <VerticalLine height="h-5" />
+                <div className="flex flex-col gap-3 w-full">
+                  {analysts.map((analyst, i) => (
+                    <div key={analyst.id} className="relative">
+                      <OrgNode
+                        analyst={analyst}
+                        delay={0.55 + idx * 0.05 + 0.1 + i * 0.06}
+                        onClick={() => onAnalystClick?.(analyst.id)}
+                        accentColor={color}
+                      />
+                      {isAdmin && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onUpdateCustomGroup?.(g.id, { analystIds: g.analystIds.filter((id) => id !== analyst.id) });
+                          }}
+                          className="absolute -top-2 -right-2 z-30 w-6 h-6 rounded-full bg-rose-500/90 hover:bg-rose-500 text-white flex items-center justify-center shadow-lg"
+                          title="Remover do cargo"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                  {analysts.length === 0 && (
+                    <div className="text-muted-foreground/30 text-sm italic py-6 text-center">
+                      {isAdmin ? 'Adicione um analista' : 'Nenhum membro'}
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </div>

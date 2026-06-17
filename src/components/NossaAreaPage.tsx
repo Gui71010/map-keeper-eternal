@@ -765,116 +765,174 @@ const NossaAreaPage = () => {
 
       {/* === CHAMADOS / SERVICE DESK === */}
       <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7, duration: 0.6 }} className="relative">
-        <div className="relative overflow-hidden rounded-2xl border border-accent/20" style={{ background: 'linear-gradient(160deg, hsl(220, 45%, 9%), hsl(220, 35%, 12%))' }}>
+        <div className="relative overflow-hidden rounded-3xl border border-amber-500/20 shadow-2xl" style={{ background: 'linear-gradient(135deg, hsl(220, 50%, 7%), hsl(220, 40%, 10%) 60%, hsl(25, 40%, 10%))' }}>
+          {/* Decorative background */}
           <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-0 right-0 w-80 h-80 rounded-full bg-amber-500/10 blur-[140px]" />
-            <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-accent/10 blur-[140px]" />
+            <img src={chamadosHeroImg} alt="" className="absolute right-0 top-0 h-full w-3/5 object-cover opacity-25 mix-blend-screen" loading="lazy" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[hsl(220,50%,7%)] via-[hsl(220,50%,7%)]/85 to-transparent" />
+            <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-amber-500/15 blur-[160px]" />
+            <div className="absolute bottom-0 left-0 w-96 h-96 rounded-full bg-accent/10 blur-[160px]" />
+            {/* Animated grid */}
+            <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'linear-gradient(hsl(35 100% 60%) 1px, transparent 1px), linear-gradient(90deg, hsl(35 100% 60%) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
           </div>
-          <div className="relative z-10 p-8 md:p-12">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 mb-8">
-              <div className="flex items-start gap-4">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-xl shadow-amber-500/30 shrink-0">
-                  <LifeBuoy className="w-8 h-8 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-3xl md:text-4xl font-display font-bold text-primary-foreground">Abertura de Chamados</h3>
-                  <p className="text-primary-foreground/60 text-base mt-1">Solicite alterações, correções ou novos relatórios via GestaoX</p>
-                  <div className="w-20 h-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 mt-3" />
-                </div>
-              </div>
-              <div className="flex flex-col items-stretch gap-2">
-                <a
-                  href={content.gestaoxUrl || '#'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold text-sm shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50 hover:scale-[1.02] transition-all"
+
+          <div className="relative z-10 p-8 md:p-14">
+            {/* Header */}
+            <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-10 items-start mb-12">
+              <div>
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}
+                  className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 backdrop-blur-sm mb-5"
                 >
-                  <ExternalLink className="w-4 h-4" /> Acessar Sistema GestaoX
-                </a>
-                {isAdmin && (
-                  <input
-                    type="url"
-                    value={content.gestaoxUrl || ''}
-                    onChange={(e) => updateContent({ gestaoxUrl: e.target.value })}
-                    placeholder="https://..."
-                    className="text-xs px-3 py-2 rounded-lg bg-background/60 border border-amber-500/30 text-primary-foreground placeholder:text-primary-foreground/40 outline-none focus:border-amber-400"
-                  />
-                )}
+                  <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                  <span className="text-amber-300 text-xs font-mono font-semibold tracking-wider uppercase">Service Desk · GestaoX</span>
+                </motion.div>
+                <div className="flex items-start gap-5 mb-5">
+                  <div className="relative shrink-0">
+                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 blur-xl opacity-50" />
+                    <div className="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-400 via-amber-500 to-orange-600 flex items-center justify-center shadow-2xl shadow-amber-500/40 ring-1 ring-white/20">
+                      <LifeBuoy className="w-10 h-10 text-white drop-shadow-lg" />
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="text-4xl md:text-5xl font-display font-bold text-primary-foreground leading-tight">
+                      Abertura de <span className="bg-gradient-to-r from-amber-300 via-amber-400 to-orange-400 bg-clip-text text-transparent">Chamados</span>
+                    </h3>
+                    <p className="text-primary-foreground/60 text-base mt-2 max-w-xl">Solicite alterações, correções ou novos relatórios com fluxo rastreável e SLA garantido.</p>
+                  </div>
+                </div>
+                <p className="text-primary-foreground/70 text-base leading-relaxed max-w-2xl">
+                  Toda solicitação relacionada aos relatórios da Diretoria de Pessoas deve ser registrada no <span className="text-amber-300 font-semibold">Service Desk</span>. Use os caminhos abaixo no portal <span className="text-amber-300 font-semibold">Sistema GestaoX</span> para abrir o chamado correto.
+                </p>
               </div>
+
+              {/* CTA card */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2 }}
+                className="relative rounded-2xl overflow-hidden border border-amber-500/30 p-6 backdrop-blur-md"
+                style={{ background: 'linear-gradient(135deg, hsl(35, 60%, 12% / 0.7), hsl(220, 40%, 10% / 0.7))' }}
+              >
+                <div className="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-amber-500/25 blur-3xl" />
+                <div className="relative">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Sparkles className="w-4 h-4 text-amber-300" />
+                    <span className="text-amber-200 text-xs font-semibold uppercase tracking-wider">Acesso rápido</span>
+                  </div>
+                  <h4 className="text-primary-foreground text-xl font-display font-bold mb-1">Portal GestaoX</h4>
+                  <p className="text-primary-foreground/60 text-sm mb-5">Centralize todas as suas requisições em um único lugar.</p>
+                  <a
+                    href={content.gestaoxUrl || '#'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative inline-flex w-full items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-orange-500 text-white font-bold text-sm shadow-xl shadow-amber-500/40 hover:shadow-amber-500/60 hover:scale-[1.02] transition-all overflow-hidden"
+                  >
+                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                    <ExternalLink className="w-4 h-4 relative z-10" />
+                    <span className="relative z-10">Acessar Sistema GestaoX</span>
+                  </a>
+                  {isAdmin && (
+                    <input
+                      type="url"
+                      value={content.gestaoxUrl || ''}
+                      onChange={(e) => updateContent({ gestaoxUrl: e.target.value })}
+                      placeholder="https://..."
+                      className="mt-3 w-full text-xs px-3 py-2 rounded-lg bg-background/60 border border-amber-500/30 text-primary-foreground placeholder:text-primary-foreground/40 outline-none focus:border-amber-400"
+                    />
+                  )}
+                </div>
+              </motion.div>
             </div>
 
-            <p className="text-primary-foreground/70 text-base leading-relaxed mb-8 max-w-3xl">
-              Toda solicitação relacionada aos relatórios da Diretoria de Pessoas deve ser registrada no <span className="text-amber-400 font-semibold">Service Desk</span>.
-              Use os caminhos abaixo no portal <span className="text-amber-400 font-semibold">Sistema GestaoX</span> para abrir o chamado correto e garantir o atendimento dentro do SLA.
-            </p>
-
             {/* Categories */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {[
                 {
                   icon: Flame,
-                  color: 'from-rose-500 to-red-500',
+                  color: 'from-rose-500 to-red-600',
+                  glow: 'rose',
                   title: 'Mapa de Calor Instrutor',
                   path: 'People Analytics › Mapa de Calor Instrutor',
+                  image: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&h=400&fit=crop',
                   items: [
-                    { name: 'Correções e Contestações de Resultados', sla: 'SLA 45h úteis', kind: 'Solicitação', tone: 'text-rose-300', itemIcon: FileEdit },
+                    { name: 'Correções e Contestações de Resultados', sla: 'SLA 45h úteis', kind: 'Solicitação', itemIcon: FileEdit },
                   ],
                 },
                 {
                   icon: FileText,
-                  color: 'from-teal-500 to-cyan-500',
+                  color: 'from-teal-500 to-cyan-600',
+                  glow: 'cyan',
                   title: 'Relatórios',
                   path: 'People Analytics › Relatórios',
+                  image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=400&fit=crop',
                   items: [
-                    { name: 'Alteração de Relatório', sla: 'SLA Negociado', kind: 'Tarefa', tone: 'text-cyan-300', itemIcon: FileEdit },
-                    { name: 'Criação de Relatório', sla: 'SLA Negociado', kind: 'Tarefa', tone: 'text-cyan-300', itemIcon: FilePlus },
-                    { name: 'Erros e correções', sla: 'SLA 36h úteis', kind: 'Solicitação', tone: 'text-cyan-300', itemIcon: FileX },
-                    { name: 'Liberação de Relatórios', sla: 'SLA 27h úteis', kind: 'Incidente', tone: 'text-amber-300', itemIcon: FileCheck },
+                    { name: 'Alteração de Relatório', sla: 'SLA Negociado', kind: 'Tarefa', itemIcon: FileEdit },
+                    { name: 'Criação de Relatório', sla: 'SLA Negociado', kind: 'Tarefa', itemIcon: FilePlus },
+                    { name: 'Erros e correções', sla: 'SLA 36h úteis', kind: 'Solicitação', itemIcon: FileX },
+                    { name: 'Liberação de Relatórios', sla: 'SLA 27h úteis', kind: 'Incidente', itemIcon: FileCheck },
                   ],
                 },
                 {
                   icon: DollarSign,
-                  color: 'from-emerald-500 to-green-500',
+                  color: 'from-emerald-500 to-green-600',
+                  glow: 'emerald',
                   title: 'Remuneração Variável',
                   path: 'People Analytics › Remuneração Variável',
+                  image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&h=400&fit=crop',
                   items: [
-                    { name: 'Contestação', sla: 'SLA 27h úteis', kind: 'Solicitação', tone: 'text-emerald-300', itemIcon: FileEdit },
+                    { name: 'Contestação', sla: 'SLA 27h úteis', kind: 'Solicitação', itemIcon: FileEdit },
                   ],
                 },
               ].map((cat, idx) => (
                 <motion.div
                   key={idx}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 + idx * 0.1 }}
-                  className="rounded-2xl border border-primary-foreground/10 overflow-hidden hover:border-accent/40 transition-all duration-300 hover:shadow-xl hover:shadow-accent/10 flex flex-col"
-                  style={{ background: 'hsl(220, 38%, 10%)' }}
+                  transition={{ delay: 0.3 + idx * 0.1, duration: 0.5 }}
+                  whileHover={{ y: -6 }}
+                  className="group relative rounded-2xl border border-primary-foreground/10 overflow-hidden hover:border-amber-500/40 transition-all duration-500 hover:shadow-2xl hover:shadow-amber-500/15 flex flex-col backdrop-blur-sm"
+                  style={{ background: 'linear-gradient(180deg, hsl(220, 40%, 10% / 0.95), hsl(220, 45%, 8% / 0.98))' }}
                 >
-                  <div className={`p-5 bg-gradient-to-r ${cat.color} flex items-center gap-3`}>
-                    <div className="w-12 h-12 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center ring-1 ring-white/20 shrink-0">
-                      <cat.icon className="w-6 h-6 text-white" />
+                  {/* Image header */}
+                  <div className="relative h-36 overflow-hidden">
+                    <img src={cat.image} alt={cat.title} className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-70 group-hover:scale-110 transition-all duration-700" loading="lazy" />
+                    <div className={`absolute inset-0 bg-gradient-to-br ${cat.color} opacity-80 mix-blend-multiply`} />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[hsl(220,45%,8%)] via-transparent to-transparent" />
+                    {/* Floating icon */}
+                    <div className="absolute top-4 left-4 w-14 h-14 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center ring-1 ring-white/30 shadow-lg">
+                      <cat.icon className="w-7 h-7 text-white drop-shadow" />
                     </div>
-                    <div className="min-w-0">
-                      <h4 className="font-display font-bold text-white text-lg leading-tight">{cat.title}</h4>
-                      <p className="text-white/80 text-[11px] font-mono mt-1 truncate">{cat.path}</p>
+                    <div className="absolute top-4 right-4 px-2.5 py-1 rounded-full bg-black/30 backdrop-blur-md border border-white/15 text-white/90 text-[10px] font-mono font-semibold">
+                      {cat.items.length} {cat.items.length === 1 ? 'item' : 'itens'}
+                    </div>
+                    {/* Title overlay */}
+                    <div className="absolute bottom-3 left-4 right-4">
+                      <h4 className="font-display font-bold text-white text-xl leading-tight drop-shadow-lg">{cat.title}</h4>
+                      <p className="text-white/85 text-[11px] font-mono mt-1 truncate drop-shadow">{cat.path}</p>
                     </div>
                   </div>
-                  <div className="p-4 space-y-2.5 flex-1">
+
+                  {/* Items */}
+                  <div className="p-5 space-y-2.5 flex-1">
                     {cat.items.map((it, j) => {
                       const ItemIco = it.itemIcon;
                       return (
-                        <div key={j} className="group rounded-xl p-3.5 border border-primary-foreground/10 hover:border-accent/40 hover:translate-x-0.5 transition-all flex items-start gap-3" style={{ background: 'hsl(220, 35%, 12%)' }}>
-                          <div className={`w-9 h-9 rounded-lg bg-gradient-to-br ${cat.color} bg-opacity-20 flex items-center justify-center shrink-0 shadow-md ring-1 ring-white/10`}>
-                            <ItemIco className="w-4 h-4 text-white" />
+                        <motion.div
+                          key={j}
+                          whileHover={{ x: 4 }}
+                          className="rounded-xl p-3.5 border border-primary-foreground/10 hover:border-amber-500/40 transition-all flex items-start gap-3 cursor-pointer"
+                          style={{ background: 'linear-gradient(135deg, hsl(220, 35%, 12% / 0.6), hsl(220, 40%, 9% / 0.6))' }}
+                        >
+                          <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${cat.color} flex items-center justify-center shrink-0 shadow-lg ring-1 ring-white/15`}>
+                            <ItemIco className="w-4.5 h-4.5 text-white" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-primary-foreground text-sm font-semibold leading-snug">{it.name}</p>
                             <div className="flex items-center gap-2 mt-2 flex-wrap">
-                              <span className={`text-[10px] px-2 py-0.5 rounded-full bg-white/5 ${it.tone} font-mono font-semibold border border-white/5`}>{it.sla}</span>
-                              <span className="text-[10px] text-primary-foreground/60 px-2 py-0.5 rounded-full bg-primary-foreground/5 border border-primary-foreground/10">{it.kind}</span>
+                              <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 font-mono font-bold border border-amber-500/25">{it.sla}</span>
+                              <span className="text-[10px] text-primary-foreground/70 px-2 py-0.5 rounded-full bg-primary-foreground/5 border border-primary-foreground/10 font-medium">{it.kind}</span>
                             </div>
                           </div>
-                        </div>
+                        </motion.div>
                       );
                     })}
                   </div>
@@ -883,16 +941,25 @@ const NossaAreaPage = () => {
             </div>
 
             {/* Tip box */}
-            <div className="mt-8 rounded-xl p-5 border border-amber-500/25 flex items-start gap-3" style={{ background: 'hsl(35, 50%, 12% / 0.4)' }}>
-              <AlertCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
-              <div>
-                <p className="text-primary-foreground text-sm font-semibold mb-1">Dica de uso</p>
-                <p className="text-primary-foreground/70 text-sm leading-relaxed">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}
+              className="mt-10 rounded-2xl p-5 md:p-6 border border-amber-500/25 flex items-start gap-4 backdrop-blur-sm"
+              style={{ background: 'linear-gradient(135deg, hsl(35, 50%, 10% / 0.6), hsl(220, 40%, 9% / 0.6))' }}
+            >
+              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shrink-0 shadow-lg shadow-amber-500/30">
+                <AlertCircle className="w-5 h-5 text-white" />
+              </div>
+              <div className="flex-1">
+                <p className="text-primary-foreground text-sm font-bold mb-1 flex items-center gap-2">
+                  Dica de uso
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-mono">pro tip</span>
+                </p>
+                <p className="text-primary-foreground/75 text-sm leading-relaxed">
                   Escolha sempre a categoria correta para evitar redirecionamentos e reduzir o tempo de atendimento.
-                  Em caso de dúvida, entre em contato com a equipe pelo e-mail <span className="text-amber-400 font-semibold">{content.directoryEmail}</span>.
+                  Em caso de dúvida, entre em contato com a equipe pelo e-mail <span className="text-amber-300 font-semibold">{content.directoryEmail}</span>.
                 </p>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </motion.section>

@@ -427,9 +427,15 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const removeRqReport = (id: string) =>
     setContent(prev => ({ ...prev, rqReports: (prev.rqReports || []).filter((r) => r.id !== id) }));
 
+  const addCustomOrgGroup = (group: CustomOrgGroup) => setContent(prev => ({ ...prev, customOrgGroups: [...(prev.customOrgGroups || []), group] }));
+  const updateCustomOrgGroup = (id: string, data: Partial<CustomOrgGroup>) =>
+    setContent(prev => ({ ...prev, customOrgGroups: (prev.customOrgGroups || []).map((g) => (g.id === id ? { ...g, ...data } : g)) }));
+  const removeCustomOrgGroup = (id: string) =>
+    setContent(prev => ({ ...prev, customOrgGroups: (prev.customOrgGroups || []).filter((g) => g.id !== id) }));
+
   return (
     <AdminContext.Provider
-      value={{ isAdmin, login, logout, content, updateContent, addAnalyst, updateAnalyst, removeAnalyst, addReport, updateReport, removeReport, addProject, updateProject, removeProject, addAreaReportCard, updateAreaReportCard, removeAreaReportCard, addRqCategory, updateRqCategory, removeRqCategory, addRqReport, updateRqReport, removeRqReport }}
+      value={{ isAdmin, login, logout, content, updateContent, addAnalyst, updateAnalyst, removeAnalyst, addReport, updateReport, removeReport, addProject, updateProject, removeProject, addAreaReportCard, updateAreaReportCard, removeAreaReportCard, addRqCategory, updateRqCategory, removeRqCategory, addRqReport, updateRqReport, removeRqReport, addCustomOrgGroup, updateCustomOrgGroup, removeCustomOrgGroup }}
     >
       {children}
     </AdminContext.Provider>

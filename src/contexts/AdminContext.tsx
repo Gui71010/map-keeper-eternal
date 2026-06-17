@@ -137,6 +137,7 @@ interface SiteContent {
   pythonCode: string;
   pythonImpactTitle: string;
   pythonImpactItems: { id: string; t: string; d: string }[];
+  customOrgGroups: CustomOrgGroup[];
 }
 
 interface AdminContextType {

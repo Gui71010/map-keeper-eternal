@@ -8,7 +8,7 @@ import ReportDetailModal from '@/components/ReportDetailModal';
 import GalaxyParticles from '@/components/GalaxyParticles';
 
 const RelatoriosCriadosPage = () => {
-  const { content, isAdmin, updateContent, updateAnalyst, addReport } = useAdmin();
+  const { content, isAdmin, updateContent, updateAnalyst, addAnalyst, removeAnalyst, addReport } = useAdmin();
   const [selectedAnalystId, setSelectedAnalystId] = useState<string | null>(null);
   const [selectedAreaFilter, setSelectedAreaFilter] = useState<string | null>(null);
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null);

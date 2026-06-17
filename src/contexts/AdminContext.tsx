@@ -164,6 +164,9 @@ interface AdminContextType {
   addRqReport: (report: RqReport) => void;
   updateRqReport: (id: string, data: Partial<RqReport>) => void;
   removeRqReport: (id: string) => void;
+  addCustomOrgGroup: (group: CustomOrgGroup) => void;
+  updateCustomOrgGroup: (id: string, data: Partial<CustomOrgGroup>) => void;
+  removeCustomOrgGroup: (id: string) => void;
 }
 
 const DEFAULT_CONTENT: SiteContent = {

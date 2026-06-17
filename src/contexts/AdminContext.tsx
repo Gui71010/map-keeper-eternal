@@ -165,7 +165,7 @@ const DEFAULT_CONTENT: SiteContent = {
     'Bem-vindo ao FAQ dos Relatórios! Aqui você pode explorar as métricas de cada relatório criado pelo nosso time de dados. Selecione um analista para filtrar os relatórios por responsável e clique em qualquer relatório para ver seus detalhes e métricas.',
   portfolioDescription:
     'Conheça todos os relatórios produzidos pela nossa equipe de Business Intelligence. Selecione um analista para filtrar ou navegue por todo o portfólio.',
-  directoryEmail: 'AeCDiretoriadePessoasPeopleAnalytics@aec.com.br',
+  directoryEmail: '< AeC - Diretoria de Pessoas - People Analytics >',
   aboutUsTitle: 'O que fazemos',
   aboutUsText:
     '• Governança dos dados provenientes das áreas de Treinamento, Recrutamento, BP e DHO.\n\n• Construção, validação e garantia da assertividade dos indicadores de RH.\n\n• Gestão de todos os relatórios (Orbi) da Diretoria de Pessoas:\n  ✓ 28 relatórios ativos;\n  ✓ 3 relatórios em produção;\n  ✓ 9 relatórios a iniciar.\n\n• Análises e diagnósticos dos números de RH para fornecer informações para tomada de decisão da Diretoria.\n\n• Produção de apresentações executivas.\n\n• Produção de relatórios para as áreas.',

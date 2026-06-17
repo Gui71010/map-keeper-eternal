@@ -55,13 +55,6 @@ export interface RqReport {
   linkedReportId?: string;
 }
 
-export interface CustomOrgGroup {
-  id: string;
-  title: string;
-  color: string;
-  analystIds: string[];
-}
-
 export interface MapCity {
   id: string;
   name: string;
@@ -137,7 +130,6 @@ interface SiteContent {
   pythonCode: string;
   pythonImpactTitle: string;
   pythonImpactItems: { id: string; t: string; d: string }[];
-  customOrgGroups: CustomOrgGroup[];
 }
 
 interface AdminContextType {
@@ -164,9 +156,6 @@ interface AdminContextType {
   addRqReport: (report: RqReport) => void;
   updateRqReport: (id: string, data: Partial<RqReport>) => void;
   removeRqReport: (id: string) => void;
-  addCustomOrgGroup: (group: CustomOrgGroup) => void;
-  updateCustomOrgGroup: (id: string, data: Partial<CustomOrgGroup>) => void;
-  removeCustomOrgGroup: (id: string) => void;
 }
 
 const DEFAULT_CONTENT: SiteContent = {
@@ -285,7 +274,6 @@ print(f"✓ {len(df)} registros processados")`,
     { id: '3', t: 'Escala sob demanda', d: 'Mesmo script atende uma ou todas as unidades.' },
     { id: '4', t: 'Integração transparente', d: 'Resultados entregues prontos para os relatórios e dashboards.' },
   ],
-  customOrgGroups: [],
 };
 
 const ADMIN_PASSWORD = 'Guisantos88';
@@ -427,15 +415,9 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const removeRqReport = (id: string) =>
     setContent(prev => ({ ...prev, rqReports: (prev.rqReports || []).filter((r) => r.id !== id) }));
 
-  const addCustomOrgGroup = (group: CustomOrgGroup) => setContent(prev => ({ ...prev, customOrgGroups: [...(prev.customOrgGroups || []), group] }));
-  const updateCustomOrgGroup = (id: string, data: Partial<CustomOrgGroup>) =>
-    setContent(prev => ({ ...prev, customOrgGroups: (prev.customOrgGroups || []).map((g) => (g.id === id ? { ...g, ...data } : g)) }));
-  const removeCustomOrgGroup = (id: string) =>
-    setContent(prev => ({ ...prev, customOrgGroups: (prev.customOrgGroups || []).filter((g) => g.id !== id) }));
-
   return (
     <AdminContext.Provider
-      value={{ isAdmin, login, logout, content, updateContent, addAnalyst, updateAnalyst, removeAnalyst, addReport, updateReport, removeReport, addProject, updateProject, removeProject, addAreaReportCard, updateAreaReportCard, removeAreaReportCard, addRqCategory, updateRqCategory, removeRqCategory, addRqReport, updateRqReport, removeRqReport, addCustomOrgGroup, updateCustomOrgGroup, removeCustomOrgGroup }}
+      value={{ isAdmin, login, logout, content, updateContent, addAnalyst, updateAnalyst, removeAnalyst, addReport, updateReport, removeReport, addProject, updateProject, removeProject, addAreaReportCard, updateAreaReportCard, removeAreaReportCard, addRqCategory, updateRqCategory, removeRqCategory, addRqReport, updateRqReport, removeRqReport }}
     >
       {children}
     </AdminContext.Provider>

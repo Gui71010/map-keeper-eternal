@@ -1,6 +1,13 @@
 import { motion } from 'framer-motion';
-import { User, Shield, BarChart3, Briefcase, Palette, MousePointerClick, Sparkles, UserCheck, GraduationCap } from 'lucide-react';
+import { User, Shield, BarChart3, Briefcase, Palette, MousePointerClick, Sparkles, UserCheck, GraduationCap, Users, Trash2, Plus, X } from 'lucide-react';
 import { Analyst } from '@/contexts/AdminContext';
+
+export interface CustomGroupRender {
+  id: string;
+  title: string;
+  color: string;
+  analystIds: string[];
+}
 
 interface OrgChartProps {
   manager: Analyst | undefined;
@@ -10,6 +17,12 @@ interface OrgChartProps {
   assistantAnalysts: Analyst[];
   internAnalysts: Analyst[];
   onAnalystClick?: (id: string) => void;
+  customGroups?: CustomGroupRender[];
+  allAnalysts?: Analyst[];
+  isAdmin?: boolean;
+  onAddCustomGroup?: () => void;
+  onUpdateCustomGroup?: (id: string, data: Partial<CustomGroupRender>) => void;
+  onRemoveCustomGroup?: (id: string) => void;
 }
 
 const OrgNode = ({

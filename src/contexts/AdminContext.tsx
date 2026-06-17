@@ -55,6 +55,13 @@ export interface RqReport {
   linkedReportId?: string;
 }
 
+export interface CustomOrgGroup {
+  id: string;
+  title: string;
+  color: string;
+  analystIds: string[];
+}
+
 export interface MapCity {
   id: string;
   name: string;

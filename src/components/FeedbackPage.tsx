@@ -167,14 +167,17 @@ const FeedbackPage = () => {
   const [sugestoesCount, setSugestoesCount] = useState(0);
 
   const fictionalPraise = useMemo(() => ([
-    { id: 1, comentario: 'O time entrega análises incríveis com muita agilidade. Nota 10!' },
-    { id: 2, comentario: 'A clareza das visualizações facilita muito a apresentação para a liderança.' },
-    { id: 3, comentario: 'Parabéns pelo suporte! Sempre respondem rápido e com qualidade.' },
-    { id: 4, comentario: 'O novo layout dos painéis ficou muito profissional e moderno.' },
-    { id: 5, comentario: 'Dados confiáveis e bem organizados. Virou referência na área!' },
-    { id: 6, comentario: 'Adoro a intuitividade dos dashboards, tudo muito fácil de encontrar.' },
-    { id: 7, comentario: 'Excelente trabalho da equipe! Os indicadores mudaram nossa rotina.' },
-    { id: 8, comentario: 'A experiência do site está linda e muito fluida. Continuem assim!' },
+    { id: 1, comentario: 'Dados confiáveis e bem organizados. Virou referência na área!' },
+    { id: 2, comentario: 'O painel ficou muito mais fácil de usar depois das melhorias.' },
+    { id: 3, comentario: 'Os dados batem certinho e passam bastante confiança.' },
+    { id: 4, comentario: 'Gostei muito da agilidade para atender as solicitações.' },
+    { id: 5, comentario: 'A equipe está sempre disponível quando surge alguma dúvida.' },
+    { id: 6, comentario: 'As atualizações têm facilitado bastante o dia a dia.' },
+    { id: 7, comentario: 'Dá para perceber o cuidado nos detalhes dos relatórios.' },
+    { id: 8, comentario: 'O suporte é atencioso e acompanha até a solução.' },
+    { id: 9, comentario: 'As informações são claras e ajudam na tomada de decisão.' },
+    { id: 10, comentario: 'Toda entrega vem com muita qualidade e organização.' },
+    { id: 11, comentario: 'É muito bom poder contar com uma equipe tão parceira.' },
   ]), []);
   const recentPraise = fictionalPraise;
 

@@ -293,20 +293,52 @@ const FeedbackPage = () => {
               <p className="text-xs text-muted-foreground">Alguns exemplos de elogios da equipe</p>
             </div>
           </div>
-          <div className="relative overflow-hidden rounded-2xl border border-border/30 py-5" style={{ background: 'linear-gradient(160deg, hsl(222, 40%, 10%), hsl(215, 35%, 7%))' }}>
-            <div className="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-card to-transparent z-10 pointer-events-none" />
-            <div className="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-card to-transparent z-10 pointer-events-none" />
+          <div className="relative overflow-hidden rounded-2xl border border-accent/20 py-6" style={{ background: 'linear-gradient(160deg, hsl(222, 40%, 10%), hsl(215, 35%, 7%))' }}>
+            <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[hsl(215,35%,7%)] to-transparent z-10 pointer-events-none" />
+            <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[hsl(215,35%,7%)] to-transparent z-10 pointer-events-none" />
             <motion.div
-              className="flex gap-4 w-max"
+              className="flex gap-5 w-max"
               animate={{ x: ['0%', '-50%'] }}
-              transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+              transition={{ duration: 55, repeat: Infinity, ease: 'linear' }}
             >
-              {[...recentPraise, ...recentPraise].map((f, i) => (
-                <div key={`${f.id}-${i}`} className="shrink-0 w-80 rounded-xl p-5 border border-accent/15 bg-muted/10">
-                  <Star className="w-4 h-4 text-amber-400 mb-2" />
-                  <p className="text-foreground/85 text-sm leading-relaxed italic line-clamp-3">"{f.comentario}"</p>
-                </div>
-              ))}
+              {[...recentPraise, ...recentPraise].map((f, i) => {
+                const palette = [
+                  { from: 'hsl(199, 89%, 55%)', to: 'hsl(186, 94%, 45%)' }, // cyan
+                  { from: 'hsl(330, 85%, 62%)', to: 'hsl(348, 90%, 60%)' }, // pink
+                  { from: 'hsl(28, 95%, 58%)',  to: 'hsl(14, 90%, 55%)'  }, // orange
+                  { from: 'hsl(160, 75%, 45%)', to: 'hsl(174, 78%, 42%)' }, // teal
+                  { from: 'hsl(265, 75%, 65%)', to: 'hsl(290, 75%, 60%)' }, // purple
+                  { from: 'hsl(45, 95%, 55%)',  to: 'hsl(35, 95%, 52%)'  }, // amber
+                ];
+                const c = palette[i % palette.length];
+                return (
+                  <div
+                    key={`${f.id}-${i}`}
+                    className="shrink-0 w-[320px] rounded-2xl p-5 border border-accent/15 hover:border-accent/40 hover:-translate-y-1 transition-all duration-300 relative group"
+                    style={{ background: 'linear-gradient(160deg, hsl(222, 40%, 13%), hsl(215, 35%, 9%))' }}
+                  >
+                    <div
+                      className="absolute -top-3 left-5 w-11 h-11 rounded-full flex items-center justify-center shadow-lg ring-2 ring-[hsl(215,35%,7%)] font-display font-extrabold text-[11px] text-white tracking-tight"
+                      style={{ background: `linear-gradient(135deg, ${c.from}, ${c.to})`, boxShadow: `0 6px 18px -4px ${c.from}` }}
+                    >
+                      AeC
+                    </div>
+                    <div className="flex items-center justify-end gap-0.5 mb-3">
+                      {[0,1,2,3,4].map(s => (
+                        <Star key={s} className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                      ))}
+                    </div>
+                    <Quote className="absolute top-4 right-4 w-8 h-8 text-accent/10 group-hover:text-accent/20 transition-colors" />
+                    <p className="text-foreground/90 text-sm leading-relaxed italic line-clamp-4 mt-1">
+                      "{f.comentario}"
+                    </p>
+                    <div className="mt-4 pt-3 border-t border-border/20 flex items-center justify-between">
+                      <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Colaborador AeC</span>
+                      <span className="text-[10px] text-accent/70 font-mono">#{String(f.id).padStart(2,'0')}</span>
+                    </div>
+                  </div>
+                );
+              })}
             </motion.div>
           </div>
         </motion.section>

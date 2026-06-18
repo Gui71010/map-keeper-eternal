@@ -808,10 +808,31 @@ const NossaAreaPage = () => {
               </div>
             </div>
 
-            <p className="text-primary-foreground/70 text-base leading-relaxed mb-8 max-w-3xl">
+            <p className="text-primary-foreground/70 text-base leading-relaxed mb-6 max-w-3xl">
               Toda solicitação relacionada aos relatórios da Diretoria de Pessoas deve ser registrada no <span className="text-amber-400 font-semibold">Service Desk</span>.
               Use os caminhos abaixo no portal <span className="text-amber-400 font-semibold">Sistema GestaoX</span> para abrir o chamado correto e garantir o atendimento dentro do SLA.
             </p>
+
+            {/* Stats strip */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+              {[
+                { label: 'Categorias', value: '3', icon: LifeBuoy, color: 'from-amber-500 to-orange-500' },
+                { label: 'Tipos de chamado', value: '6', icon: FileText, color: 'from-teal-500 to-cyan-500' },
+                { label: 'SLA mais rápido', value: '27h', icon: Flame, color: 'from-rose-500 to-red-500' },
+                { label: 'Atendimento', value: '100%', icon: FileCheck, color: 'from-emerald-500 to-green-500' },
+              ].map((s, i) => (
+                <div key={i} className="rounded-xl p-4 border border-primary-foreground/10 flex items-center gap-3 hover:border-accent/40 transition-colors" style={{ background: 'hsl(220, 38%, 11%)' }}>
+                  <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${s.color} flex items-center justify-center shadow-md shrink-0`}>
+                    <s.icon className="w-5 h-5 text-white" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-xl font-display font-bold text-primary-foreground leading-none">{s.value}</div>
+                    <div className="text-[10px] uppercase tracking-wider text-primary-foreground/60 mt-1 font-semibold">{s.label}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
 
             {/* Categories */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">

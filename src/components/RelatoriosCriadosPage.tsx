@@ -8,7 +8,7 @@ import ReportDetailModal from '@/components/ReportDetailModal';
 import GalaxyParticles from '@/components/GalaxyParticles';
 
 const RelatoriosCriadosPage = () => {
-  const { content, isAdmin, updateContent, updateAnalyst, addAnalyst, removeAnalyst, addReport } = useAdmin();
+  const { content, isAdmin, updateContent, updateAnalyst, addReport } = useAdmin();
   const [selectedAnalystId, setSelectedAnalystId] = useState<string | null>(null);
   const [selectedAreaFilter, setSelectedAreaFilter] = useState<string | null>(null);
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
@@ -143,25 +143,9 @@ const RelatoriosCriadosPage = () => {
                   <span className={`text-xs block leading-tight mt-0.5 ${selectedAnalystId === a.id ? 'text-accent-foreground/75' : 'text-muted-foreground'}`}>{a.role || '—'}</span>
                 </div>
               </button>
-              {isAdmin && <div className="absolute top-full left-0 mt-1 z-20 hidden group-hover:block"><div className="glass-card rounded-lg p-3 shadow-xl w-64 space-y-2">
-                <label className="text-xs text-muted-foreground">Nome</label>
-                <input className="w-full p-2 rounded-lg border border-border bg-background text-foreground text-xs" value={a.name} onChange={(e) => updateAnalyst(a.id, { name: e.target.value })} onClick={(e) => e.stopPropagation()} />
-                <label className="text-xs text-muted-foreground">Cargo</label>
-                <input className="w-full p-2 rounded-lg border border-border bg-background text-foreground text-xs" value={a.role} onChange={(e) => updateAnalyst(a.id, { role: e.target.value })} onClick={(e) => e.stopPropagation()} />
-                <label className="text-xs text-muted-foreground">URL da Foto</label>
-                <input className="w-full p-2 rounded-lg border border-border bg-background text-foreground text-xs" value={a.photo} onChange={(e) => updateAnalyst(a.id, { photo: e.target.value })} onClick={(e) => e.stopPropagation()} />
-                <button onClick={(e) => { e.stopPropagation(); if (confirm(`Remover ${a.name}?`)) removeAnalyst(a.id); }} className="w-full mt-1 px-2 py-1.5 rounded-md bg-destructive/15 text-destructive text-xs font-semibold hover:bg-destructive/25 transition">Remover</button>
-              </div></div>}
+              {isAdmin && <div className="absolute top-full left-0 mt-1 z-20 hidden group-hover:block"><div className="glass-card rounded-lg p-3 shadow-xl w-64 space-y-2"><label className="text-xs text-muted-foreground">URL da Foto</label><input className="w-full p-2 rounded-lg border border-border bg-background text-foreground text-xs" value={a.photo} onChange={(e) => updateAnalyst(a.id, { photo: e.target.value })} onClick={(e) => e.stopPropagation()} /></div></div>}
             </div>
           ))}
-          {isAdmin && (
-            <button
-              onClick={() => addAnalyst({ id: Date.now().toString(), name: 'Novo Analista', role: 'Novo Cargo', area: 'Nova Área', photo: '', bio: 'Descrição.', type: 'bi' })}
-              className="flex items-center gap-2 px-5 py-3.5 rounded-2xl text-base font-semibold border-2 border-dashed border-accent/40 text-accent hover:border-accent hover:bg-accent/10 transition-all"
-            >
-              <Plus className="w-5 h-5" /> Novo cargo
-            </button>
-          )}
         </div>
       </motion.section>
 

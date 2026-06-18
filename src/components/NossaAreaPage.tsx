@@ -410,7 +410,7 @@ const NossaAreaPage = () => {
         </div>
       </motion.section>
 
-      {/* Nossos principais projetos — Glass Showcase Imersivo (V1) */}
+      {/* Nossos principais projetos — Showcase holográfico */}
       <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.6 }} className="relative">
         <SectionHeader
           icon={Rocket}
@@ -425,177 +425,189 @@ const NossaAreaPage = () => {
           const next = projects[nextIdx];
           return (
             <div className="relative">
-              <div className="absolute -top-16 -left-16 w-[32rem] h-[32rem] rounded-full bg-accent/10 blur-[140px] pointer-events-none" />
-              <div className="absolute -bottom-16 -right-16 w-[32rem] h-[32rem] rounded-full bg-cyan/10 blur-[140px] pointer-events-none" />
+              {/* Ambient glows */}
+              <div className="absolute -top-10 -left-10 w-[28rem] h-[28rem] rounded-full bg-accent/10 blur-[120px] pointer-events-none" />
+              <div className="absolute -bottom-10 -right-10 w-[28rem] h-[28rem] rounded-full bg-cyan/10 blur-[120px] pointer-events-none" />
 
-              <div className="relative w-full rounded-[2rem] overflow-hidden border border-primary-foreground/10 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)] bg-navy min-h-[560px] lg:min-h-[680px]">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={current.id + '-bg'}
-                    initial={{ opacity: 0, scale: 1.08 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 1.02 }}
-                    transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-                    className="absolute inset-0"
-                  >
-                    {current.imageUrl ? (
-                      <img src={current.imageUrl} alt={current.title} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-navy to-navy-light">
-                        <Rocket className="w-28 h-28 text-accent/30" />
-                      </div>
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-r from-navy via-navy/85 to-navy/10" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-navy/95 via-navy/30 to-transparent" />
-                  </motion.div>
-                </AnimatePresence>
+              <div className="relative grid lg:grid-cols-12 gap-8 items-stretch">
+                {/* === Visual stack === */}
+                <div className="lg:col-span-7 relative group min-h-[480px] lg:min-h-[640px]">
+                  {/* Decorative offset frames */}
+                  <div className="absolute inset-0 bg-accent/5 rounded-3xl border border-primary-foreground/5 translate-x-4 translate-y-4" />
+                  <div className="absolute inset-0 bg-cyan/5 rounded-3xl border border-primary-foreground/5 -translate-x-4 -translate-y-4" />
 
-                <div className="absolute top-6 right-6 z-20 flex items-center gap-2.5 bg-navy/55 backdrop-blur-xl px-4 py-2 rounded-full border border-accent/30">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-70" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-accent" />
-                  </span>
-                  <span className="text-[10px] font-bold text-primary-foreground uppercase tracking-[0.2em]">Showcase ao vivo</span>
-                </div>
-
-                <div className="absolute top-6 left-6 z-20 px-3.5 py-2 rounded-xl bg-navy/55 backdrop-blur-xl border border-primary-foreground/10">
-                  <span className="text-[10px] font-bold text-accent uppercase tracking-[0.25em]">
-                    {String(currentProjectIdx + 1).padStart(2, '0')} <span className="text-primary-foreground/40">/ {String(projects.length).padStart(2, '0')}</span>
-                  </span>
-                </div>
-
-                <div className="absolute inset-x-0 bottom-0 z-10 p-6 md:p-10 lg:p-14">
-                  <div className="grid lg:grid-cols-12 gap-6 items-end">
+                  <div className="relative h-full w-full rounded-3xl border border-primary-foreground/10 overflow-hidden shadow-2xl bg-navy group-hover:border-accent/30 transition-colors duration-500">
                     <AnimatePresence mode="wait">
                       <motion.div
-                        key={current.id + '-card'}
-                        initial={{ opacity: 0, y: 28 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -12 }}
-                        transition={{ duration: 0.55, ease: 'easeOut' }}
-                        className="lg:col-span-7 relative rounded-3xl border border-primary-foreground/15 bg-navy/45 backdrop-blur-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.7)] p-7 md:p-9 overflow-hidden"
+                        key={current.id}
+                        initial={{ opacity: 0, scale: 1.05 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.98 }}
+                        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                        className="absolute inset-0"
                       >
-                        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary-foreground/30 to-transparent" />
-                        <div className="absolute -top-20 -left-20 w-60 h-60 rounded-full bg-accent/15 blur-3xl pointer-events-none" />
-
-                        <div className="relative">
-                          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-accent/15 border border-accent/30 mb-4">
-                            <Sparkles className="w-3 h-3 text-accent" />
-                            <span className="text-[10px] font-bold text-accent uppercase tracking-widest">Projeto em destaque</span>
+                        {current.imageUrl ? (
+                          <img src={current.imageUrl} alt={current.title} className="w-full h-full object-cover transform transition-transform duration-[1200ms] group-hover:scale-105" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-navy to-navy-light">
+                            <Rocket className="w-24 h-24 text-accent/30" />
                           </div>
-
-                          {isAdmin ? (
-                            <input
-                              className="text-3xl lg:text-4xl xl:text-5xl font-black text-primary-foreground leading-tight tracking-tight bg-transparent border-b border-primary-foreground/20 w-full outline-none focus:border-accent mb-4"
-                              value={current.title || ''}
-                              onChange={(e) => updateProject(current.id, { title: e.target.value })}
-                            />
-                          ) : (
-                            <h3 className="text-3xl lg:text-4xl xl:text-5xl font-black text-primary-foreground leading-[1.1] tracking-tight mb-4">
-                              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-foreground via-primary-foreground to-accent">
-                                {current.title}
-                              </span>
-                            </h3>
-                          )}
-
-                          {isAdmin ? (
-                            <textarea
-                              className="text-base text-primary-foreground/75 leading-relaxed bg-transparent border border-primary-foreground/10 rounded-lg p-3 w-full min-h-[90px] outline-none focus:border-accent"
-                              value={current.description || ''}
-                              onChange={(e) => updateProject(current.id, { description: e.target.value })}
-                            />
-                          ) : (
-                            <p className="text-base lg:text-lg text-primary-foreground/75 leading-relaxed font-light max-w-2xl">
-                              {current.description}
-                            </p>
-                          )}
-
-                          {isAdmin && (
-                            <div className="space-y-2 pt-4 mt-4 border-t border-primary-foreground/10">
-                              <label className="text-xs text-primary-foreground/50">URL da imagem</label>
-                              <input
-                                className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-sm outline-none focus:border-accent"
-                                value={current.imageUrl || ''}
-                                onChange={(e) => updateProject(current.id, { imageUrl: e.target.value })}
-                                placeholder="Cole a URL da imagem"
-                              />
-                              <button onClick={() => removeProject(current.id)} className="text-destructive text-xs hover:underline flex items-center gap-1 mt-2">
-                                <Trash2 className="w-3 h-3" /> Remover projeto
-                              </button>
-                            </div>
-                          )}
-
-                          {projects.length > 1 && (
-                            <div className="mt-7 flex items-center gap-5">
-                              <div className="flex gap-2">
-                                <button onClick={() => goToProject('prev')} aria-label="Anterior" className="w-11 h-11 flex items-center justify-center rounded-full bg-primary-foreground/5 hover:bg-primary-foreground/15 border border-primary-foreground/15 text-primary-foreground transition-all backdrop-blur-md hover:scale-105">
-                                  <ChevronLeft className="w-5 h-5" />
-                                </button>
-                                <button onClick={() => goToProject('next')} aria-label="Próximo" className="w-11 h-11 flex items-center justify-center rounded-full bg-accent/25 hover:bg-accent/45 border border-accent/50 text-primary-foreground transition-all backdrop-blur-md hover:scale-105">
-                                  <ChevronRight className="w-5 h-5" />
-                                </button>
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-[0.18em] mb-1.5">
-                                  <span className="text-primary-foreground/50 truncate pr-3">Próximo · {next.title}</span>
-                                  <span className="text-accent shrink-0">Auto · 5s</span>
-                                </div>
-                                <div className="h-[3px] w-full bg-primary-foreground/10 rounded-full overflow-hidden">
-                                  <motion.div
-                                    key={current.id + '-prog'}
-                                    initial={{ width: '0%' }}
-                                    animate={{ width: isAdmin ? '0%' : '100%' }}
-                                    transition={{ duration: isAdmin ? 0 : 5, ease: 'linear' }}
-                                    className="h-full bg-gradient-to-r from-accent to-cyan shadow-[0_0_10px_hsl(var(--accent)/0.6)]"
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                          )}
-                        </div>
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/10 to-transparent" />
                       </motion.div>
                     </AnimatePresence>
 
+                    {/* Floating badge */}
+                    <div className="absolute top-6 left-6 flex items-center gap-3 bg-navy/60 backdrop-blur-md px-4 py-2 rounded-full border border-accent/25 z-10">
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-60" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-accent" />
+                      </span>
+                      <span className="text-[10px] font-bold text-primary-foreground uppercase tracking-widest">Destaque Analytics</span>
+                    </div>
+
+                    {/* Nav controls inside image */}
                     {projects.length > 1 && (
-                      <div className="lg:col-span-5 lg:pl-4">
-                        <div className="text-[10px] font-bold text-primary-foreground/45 uppercase tracking-[0.25em] mb-3 hidden lg:block">Navegue</div>
-                        <div className="grid grid-cols-4 gap-2.5">
-                          {projects.slice(0, 8).map((p, i) => {
-                            const active = i === currentProjectIdx;
-                            return (
-                              <button
-                                key={p.id}
-                                onClick={() => setCurrentProjectIdx(i)}
-                                className={`group relative pt-[65%] rounded-xl overflow-hidden transition-all duration-300 ${active ? 'ring-2 ring-accent shadow-[0_0_18px_hsl(var(--accent)/0.45)] scale-[1.03]' : 'ring-1 ring-primary-foreground/10 hover:ring-primary-foreground/30 opacity-55 hover:opacity-100'}`}
-                              >
-                                {p.imageUrl ? (
-                                  <img src={p.imageUrl} alt={p.title} className="absolute inset-0 w-full h-full object-cover" />
-                                ) : (
-                                  <div className="absolute inset-0 flex items-center justify-center bg-navy-light/40">
-                                    <Rocket className="w-4 h-4 text-accent/40" />
-                                  </div>
-                                )}
-                                <div className={`absolute inset-0 transition-opacity ${active ? 'bg-gradient-to-t from-navy/70 to-transparent' : 'bg-navy/50 group-hover:bg-navy/20'}`} />
-                                {active && (
-                                  <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 h-1 w-6 rounded-full bg-accent shadow-[0_0_8px_hsl(var(--accent))]" />
-                                )}
-                              </button>
-                            );
-                          })}
-                        </div>
-                        {projects.length > 8 && (
-                          <p className="mt-3 text-[10px] font-bold text-primary-foreground/40 uppercase tracking-widest">+{projects.length - 8} projetos</p>
-                        )}
+                      <div className="absolute bottom-6 left-6 flex gap-3 z-10">
+                        <button onClick={() => goToProject('prev')} className="w-12 h-12 flex items-center justify-center rounded-full bg-primary-foreground/5 hover:bg-primary-foreground/10 border border-primary-foreground/10 text-primary-foreground transition-all backdrop-blur-md hover:scale-110">
+                          <ChevronLeft className="w-5 h-5" />
+                        </button>
+                        <button onClick={() => goToProject('next')} className="w-12 h-12 flex items-center justify-center rounded-full bg-accent/20 hover:bg-accent/40 border border-accent/40 text-accent transition-all backdrop-blur-md hover:scale-110">
+                          <ChevronRight className="w-5 h-5" />
+                        </button>
                       </div>
                     )}
                   </div>
+                </div>
+
+                {/* === Content side === */}
+                <div className="lg:col-span-5 flex flex-col justify-center space-y-8 lg:pl-4">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={current.id}
+                      initial={{ opacity: 0, y: 16 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.5, ease: 'easeOut' }}
+                      className="space-y-5"
+                    >
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-accent/10 border border-accent/20">
+                        <span className="text-[10px] font-bold text-accent uppercase tracking-tighter">
+                          PROJETO {String(currentProjectIdx + 1).padStart(2, '0')} / {String(projects.length).padStart(2, '0')}
+                        </span>
+                      </div>
+
+                      {isAdmin ? (
+                        <input
+                          className="text-3xl lg:text-5xl font-black text-primary-foreground leading-tight tracking-tight bg-transparent border-b border-primary-foreground/20 w-full outline-none focus:border-accent"
+                          value={current.title || ''}
+                          onChange={(e) => updateProject(current.id, { title: e.target.value })}
+                        />
+                      ) : (
+                        <h1 className="text-3xl lg:text-5xl font-black text-primary-foreground leading-tight tracking-tight">
+                          <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-cyan">
+                            {current.title}
+                          </span>
+                        </h1>
+                      )}
+
+                      {isAdmin ? (
+                        <textarea
+                          className="text-base text-primary-foreground/70 leading-relaxed bg-transparent border border-primary-foreground/10 rounded-lg p-3 w-full min-h-[100px] outline-none focus:border-accent"
+                          value={current.description || ''}
+                          onChange={(e) => updateProject(current.id, { description: e.target.value })}
+                        />
+                      ) : (
+                        <p className="text-lg text-primary-foreground/70 leading-relaxed max-w-md font-light">
+                          {current.description}
+                        </p>
+                      )}
+
+                      {isAdmin && (
+                        <div className="space-y-2 pt-2">
+                          <label className="text-xs text-primary-foreground/50">URL da imagem</label>
+                          <input
+                            className="w-full p-2 rounded-lg border border-primary-foreground/10 bg-transparent text-primary-foreground text-sm outline-none focus:border-accent"
+                            value={current.imageUrl || ''}
+                            onChange={(e) => updateProject(current.id, { imageUrl: e.target.value })}
+                            placeholder="Cole a URL da imagem"
+                          />
+                          <button onClick={() => removeProject(current.id)} className="text-destructive text-xs hover:underline flex items-center gap-1 mt-2">
+                            <Trash2 className="w-3 h-3" /> Remover projeto
+                          </button>
+                        </div>
+                      )}
+                    </motion.div>
+                  </AnimatePresence>
+
+                  {/* Progress + next */}
+                  {projects.length > 1 && (
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center text-[11px] font-bold uppercase tracking-widest">
+                        <span className="text-primary-foreground/50 truncate pr-3">Próximo: {next.title}</span>
+                        <span className="text-accent shrink-0">Auto · 5s</span>
+                      </div>
+                      <div className="h-1 w-full bg-primary-foreground/5 rounded-full overflow-hidden">
+                        <motion.div
+                          key={current.id}
+                          initial={{ width: '0%' }}
+                          animate={{ width: isAdmin ? '0%' : '100%' }}
+                          transition={{ duration: isAdmin ? 0 : 5, ease: 'linear' }}
+                          className="h-full bg-gradient-to-r from-accent to-cyan relative shadow-[0_0_10px_hsl(var(--accent)/0.5)]"
+                        >
+                          <div className="absolute top-0 right-0 h-full w-4 bg-primary-foreground/30 blur-sm" />
+                        </motion.div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Thumbnails */}
+                  {projects.length > 1 && (
+                    <div className="grid grid-cols-4 gap-3">
+                      {projects.slice(0, 4).map((p, i) => {
+                        const active = i === currentProjectIdx;
+                        return (
+                          <button
+                            key={p.id}
+                            onClick={() => setCurrentProjectIdx(i)}
+                            className={`group relative pt-[60%] rounded-xl overflow-hidden transition-all duration-300 ${active ? 'border-2 border-accent shadow-[0_0_15px_hsl(var(--accent)/0.35)]' : 'border border-primary-foreground/10 hover:border-primary-foreground/30 opacity-60 hover:opacity-100'}`}
+                          >
+                            {p.imageUrl ? (
+                              <img src={p.imageUrl} alt={p.title} className="absolute inset-0 w-full h-full object-cover" />
+                            ) : (
+                              <div className="absolute inset-0 flex items-center justify-center bg-navy-light/40">
+                                <Rocket className="w-4 h-4 text-accent/40" />
+                              </div>
+                            )}
+                          </button>
+                        );
+                      })}
+                      {projects.length > 4 && (
+                        <div className="absolute -mt-1 right-0 text-[10px] font-bold text-primary-foreground/40 uppercase">
+                          +{projects.length - 4}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Dots when many */}
+                  {projects.length > 4 && (
+                    <div className="flex gap-2 flex-wrap">
+                      {projects.map((_, i) => (
+                        <button
+                          key={i}
+                          onClick={() => setCurrentProjectIdx(i)}
+                          className={`h-1.5 rounded-full transition-all duration-300 ${i === currentProjectIdx ? 'w-8 bg-accent' : 'w-3 bg-primary-foreground/20 hover:bg-primary-foreground/40'}`}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
           );
         })()}
       </motion.section>
-
 
       {/* === AUTOMAÇÕES EM PYTHON === */}
       <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.65, duration: 0.6 }} className="relative">

@@ -348,22 +348,44 @@ const FeedbackPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 max-w-6xl mx-auto w-full">
         {/* Feedback Form */}
         <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.6 }}>
-          {/* Animated progress bar */}
-          <div className="mb-8">
-            <div className="flex justify-between mb-2">
-              {stepLabels.map((step, i) => (
-                <span key={i} className={`text-xs font-medium transition-colors ${i + 1 <= currentStep ? 'text-accent' : 'text-muted-foreground/50'}`}>
-                  {i + 1}. {step}
-                </span>
-              ))}
-            </div>
-            <div className="h-2 rounded-full bg-muted/30 overflow-hidden">
+          {/* Animated step indicator — numbered circles + connecting line */}
+          <div className="mb-10">
+            <div className="relative flex items-center justify-between">
+              {/* base line */}
+              <div className="absolute top-5 left-0 right-0 h-[3px] bg-muted/25 rounded-full" />
+              {/* progress line */}
               <motion.div
-                className="h-full rounded-full"
+                className="absolute top-5 left-0 h-[3px] rounded-full"
                 style={{ background: 'linear-gradient(90deg, hsl(var(--accent)), hsl(var(--primary)), hsl(var(--accent)))', backgroundSize: '200% 100%' }}
                 animate={{ width: `${progressPct}%`, backgroundPosition: ['0% 0%', '100% 0%'] }}
                 transition={{ width: { duration: 0.6, ease: 'easeInOut' }, backgroundPosition: { duration: 3, repeat: Infinity, ease: 'linear' } }}
               />
+              {stepLabels.map((step, i) => {
+                const stepNum = i + 1;
+                const done = stepNum < currentStep;
+                const active = stepNum === currentStep;
+                return (
+                  <div key={i} className="relative z-10 flex flex-col items-center gap-2">
+                    <motion.div
+                      initial={false}
+                      animate={{ scale: active ? 1.1 : 1 }}
+                      transition={{ type: 'spring', stiffness: 300 }}
+                      className={`w-10 h-10 rounded-full flex items-center justify-center font-display font-bold text-sm border-2 transition-colors ${
+                        done
+                          ? 'bg-accent border-accent text-accent-foreground'
+                          : active
+                            ? 'bg-[hsl(215,35%,9%)] border-accent text-accent shadow-[0_0_0_4px_hsl(var(--accent)/0.15)]'
+                            : 'bg-[hsl(215,35%,9%)] border-muted/40 text-muted-foreground/60'
+                      }`}
+                    >
+                      {done ? <Check className="w-4 h-4" /> : stepNum}
+                    </motion.div>
+                    <span className={`text-[11px] font-semibold uppercase tracking-wider transition-colors ${active || done ? 'text-accent' : 'text-muted-foreground/50'}`}>
+                      {step}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
 

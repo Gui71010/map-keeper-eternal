@@ -561,51 +561,47 @@ const NossaAreaPage = () => {
                     </div>
                   )}
 
-                  {/* Thumbnails - esteira horizontal com auto-scroll */}
+                  {/* Thumbnails */}
                   {projects.length > 1 && (
-                    <div className="relative">
-                      <div
-                        ref={(el) => {
-                          if (el) {
-                            const activeEl = el.querySelector<HTMLButtonElement>(`[data-thumb-idx="${currentProjectIdx}"]`);
-                            if (activeEl) {
-                              const target = activeEl.offsetLeft - (el.clientWidth / 2) + (activeEl.clientWidth / 2);
-                              el.scrollTo({ left: target, behavior: 'smooth' });
-                            }
-                          }
-                        }}
-
-                        className="flex gap-3 overflow-x-auto scroll-smooth pb-2 snap-x snap-mandatory [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:bg-accent/40 [&::-webkit-scrollbar-thumb]:rounded-full"
-                      >
-                        {projects.map((p, i) => {
-                          const active = i === currentProjectIdx;
-                          return (
-                            <button
-                              key={p.id}
-                              data-thumb-idx={i}
-                              onClick={() => setCurrentProjectIdx(i)}
-                              className={`group relative flex-shrink-0 w-32 pt-[60%] rounded-xl overflow-hidden snap-center transition-all duration-300 ${active ? 'border-2 border-accent shadow-[0_0_15px_hsl(var(--accent)/0.45)] scale-105' : 'border border-primary-foreground/10 hover:border-primary-foreground/30 opacity-60 hover:opacity-100'}`}
-                            >
-                              {p.imageUrl ? (
-                                <img src={p.imageUrl} alt={p.title} className="absolute inset-0 w-full h-full object-cover" />
-                              ) : (
-                                <div className="absolute inset-0 flex items-center justify-center bg-navy-light/40">
-                                  <Rocket className="w-4 h-4 text-accent/40" />
-                                </div>
-                              )}
-                              {active && (
-                                <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-accent to-cyan" />
-                              )}
-                            </button>
-                          );
-                        })}
-                      </div>
-                      {/* Fades laterais */}
-                      <div className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-navy to-transparent" />
-                      <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-navy to-transparent" />
+                    <div className="grid grid-cols-4 gap-3">
+                      {projects.slice(0, 4).map((p, i) => {
+                        const active = i === currentProjectIdx;
+                        return (
+                          <button
+                            key={p.id}
+                            onClick={() => setCurrentProjectIdx(i)}
+                            className={`group relative pt-[60%] rounded-xl overflow-hidden transition-all duration-300 ${active ? 'border-2 border-accent shadow-[0_0_15px_hsl(var(--accent)/0.35)]' : 'border border-primary-foreground/10 hover:border-primary-foreground/30 opacity-60 hover:opacity-100'}`}
+                          >
+                            {p.imageUrl ? (
+                              <img src={p.imageUrl} alt={p.title} className="absolute inset-0 w-full h-full object-cover" />
+                            ) : (
+                              <div className="absolute inset-0 flex items-center justify-center bg-navy-light/40">
+                                <Rocket className="w-4 h-4 text-accent/40" />
+                              </div>
+                            )}
+                          </button>
+                        );
+                      })}
+                      {projects.length > 4 && (
+                        <div className="absolute -mt-1 right-0 text-[10px] font-bold text-primary-foreground/40 uppercase">
+                          +{projects.length - 4}
+                        </div>
+                      )}
                     </div>
                   )}
 
+                  {/* Dots when many */}
+                  {projects.length > 4 && (
+                    <div className="flex gap-2 flex-wrap">
+                      {projects.map((_, i) => (
+                        <button
+                          key={i}
+                          onClick={() => setCurrentProjectIdx(i)}
+                          className={`h-1.5 rounded-full transition-all duration-300 ${i === currentProjectIdx ? 'w-8 bg-accent' : 'w-3 bg-primary-foreground/20 hover:bg-primary-foreground/40'}`}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

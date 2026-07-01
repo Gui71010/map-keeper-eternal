@@ -568,9 +568,13 @@ const NossaAreaPage = () => {
                         ref={(el) => {
                           if (el) {
                             const activeEl = el.querySelector<HTMLButtonElement>(`[data-thumb-idx="${currentProjectIdx}"]`);
-                            activeEl?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                            if (activeEl) {
+                              const target = activeEl.offsetLeft - (el.clientWidth / 2) + (activeEl.clientWidth / 2);
+                              el.scrollTo({ left: target, behavior: 'smooth' });
+                            }
                           }
                         }}
+
                         className="flex gap-3 overflow-x-auto scroll-smooth pb-2 snap-x snap-mandatory [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:bg-accent/40 [&::-webkit-scrollbar-thumb]:rounded-full"
                       >
                         {projects.map((p, i) => {

@@ -580,34 +580,48 @@ const NossaAreaPage = () => {
                     </div>
                   )}
 
-                  {/* Thumbnails */}
-                  {projects.length > 1 && (
-                    <div className="grid grid-cols-4 gap-3">
-                      {projects.slice(0, 4).map((p, i) => {
-                        const active = i === currentProjectIdx;
-                        return (
-                          <button
-                            key={p.id}
-                            onClick={() => setCurrentProjectIdx(i)}
-                            className={`group relative pt-[60%] rounded-xl overflow-hidden transition-all duration-300 ${active ? 'border-2 border-accent shadow-[0_0_15px_hsl(var(--accent)/0.35)]' : 'border border-primary-foreground/10 hover:border-primary-foreground/30 opacity-60 hover:opacity-100'}`}
-                          >
-                            {p.imageUrl ? (
-                              <img src={p.imageUrl} alt={p.title} className="absolute inset-0 w-full h-full object-cover" />
-                            ) : (
-                              <div className="absolute inset-0 flex items-center justify-center bg-navy-light/40">
-                                <Rocket className="w-4 h-4 text-accent/40" />
-                              </div>
-                            )}
-                          </button>
-                        );
-                      })}
-                      {projects.length > 4 && (
-                        <div className="absolute -mt-1 right-0 text-[10px] font-bold text-primary-foreground/40 uppercase">
-                          +{projects.length - 4}
-                        </div>
-                      )}
-                    </div>
-                  )}
+                  {/* Thumbnails — esteira que acompanha o projeto atual */}
+                  {projects.length > 1 && (() => {
+                    const VISIBLE = 4;
+                    const maxStart = Math.max(0, projects.length - VISIBLE);
+                    // mantém o ativo por perto do centro da janela visível
+                    const desired = currentProjectIdx - Math.floor((VISIBLE - 1) / 2);
+                    const start = Math.min(maxStart, Math.max(0, desired));
+                    const itemPct = 100 / VISIBLE;
+                    return (
+                      <div className="relative overflow-hidden">
+                        <motion.div
+                          className="flex gap-3"
+                          animate={{ x: `-${start * itemPct}%` }}
+                          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                          style={{ width: `${(projects.length / VISIBLE) * 100}%` }}
+                        >
+                          {projects.map((p, i) => {
+                            const active = i === currentProjectIdx;
+                            return (
+                              <button
+                                key={p.id}
+                                onClick={() => setCurrentProjectIdx(i)}
+                                style={{ width: `calc(${100 / projects.length}% - ${(12 * (projects.length - 1)) / projects.length}px)` }}
+                                className={`group relative shrink-0 pt-[60%] rounded-xl overflow-hidden transition-all duration-300 ${active ? 'border-2 border-accent shadow-[0_0_15px_hsl(var(--accent)/0.35)]' : 'border border-primary-foreground/10 hover:border-primary-foreground/30 opacity-60 hover:opacity-100'}`}
+                              >
+                                {p.imageUrl ? (
+                                  <img src={p.imageUrl} alt={p.title} className="absolute inset-0 w-full h-full object-cover" />
+                                ) : (
+                                  <div className="absolute inset-0 flex items-center justify-center bg-navy-light/40">
+                                    <Rocket className="w-4 h-4 text-accent/40" />
+                                  </div>
+                                )}
+                              </button>
+                            );
+                          })}
+                        </motion.div>
+                        {/* Fades laterais */}
+                        {start > 0 && <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-navy to-transparent" />}
+                        {start < maxStart && <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-navy to-transparent" />}
+                      </div>
+                    );
+                  })()}
 
                   {/* Dots when many */}
                   {projects.length > 4 && (

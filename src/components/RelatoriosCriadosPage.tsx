@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, User, Search, FileText, BarChart3, TrendingUp } from 'lucide-react';
 import dataFlowImg from '@/assets/data-flow.jpg';
+import journeyColetaImg from '@/assets/journey-coleta.jpg';
+import journeyAnaliseImg from '@/assets/journey-analise.jpg';
+import journeyDecisaoImg from '@/assets/journey-decisao.jpg';
 import { useAdmin } from '@/contexts/AdminContext';
 import ReportCard from '@/components/ReportCard';
 import ReportDetailModal from '@/components/ReportDetailModal';
@@ -59,15 +62,19 @@ const RelatoriosCriadosPage = () => {
             icon: FileText,
             value: reportsForSelected,
             label: selectedAnalyst ? 'Relatórios deste analista' : selectedAreaFilter ? `Relatórios em ${selectedAreaFilter}` : 'Relatórios criados',
-            color: 'text-accent',
-            bg: 'bg-accent/15',
+            color: 'from-teal-300 to-cyan-300',
+            gradient: 'from-teal-500 to-cyan-500',
+            image: journeyColetaImg,
+            glow: 'hsl(180, 70%, 50%)',
           },
           {
             icon: User,
             value: selectedAnalyst ? selectedAnalyst.name : biAnalysts.length,
             label: selectedAnalyst ? 'Analista selecionado' : 'Analistas',
-            color: 'text-primary',
-            bg: 'bg-primary/15',
+            color: 'from-blue-300 to-indigo-300',
+            gradient: 'from-blue-500 to-indigo-500',
+            image: journeyAnaliseImg,
+            glow: 'hsl(215, 90%, 55%)',
             isText: !!selectedAnalyst,
             avatar: selectedAnalyst?.photo,
           },
@@ -75,8 +82,10 @@ const RelatoriosCriadosPage = () => {
             icon: BarChart3,
             value: selectedAnalyst ? selectedAnalyst.area : selectedAreaFilter || areasAtendidas,
             label: selectedAnalyst ? 'Área de atuação' : selectedAreaFilter ? 'Área filtrada' : 'Áreas atendidas',
-            color: 'text-emerald-400',
-            bg: 'bg-emerald-500/15',
+            color: 'from-emerald-300 to-green-300',
+            gradient: 'from-emerald-500 to-green-500',
+            image: journeyDecisaoImg,
+            glow: 'hsl(150, 70%, 45%)',
             isText: !!selectedAnalyst || !!selectedAreaFilter,
           },
         ];
@@ -88,23 +97,26 @@ const RelatoriosCriadosPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 + i * 0.08 }}
-                className="glass-card rounded-2xl p-6 border border-border/30 flex items-center gap-4 hover:border-accent/30 transition-all duration-400"
-                style={{ transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)' }}
-                onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 30px hsl(var(--accent) / 0.08)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
+                className="relative rounded-2xl border border-border/30 hover:border-accent/50 transition-all duration-500 group overflow-hidden hover:-translate-y-1"
+                style={{ background: 'linear-gradient(160deg, hsl(220, 40%, 11%), hsl(220, 35%, 8%))', boxShadow: `0 8px 24px ${stat.glow}18` }}
               >
-                {stat.avatar ? (
-                  <div className="rounded-xl overflow-hidden shrink-0 ring-2 ring-primary/30" style={{ width: '3.25rem', height: '3.25rem' }}>
-                    <img src={stat.avatar} alt="" className="w-full h-full object-cover" />
+                <img src={stat.image} alt="" aria-hidden className="absolute inset-0 w-full h-full object-cover opacity-25 group-hover:opacity-45 group-hover:scale-110 transition-all duration-700" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-card via-card/85 to-card/40 pointer-events-none" />
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" style={{ background: `radial-gradient(circle at 30% 20%, ${stat.glow}25, transparent 65%)` }} />
+                <div className="relative p-6 flex items-center gap-4">
+                  {stat.avatar ? (
+                    <div className="rounded-xl overflow-hidden shrink-0 ring-2 ring-primary/40 shadow-lg" style={{ width: '3.25rem', height: '3.25rem' }}>
+                      <img src={stat.avatar} alt="" className="w-full h-full object-cover" />
+                    </div>
+                  ) : (
+                    <div className={`rounded-xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center shrink-0 shadow-lg group-hover:scale-110 group-hover:-rotate-3 transition-transform`} style={{ width: '3.25rem', height: '3.25rem' }}>
+                      <stat.icon className="w-6 h-6 text-white" />
+                    </div>
+                  )}
+                  <div className="min-w-0">
+                    <p className={`font-display font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent ${stat.isText ? 'text-xl leading-tight truncate' : 'text-3xl'}`}>{stat.value}</p>
+                    <p className="text-primary-foreground/70 text-sm">{stat.label}</p>
                   </div>
-                ) : (
-                  <div className={`rounded-xl ${stat.bg} flex items-center justify-center shrink-0`} style={{ width: '3.25rem', height: '3.25rem' }}>
-                    <stat.icon className={`w-6 h-6 ${stat.color}`} />
-                  </div>
-                )}
-                <div className="min-w-0">
-                  <p className={`font-display font-bold ${stat.color} ${stat.isText ? 'text-xl leading-tight truncate' : 'text-3xl'}`}>{stat.value}</p>
-                  <p className="text-muted-foreground text-sm">{stat.label}</p>
                 </div>
               </motion.div>
             ))}

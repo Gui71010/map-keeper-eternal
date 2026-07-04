@@ -334,35 +334,49 @@ const NossaAreaPage = () => {
                 {(content.dataJourneyStats || []).map((s, i) => {
                   const IconMap: Record<string, any> = { FileText, Database, Sparkles, LineChart, Layers, Cpu };
                   const Ico = IconMap[s.icon] || FileText;
+                  const styles = [
+                    { image: journeyColetaImg, color: 'from-amber-500 to-orange-500', glow: 'hsl(35, 90%, 55%)', text: 'from-amber-300 to-orange-300' },
+                    { image: journeyModelagemImg, color: 'from-violet-500 to-purple-500', glow: 'hsl(270, 70%, 60%)', text: 'from-violet-300 to-purple-300' },
+                    { image: journeyAnaliseImg, color: 'from-teal-500 to-cyan-500', glow: 'hsl(180, 70%, 50%)', text: 'from-teal-300 to-cyan-300' },
+                    { image: journeyDecisaoImg, color: 'from-emerald-500 to-green-500', glow: 'hsl(150, 70%, 45%)', text: 'from-emerald-300 to-green-300' },
+                  ];
+                  const st = styles[i % styles.length];
                   return (
                     <motion.div
                       key={s.id}
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.6 + i * 0.08, type: 'spring' }}
-                      className="rounded-xl p-5 border border-primary-foreground/10 backdrop-blur-sm hover:border-accent/40 transition-all duration-300 group relative"
-                      style={{ background: 'hsl(220, 35%, 11% / 0.7)' }}
+                      className="relative rounded-xl border border-primary-foreground/10 hover:border-accent/50 transition-all duration-500 group overflow-hidden hover:-translate-y-1"
+                      style={{ background: 'linear-gradient(160deg, hsl(220, 40%, 11%), hsl(220, 35%, 8%))', boxShadow: `0 8px 24px ${st.glow}15` }}
                     >
-                      <Ico className="w-5 h-5 text-accent mb-3 group-hover:scale-110 transition-transform" />
-                      {isAdmin ? (
-                        <>
-                          <input
-                            value={s.value}
-                            onChange={(e) => updateContent({ dataJourneyStats: content.dataJourneyStats.map(x => x.id === s.id ? { ...x, value: e.target.value } : x) })}
-                            className="w-full text-3xl font-display font-bold bg-transparent border-b border-accent/30 text-primary-foreground outline-none focus:border-accent"
-                          />
-                          <input
-                            value={s.label}
-                            onChange={(e) => updateContent({ dataJourneyStats: content.dataJourneyStats.map(x => x.id === s.id ? { ...x, label: e.target.value } : x) })}
-                            className="w-full text-xs text-primary-foreground/70 uppercase tracking-wider mt-2 bg-transparent border-b border-border/30 outline-none focus:border-accent"
-                          />
-                        </>
-                      ) : (
-                        <>
-                          <div className="text-3xl font-display font-bold bg-gradient-to-r from-teal-300 to-cyan-300 bg-clip-text text-transparent">{s.value}</div>
-                          <div className="text-xs text-primary-foreground/50 uppercase tracking-wider mt-1">{s.label}</div>
-                        </>
-                      )}
+                      <img src={st.image} alt="" aria-hidden className="absolute inset-0 w-full h-full object-cover opacity-25 group-hover:opacity-45 group-hover:scale-110 transition-all duration-700" loading="lazy" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-card via-card/85 to-card/40 pointer-events-none" />
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" style={{ background: `radial-gradient(circle at 30% 20%, ${st.glow}22, transparent 65%)` }} />
+                      <div className="relative p-5">
+                        <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${st.color} flex items-center justify-center mb-3 shadow-lg group-hover:scale-110 group-hover:-rotate-3 transition-transform`}>
+                          <Ico className="w-5 h-5 text-white" />
+                        </div>
+                        {isAdmin ? (
+                          <>
+                            <input
+                              value={s.value}
+                              onChange={(e) => updateContent({ dataJourneyStats: content.dataJourneyStats.map(x => x.id === s.id ? { ...x, value: e.target.value } : x) })}
+                              className="w-full text-3xl font-display font-bold bg-transparent border-b border-accent/30 text-primary-foreground outline-none focus:border-accent"
+                            />
+                            <input
+                              value={s.label}
+                              onChange={(e) => updateContent({ dataJourneyStats: content.dataJourneyStats.map(x => x.id === s.id ? { ...x, label: e.target.value } : x) })}
+                              className="w-full text-xs text-primary-foreground/70 uppercase tracking-wider mt-2 bg-transparent border-b border-border/30 outline-none focus:border-accent"
+                            />
+                          </>
+                        ) : (
+                          <>
+                            <div className={`text-3xl font-display font-bold bg-gradient-to-r ${st.text} bg-clip-text text-transparent`}>{s.value}</div>
+                            <div className="text-xs text-primary-foreground/60 uppercase tracking-wider mt-1">{s.label}</div>
+                          </>
+                        )}
+                      </div>
                     </motion.div>
                   );
                 })}
@@ -372,23 +386,28 @@ const NossaAreaPage = () => {
             {/* Princípios */}
             <div className="mb-10 grid grid-cols-1 md:grid-cols-3 gap-5">
               {[
-                { title: 'Governança', desc: 'Padrões claros, métricas auditáveis e dados confiáveis em toda a cadeia.', icon: Sparkles, color: 'from-teal-500 to-cyan-500' },
-                { title: 'Velocidade', desc: 'Entregas ágeis sem abrir mão da qualidade analítica.', icon: Cpu, color: 'from-cyan-500 to-blue-500' },
-                { title: 'Impacto', desc: 'Cada relatório nasce para gerar decisão e resultado mensurável.', icon: LineChart, color: 'from-emerald-500 to-teal-500' },
+                { title: 'Governança', desc: 'Padrões claros, métricas auditáveis e dados confiáveis em toda a cadeia.', icon: Sparkles, color: 'from-teal-500 to-cyan-500', image: journeyModelagemImg, glow: 'hsl(180, 70%, 50%)' },
+                { title: 'Velocidade', desc: 'Entregas ágeis sem abrir mão da qualidade analítica.', icon: Cpu, color: 'from-cyan-500 to-blue-500', image: dataPipelineImg, glow: 'hsl(210, 90%, 55%)' },
+                { title: 'Impacto', desc: 'Cada relatório nasce para gerar decisão e resultado mensurável.', icon: LineChart, color: 'from-emerald-500 to-teal-500', image: journeyDecisaoImg, glow: 'hsl(150, 70%, 45%)' },
               ].map((p, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.7 + i * 0.08 }}
-                  className="rounded-2xl p-5 border border-primary-foreground/10 hover:border-accent/40 transition-all"
-                  style={{ background: 'hsl(220, 38%, 10% / 0.7)' }}
+                  className="relative rounded-2xl border border-primary-foreground/10 hover:border-accent/50 transition-all duration-500 group overflow-hidden hover:-translate-y-1"
+                  style={{ background: 'linear-gradient(160deg, hsl(220, 40%, 11%), hsl(220, 35%, 8%))', boxShadow: `0 8px 24px ${p.glow}15` }}
                 >
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${p.color} flex items-center justify-center mb-3 shadow-lg`}>
-                    <p.icon className="w-6 h-6 text-white" />
+                  <img src={p.image} alt="" aria-hidden className="absolute inset-0 w-full h-full object-cover opacity-25 group-hover:opacity-45 group-hover:scale-110 transition-all duration-700" loading="lazy" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-card via-card/85 to-card/40 pointer-events-none" />
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" style={{ background: `radial-gradient(circle at 30% 20%, ${p.glow}25, transparent 65%)` }} />
+                  <div className="relative p-6">
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${p.color} flex items-center justify-center mb-3 shadow-lg group-hover:scale-110 group-hover:-rotate-3 transition-transform`}>
+                      <p.icon className="w-6 h-6 text-white" />
+                    </div>
+                    <h5 className="font-display font-bold text-primary-foreground text-lg mb-1">{p.title}</h5>
+                    <p className="text-primary-foreground/70 text-sm leading-relaxed">{p.desc}</p>
                   </div>
-                  <h5 className="font-display font-bold text-primary-foreground text-lg mb-1">{p.title}</h5>
-                  <p className="text-primary-foreground/65 text-sm leading-relaxed">{p.desc}</p>
                 </motion.div>
               ))}
             </div>

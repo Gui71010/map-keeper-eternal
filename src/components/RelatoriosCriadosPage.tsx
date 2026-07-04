@@ -61,9 +61,6 @@ const RelatoriosCriadosPage = () => {
           {
             icon: FileText,
             value: reportsForSelected,
-          {
-            icon: FileText,
-            value: reportsForSelected,
             label: selectedAnalyst ? 'Relatórios deste analista' : selectedAreaFilter ? `Relatórios em ${selectedAreaFilter}` : 'Relatórios criados',
             color: 'from-teal-300 to-cyan-300',
             gradient: 'from-teal-500 to-cyan-500',

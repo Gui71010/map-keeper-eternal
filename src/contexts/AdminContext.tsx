@@ -288,8 +288,11 @@ export const useAdmin = () => {
 
 export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(() => sessionStorage.getItem('admin_auth') === 'true');
-  const [content, setContent] = useState<SiteContent>(DEFAULT_CONTENT);
-  const [loaded, setLoaded] = useState(false);
+  const [content, setContentState] = useState<SiteContent>(DEFAULT_CONTENT);
+  // 'loading' = still fetching, 'loaded' = successful fetch (safe to save),
+  // 'error' = fetch failed — NEVER save while in this state (would overwrite good data).
+  const [loadStatus, setLoadStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
+  const userEditedRef = useRef(false);
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Load content from database on mount
@@ -304,25 +307,24 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
         if (error) {
           console.error('Error loading content:', error);
-          setLoaded(true);
+          setLoadStatus('error');
           return;
         }
 
         if (data && data.content && typeof data.content === 'object' && Object.keys(data.content as object).length > 0) {
           const dbContent = data.content as Record<string, unknown>;
           const merged = { ...DEFAULT_CONTENT, ...dbContent } as SiteContent;
-          // Sanitize report.eligibleAreas: keep only entries that exist in eligibleAreasOptions
           const validOpts = new Set(merged.eligibleAreasOptions || []);
           merged.reports = (merged.reports || []).map(r => ({
             ...r,
             eligibleAreas: (r.eligibleAreas || []).filter(a => validOpts.has(a)),
           }));
-          setContent(merged);
+          setContentState(merged);
         }
-        setLoaded(true);
+        setLoadStatus('loaded');
       } catch (err) {
         console.error('Error loading content:', err);
-        setLoaded(true);
+        setLoadStatus('error');
       }
     };
 
@@ -331,37 +333,33 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Save content to database with debounce
   const saveToDb = useCallback(async (newContent: SiteContent) => {
-    if (saveTimeoutRef.current) {
-      clearTimeout(saveTimeoutRef.current);
-    }
-
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
     saveTimeoutRef.current = setTimeout(async () => {
       try {
         const { error } = await supabase
           .from('site_content')
-          .upsert({
-            id: 'main',
-            content: newContent as any,
-            updated_at: new Date().toISOString(),
-          } as any);
-
-        if (error) {
-          console.error('Error saving content:', error);
-        } else {
-          console.log('Content saved successfully');
-        }
+          .upsert({ id: 'main', content: newContent as any, updated_at: new Date().toISOString() } as any);
+        if (error) console.error('Error saving content:', error);
+        else console.log('Content saved successfully');
       } catch (err) {
         console.error('Error saving content:', err);
       }
     }, 500);
   }, []);
 
-  // Save every content change to database
-  useEffect(() => {
-    if (loaded) {
-      saveToDb(content);
-    }
-  }, [content, loaded, saveToDb]);
+  // Wrapper: only saves when load succeeded AND the change came from a user action.
+  // This prevents overwriting DB with DEFAULT_CONTENT on load errors or first render.
+  const setContent: typeof setContentState = useCallback((updater) => {
+    setContentState((prev) => {
+      const next = typeof updater === 'function' ? (updater as (p: SiteContent) => SiteContent)(prev) : updater;
+      if (userEditedRef.current && loadStatus === 'loaded') {
+        saveToDb(next);
+      }
+      return next;
+    });
+  }, [saveToDb, loadStatus]);
+
+  const markEdited = () => { userEditedRef.current = true; };
 
   const login = (password: string) => {
     if (password === ADMIN_PASSWORD) {

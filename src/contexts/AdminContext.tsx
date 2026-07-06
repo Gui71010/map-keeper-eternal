@@ -375,43 +375,43 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     sessionStorage.removeItem('admin_auth');
   };
 
-  const updateContent = (partial: Partial<SiteContent>) => setContent(prev => ({ ...prev, ...partial }));
+  const updateContent = (partial: Partial<SiteContent>) => { markEdited(); setContent(prev => ({ ...prev, ...partial })); };
 
-  const addAnalyst = (analyst: Analyst) => setContent(prev => ({ ...prev, analysts: [...prev.analysts, analyst] }));
-  const updateAnalyst = (id: string, data: Partial<Analyst>) =>
-    setContent(prev => ({ ...prev, analysts: prev.analysts.map((a) => (a.id === id ? { ...a, ...data } : a)) }));
-  const removeAnalyst = (id: string) =>
-    setContent(prev => ({ ...prev, analysts: prev.analysts.filter((a) => a.id !== id) }));
+  const addAnalyst = (analyst: Analyst) => { markEdited(); setContent(prev => ({ ...prev, analysts: [...prev.analysts, analyst] })); };
+  const updateAnalyst = (id: string, data: Partial<Analyst>) => { markEdited();
+    setContent(prev => ({ ...prev, analysts: prev.analysts.map((a) => (a.id === id ? { ...a, ...data } : a)) })); };
+  const removeAnalyst = (id: string) => { markEdited();
+    setContent(prev => ({ ...prev, analysts: prev.analysts.filter((a) => a.id !== id) })); };
 
-  const addReport = (report: Report) => setContent(prev => ({ ...prev, reports: [...prev.reports, report] }));
-  const updateReport = (id: string, data: Partial<Report>) =>
-    setContent(prev => ({ ...prev, reports: prev.reports.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
-  const removeReport = (id: string) =>
-    setContent(prev => ({ ...prev, reports: prev.reports.filter((r) => r.id !== id) }));
+  const addReport = (report: Report) => { markEdited(); setContent(prev => ({ ...prev, reports: [...prev.reports, report] })); };
+  const updateReport = (id: string, data: Partial<Report>) => { markEdited();
+    setContent(prev => ({ ...prev, reports: prev.reports.map((r) => (r.id === id ? { ...r, ...data } : r)) })); };
+  const removeReport = (id: string) => { markEdited();
+    setContent(prev => ({ ...prev, reports: prev.reports.filter((r) => r.id !== id) })); };
 
-  const addProject = (project: Project) => setContent(prev => ({ ...prev, projects: [...prev.projects, project] }));
-  const updateProject = (id: string, data: Partial<Project>) =>
-    setContent(prev => ({ ...prev, projects: prev.projects.map((p) => (p.id === id ? { ...p, ...data } : p)) }));
-  const removeProject = (id: string) =>
-    setContent(prev => ({ ...prev, projects: prev.projects.filter((p) => p.id !== id) }));
+  const addProject = (project: Project) => { markEdited(); setContent(prev => ({ ...prev, projects: [...prev.projects, project] })); };
+  const updateProject = (id: string, data: Partial<Project>) => { markEdited();
+    setContent(prev => ({ ...prev, projects: prev.projects.map((p) => (p.id === id ? { ...p, ...data } : p)) })); };
+  const removeProject = (id: string) => { markEdited();
+    setContent(prev => ({ ...prev, projects: prev.projects.filter((p) => p.id !== id) })); };
 
-  const addAreaReportCard = (card: AreaReportCard) => setContent(prev => ({ ...prev, areaReportCards: [...(prev.areaReportCards || []), card] }));
-  const updateAreaReportCard = (id: string, data: Partial<AreaReportCard>) =>
-    setContent(prev => ({ ...prev, areaReportCards: (prev.areaReportCards || []).map((c) => (c.id === id ? { ...c, ...data } : c)) }));
-  const removeAreaReportCard = (id: string) =>
-    setContent(prev => ({ ...prev, areaReportCards: (prev.areaReportCards || []).filter((c) => c.id !== id) }));
+  const addAreaReportCard = (card: AreaReportCard) => { markEdited(); setContent(prev => ({ ...prev, areaReportCards: [...(prev.areaReportCards || []), card] })); };
+  const updateAreaReportCard = (id: string, data: Partial<AreaReportCard>) => { markEdited();
+    setContent(prev => ({ ...prev, areaReportCards: (prev.areaReportCards || []).map((c) => (c.id === id ? { ...c, ...data } : c)) })); };
+  const removeAreaReportCard = (id: string) => { markEdited();
+    setContent(prev => ({ ...prev, areaReportCards: (prev.areaReportCards || []).filter((c) => c.id !== id) })); };
 
-  const addRqCategory = (cat: RqCategory) => setContent(prev => ({ ...prev, rqCategories: [...(prev.rqCategories || []), cat] }));
-  const updateRqCategory = (id: string, data: Partial<RqCategory>) =>
-    setContent(prev => ({ ...prev, rqCategories: (prev.rqCategories || []).map((c) => (c.id === id ? { ...c, ...data } : c)) }));
-  const removeRqCategory = (id: string) =>
-    setContent(prev => ({ ...prev, rqCategories: (prev.rqCategories || []).filter((c) => c.id !== id) }));
+  const addRqCategory = (cat: RqCategory) => { markEdited(); setContent(prev => ({ ...prev, rqCategories: [...(prev.rqCategories || []), cat] })); };
+  const updateRqCategory = (id: string, data: Partial<RqCategory>) => { markEdited();
+    setContent(prev => ({ ...prev, rqCategories: (prev.rqCategories || []).map((c) => (c.id === id ? { ...c, ...data } : c)) })); };
+  const removeRqCategory = (id: string) => { markEdited();
+    setContent(prev => ({ ...prev, rqCategories: (prev.rqCategories || []).filter((c) => c.id !== id) })); };
 
-  const addRqReport = (report: RqReport) => setContent(prev => ({ ...prev, rqReports: [...(prev.rqReports || []), report] }));
-  const updateRqReport = (id: string, data: Partial<RqReport>) =>
-    setContent(prev => ({ ...prev, rqReports: (prev.rqReports || []).map((r) => (r.id === id ? { ...r, ...data } : r)) }));
-  const removeRqReport = (id: string) =>
-    setContent(prev => ({ ...prev, rqReports: (prev.rqReports || []).filter((r) => r.id !== id) }));
+  const addRqReport = (report: RqReport) => { markEdited(); setContent(prev => ({ ...prev, rqReports: [...(prev.rqReports || []), report] })); };
+  const updateRqReport = (id: string, data: Partial<RqReport>) => { markEdited();
+    setContent(prev => ({ ...prev, rqReports: (prev.rqReports || []).map((r) => (r.id === id ? { ...r, ...data } : r)) })); };
+  const removeRqReport = (id: string) => { markEdited();
+    setContent(prev => ({ ...prev, rqReports: (prev.rqReports || []).filter((r) => r.id !== id) })); };
 
   return (
     <AdminContext.Provider

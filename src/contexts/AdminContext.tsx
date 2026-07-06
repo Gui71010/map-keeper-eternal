@@ -288,8 +288,11 @@ export const useAdmin = () => {
 
 export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(() => sessionStorage.getItem('admin_auth') === 'true');
-  const [content, setContent] = useState<SiteContent>(DEFAULT_CONTENT);
-  const [loaded, setLoaded] = useState(false);
+  const [content, setContentState] = useState<SiteContent>(DEFAULT_CONTENT);
+  // 'loading' = still fetching, 'loaded' = successful fetch (safe to save),
+  // 'error' = fetch failed — NEVER save while in this state (would overwrite good data).
+  const [loadStatus, setLoadStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
+  const userEditedRef = useRef(false);
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Load content from database on mount
@@ -304,25 +307,24 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
         if (error) {
           console.error('Error loading content:', error);
-          setLoaded(true);
+          setLoadStatus('error');
           return;
         }
 
         if (data && data.content && typeof data.content === 'object' && Object.keys(data.content as object).length > 0) {
           const dbContent = data.content as Record<string, unknown>;
           const merged = { ...DEFAULT_CONTENT, ...dbContent } as SiteContent;
-          // Sanitize report.eligibleAreas: keep only entries that exist in eligibleAreasOptions
           const validOpts = new Set(merged.eligibleAreasOptions || []);
           merged.reports = (merged.reports || []).map(r => ({
             ...r,
             eligibleAreas: (r.eligibleAreas || []).filter(a => validOpts.has(a)),
           }));
-          setContent(merged);
+          setContentState(merged);
         }
-        setLoaded(true);
+        setLoadStatus('loaded');
       } catch (err) {
         console.error('Error loading content:', err);
-        setLoaded(true);
+        setLoadStatus('error');
       }
     };
 
@@ -331,37 +333,33 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Save content to database with debounce
   const saveToDb = useCallback(async (newContent: SiteContent) => {
-    if (saveTimeoutRef.current) {
-      clearTimeout(saveTimeoutRef.current);
-    }
-
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
     saveTimeoutRef.current = setTimeout(async () => {
       try {
         const { error } = await supabase
           .from('site_content')
-          .upsert({
-            id: 'main',
-            content: newContent as any,
-            updated_at: new Date().toISOString(),
-          } as any);
-
-        if (error) {
-          console.error('Error saving content:', error);
-        } else {
-          console.log('Content saved successfully');
-        }
+          .upsert({ id: 'main', content: newContent as any, updated_at: new Date().toISOString() } as any);
+        if (error) console.error('Error saving content:', error);
+        else console.log('Content saved successfully');
       } catch (err) {
         console.error('Error saving content:', err);
       }
     }, 500);
   }, []);
 
-  // Save every content change to database
-  useEffect(() => {
-    if (loaded) {
-      saveToDb(content);
-    }
-  }, [content, loaded, saveToDb]);
+  // Wrapper: only saves when load succeeded AND the change came from a user action.
+  // This prevents overwriting DB with DEFAULT_CONTENT on load errors or first render.
+  const setContent: typeof setContentState = useCallback((updater) => {
+    setContentState((prev) => {
+      const next = typeof updater === 'function' ? (updater as (p: SiteContent) => SiteContent)(prev) : updater;
+      if (userEditedRef.current && loadStatus === 'loaded') {
+        saveToDb(next);
+      }
+      return next;
+    });
+  }, [saveToDb, loadStatus]);
+
+  const markEdited = () => { userEditedRef.current = true; };
 
   const login = (password: string) => {
     if (password === ADMIN_PASSWORD) {
@@ -377,43 +375,43 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     sessionStorage.removeItem('admin_auth');
   };
 
-  const updateContent = (partial: Partial<SiteContent>) => setContent(prev => ({ ...prev, ...partial }));
+  const updateContent = (partial: Partial<SiteContent>) => { markEdited(); setContent(prev => ({ ...prev, ...partial })); };
 
-  const addAnalyst = (analyst: Analyst) => setContent(prev => ({ ...prev, analysts: [...prev.analysts, analyst] }));
-  const updateAnalyst = (id: string, data: Partial<Analyst>) =>
-    setContent(prev => ({ ...prev, analysts: prev.analysts.map((a) => (a.id === id ? { ...a, ...data } : a)) }));
-  const removeAnalyst = (id: string) =>
-    setContent(prev => ({ ...prev, analysts: prev.analysts.filter((a) => a.id !== id) }));
+  const addAnalyst = (analyst: Analyst) => { markEdited(); setContent(prev => ({ ...prev, analysts: [...prev.analysts, analyst] })); };
+  const updateAnalyst = (id: string, data: Partial<Analyst>) => { markEdited();
+    setContent(prev => ({ ...prev, analysts: prev.analysts.map((a) => (a.id === id ? { ...a, ...data } : a)) })); };
+  const removeAnalyst = (id: string) => { markEdited();
+    setContent(prev => ({ ...prev, analysts: prev.analysts.filter((a) => a.id !== id) })); };
 
-  const addReport = (report: Report) => setContent(prev => ({ ...prev, reports: [...prev.reports, report] }));
-  const updateReport = (id: string, data: Partial<Report>) =>
-    setContent(prev => ({ ...prev, reports: prev.reports.map((r) => (r.id === id ? { ...r, ...data } : r)) }));
-  const removeReport = (id: string) =>
-    setContent(prev => ({ ...prev, reports: prev.reports.filter((r) => r.id !== id) }));
+  const addReport = (report: Report) => { markEdited(); setContent(prev => ({ ...prev, reports: [...prev.reports, report] })); };
+  const updateReport = (id: string, data: Partial<Report>) => { markEdited();
+    setContent(prev => ({ ...prev, reports: prev.reports.map((r) => (r.id === id ? { ...r, ...data } : r)) })); };
+  const removeReport = (id: string) => { markEdited();
+    setContent(prev => ({ ...prev, reports: prev.reports.filter((r) => r.id !== id) })); };
 
-  const addProject = (project: Project) => setContent(prev => ({ ...prev, projects: [...prev.projects, project] }));
-  const updateProject = (id: string, data: Partial<Project>) =>
-    setContent(prev => ({ ...prev, projects: prev.projects.map((p) => (p.id === id ? { ...p, ...data } : p)) }));
-  const removeProject = (id: string) =>
-    setContent(prev => ({ ...prev, projects: prev.projects.filter((p) => p.id !== id) }));
+  const addProject = (project: Project) => { markEdited(); setContent(prev => ({ ...prev, projects: [...prev.projects, project] })); };
+  const updateProject = (id: string, data: Partial<Project>) => { markEdited();
+    setContent(prev => ({ ...prev, projects: prev.projects.map((p) => (p.id === id ? { ...p, ...data } : p)) })); };
+  const removeProject = (id: string) => { markEdited();
+    setContent(prev => ({ ...prev, projects: prev.projects.filter((p) => p.id !== id) })); };
 
-  const addAreaReportCard = (card: AreaReportCard) => setContent(prev => ({ ...prev, areaReportCards: [...(prev.areaReportCards || []), card] }));
-  const updateAreaReportCard = (id: string, data: Partial<AreaReportCard>) =>
-    setContent(prev => ({ ...prev, areaReportCards: (prev.areaReportCards || []).map((c) => (c.id === id ? { ...c, ...data } : c)) }));
-  const removeAreaReportCard = (id: string) =>
-    setContent(prev => ({ ...prev, areaReportCards: (prev.areaReportCards || []).filter((c) => c.id !== id) }));
+  const addAreaReportCard = (card: AreaReportCard) => { markEdited(); setContent(prev => ({ ...prev, areaReportCards: [...(prev.areaReportCards || []), card] })); };
+  const updateAreaReportCard = (id: string, data: Partial<AreaReportCard>) => { markEdited();
+    setContent(prev => ({ ...prev, areaReportCards: (prev.areaReportCards || []).map((c) => (c.id === id ? { ...c, ...data } : c)) })); };
+  const removeAreaReportCard = (id: string) => { markEdited();
+    setContent(prev => ({ ...prev, areaReportCards: (prev.areaReportCards || []).filter((c) => c.id !== id) })); };
 
-  const addRqCategory = (cat: RqCategory) => setContent(prev => ({ ...prev, rqCategories: [...(prev.rqCategories || []), cat] }));
-  const updateRqCategory = (id: string, data: Partial<RqCategory>) =>
-    setContent(prev => ({ ...prev, rqCategories: (prev.rqCategories || []).map((c) => (c.id === id ? { ...c, ...data } : c)) }));
-  const removeRqCategory = (id: string) =>
-    setContent(prev => ({ ...prev, rqCategories: (prev.rqCategories || []).filter((c) => c.id !== id) }));
+  const addRqCategory = (cat: RqCategory) => { markEdited(); setContent(prev => ({ ...prev, rqCategories: [...(prev.rqCategories || []), cat] })); };
+  const updateRqCategory = (id: string, data: Partial<RqCategory>) => { markEdited();
+    setContent(prev => ({ ...prev, rqCategories: (prev.rqCategories || []).map((c) => (c.id === id ? { ...c, ...data } : c)) })); };
+  const removeRqCategory = (id: string) => { markEdited();
+    setContent(prev => ({ ...prev, rqCategories: (prev.rqCategories || []).filter((c) => c.id !== id) })); };
 
-  const addRqReport = (report: RqReport) => setContent(prev => ({ ...prev, rqReports: [...(prev.rqReports || []), report] }));
-  const updateRqReport = (id: string, data: Partial<RqReport>) =>
-    setContent(prev => ({ ...prev, rqReports: (prev.rqReports || []).map((r) => (r.id === id ? { ...r, ...data } : r)) }));
-  const removeRqReport = (id: string) =>
-    setContent(prev => ({ ...prev, rqReports: (prev.rqReports || []).filter((r) => r.id !== id) }));
+  const addRqReport = (report: RqReport) => { markEdited(); setContent(prev => ({ ...prev, rqReports: [...(prev.rqReports || []), report] })); };
+  const updateRqReport = (id: string, data: Partial<RqReport>) => { markEdited();
+    setContent(prev => ({ ...prev, rqReports: (prev.rqReports || []).map((r) => (r.id === id ? { ...r, ...data } : r)) })); };
+  const removeRqReport = (id: string) => { markEdited();
+    setContent(prev => ({ ...prev, rqReports: (prev.rqReports || []).filter((r) => r.id !== id) })); };
 
   return (
     <AdminContext.Provider

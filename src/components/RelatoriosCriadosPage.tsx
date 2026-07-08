@@ -16,8 +16,22 @@ const RelatoriosCriadosPage = () => {
   const [selectedAreaFilter, setSelectedAreaFilter] = useState<string | null>(null);
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const biAnalysts = content.analysts.filter((a) => a.type === 'bi');
-  const eligibleAreasOptions = content.eligibleAreasOptions || [];
+  const areaIcons = [Building2, Tag, Layers, Globe, Building2, Tag];
+  const areaColors = [
+    { text: 'text-cyan-300', bg: 'bg-cyan-500/20', border: 'border-cyan-400/40', glow: 'shadow-cyan-500/20' },
+    { text: 'text-fuchsia-300', bg: 'bg-fuchsia-500/20', border: 'border-fuchsia-400/40', glow: 'shadow-fuchsia-500/20' },
+    { text: 'text-amber-300', bg: 'bg-amber-500/20', border: 'border-amber-400/40', glow: 'shadow-amber-500/20' },
+    { text: 'text-emerald-300', bg: 'bg-emerald-500/20', border: 'border-emerald-400/40', glow: 'shadow-emerald-500/20' },
+    { text: 'text-rose-300', bg: 'bg-rose-500/20', border: 'border-rose-400/40', glow: 'shadow-rose-500/20' },
+    { text: 'text-violet-300', bg: 'bg-violet-500/20', border: 'border-violet-400/40', glow: 'shadow-violet-500/20' },
+  ];
+  const getAreaMeta = (area: string, idx: number) => {
+    const safeIdx = idx % areaColors.length;
+    const Icon = areaIcons[safeIdx % areaIcons.length];
+    return { Icon, ...areaColors[safeIdx] };
+  };
+
+  return (
   const filteredReports = content.reports
     .filter((r) => !selectedAnalystId || r.creatorId === selectedAnalystId)
     .filter((r) => !selectedAreaFilter || (r.eligibleAreas || []).includes(selectedAreaFilter))

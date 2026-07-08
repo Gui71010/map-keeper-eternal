@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, User, Search, FileText, BarChart3, Check } from 'lucide-react';
+import { Plus, User, Search, FileText, BarChart3, Check, Building2, Layers, Tag, Globe } from 'lucide-react';
 import dataFlowImg from '@/assets/data-flow.jpg';
 import bgReports from '@/assets/data-pipeline.jpg';
 import bgAnalysts from '@/assets/admin-team.jpg';

@@ -94,23 +94,28 @@ const RelatoriosCriadosPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 + i * 0.08 }}
-                className="glass-card rounded-2xl p-6 border border-border/30 flex items-center gap-4 hover:border-accent/30 transition-all duration-400"
+                className="relative rounded-2xl overflow-hidden border border-border/30 flex items-center gap-4 hover:border-accent/30 transition-all duration-400 group"
                 style={{ transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)' }}
                 onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 30px hsl(var(--accent) / 0.08)'; }}
                 onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
               >
-                {stat.avatar ? (
-                  <div className="rounded-xl overflow-hidden shrink-0 ring-2 ring-primary/30" style={{ width: '3.25rem', height: '3.25rem' }}>
-                    <img src={stat.avatar} alt="" className="w-full h-full object-cover" />
+                {/* Background image */}
+                <img src={stat.bgImg} alt="" className="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:opacity-25 transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/80 to-background/60 pointer-events-none" />
+                <div className="relative z-10 p-6 flex items-center gap-4 w-full">
+                  {stat.avatar ? (
+                    <div className="rounded-xl overflow-hidden shrink-0 ring-2 ring-primary/30" style={{ width: '3.25rem', height: '3.25rem' }}>
+                      <img src={stat.avatar} alt="" className="w-full h-full object-cover" />
+                    </div>
+                  ) : (
+                    <div className={`rounded-xl ${stat.bg} flex items-center justify-center shrink-0 backdrop-blur-sm`} style={{ width: '3.25rem', height: '3.25rem' }}>
+                      <stat.icon className={`w-6 h-6 ${stat.color}`} />
+                    </div>
+                  )}
+                  <div className="min-w-0">
+                    <p className={`font-display font-bold ${stat.color} ${stat.isText ? 'text-xl leading-tight truncate' : 'text-3xl'}`}>{stat.value}</p>
+                    <p className="text-muted-foreground text-sm">{stat.label}</p>
                   </div>
-                ) : (
-                  <div className={`rounded-xl ${stat.bg} flex items-center justify-center shrink-0`} style={{ width: '3.25rem', height: '3.25rem' }}>
-                    <stat.icon className={`w-6 h-6 ${stat.color}`} />
-                  </div>
-                )}
-                <div className="min-w-0">
-                  <p className={`font-display font-bold ${stat.color} ${stat.isText ? 'text-xl leading-tight truncate' : 'text-3xl'}`}>{stat.value}</p>
-                  <p className="text-muted-foreground text-sm">{stat.label}</p>
                 </div>
               </motion.div>
             ))}

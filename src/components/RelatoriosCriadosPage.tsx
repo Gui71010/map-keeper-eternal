@@ -185,11 +185,8 @@ const RelatoriosCriadosPage = () => {
 
       {/* Area filter */}
       <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.22, duration: 0.5 }}>
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xl font-display font-bold text-foreground flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-fuchsia-400 shadow-[0_0_8px_hsl(290_80%_60%)]" />
-            Filtrar por Área Elegível
-          </h3>
+        <div className="flex items-center justify-between mb-6">
+          {isAdmin ? <input className="text-xl font-display font-bold text-foreground mb-0 bg-transparent border-b border-border outline-none focus:border-accent block" value={content.filterByAreaTitle || 'Filtrar por Área Elegível'} onChange={(e) => updateContent({ filterByAreaTitle: e.target.value })} /> : <h3 className="text-xl font-display font-bold text-foreground">{content.filterByAreaTitle || 'Filtrar por Área Elegível'}</h3>}
           {isAdmin && (
             <button
               onClick={() => {
@@ -202,31 +199,58 @@ const RelatoriosCriadosPage = () => {
             </button>
           )}
         </div>
-        <div className="flex flex-wrap gap-2.5">
+        <div className="flex flex-wrap gap-3.5">
+          {/* Todas */}
           <button
             onClick={() => setSelectedAreaFilter(null)}
-            className={`px-4 py-2 rounded-xl text-sm font-semibold border transition-all ${!selectedAreaFilter ? 'bg-fuchsia-500/25 text-fuchsia-100 border-fuchsia-400/60 shadow-md shadow-fuchsia-500/20' : 'bg-card/40 text-foreground/80 border-border/40 hover:border-fuchsia-400/40'}`}
+            className={`relative flex items-center gap-3.5 px-6 py-4 rounded-2xl text-base font-semibold transition-all duration-300 border overflow-hidden ${
+              !selectedAreaFilter
+                ? 'gradient-accent text-accent-foreground shadow-xl shadow-accent/20 border-transparent'
+                : 'glass-card text-foreground border-border/40 hover:border-accent/40 hover:shadow-lg hover:-translate-y-0.5'
+            }`}
           >
-            Todas
-          </button>
-          {eligibleAreasOptions.map((area) => (
-            <div key={area} className="relative group">
-              <button
-                onClick={() => setSelectedAreaFilter(selectedAreaFilter === area ? null : area)}
-                className={`px-4 py-2 rounded-xl text-sm font-semibold border transition-all ${selectedAreaFilter === area ? 'bg-fuchsia-500/25 text-fuchsia-100 border-fuchsia-400/60 shadow-md shadow-fuchsia-500/20' : 'bg-card/40 text-foreground/80 border-border/40 hover:border-fuchsia-400/40'}`}
-              >
-                {area}
-              </button>
-              {isAdmin && (
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); e.preventDefault(); if (confirm(`Remover a área "${area}"?`)) { updateContent({ eligibleAreasOptions: eligibleAreasOptions.filter(a => a !== area) }); if (selectedAreaFilter === area) setSelectedAreaFilter(null); } }}
-                  title="Remover área"
-                  className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-destructive text-destructive-foreground text-[11px] font-bold flex items-center justify-center shadow-md border border-background z-10 hover:scale-110 transition"
-                >×</button>
-              )}
+            {!selectedAreaFilter && <div className="absolute top-0 left-0 right-0 h-[2px] bg-white/30" />}
+            <div className={`w-11 h-11 rounded-full flex items-center justify-center shrink-0 ${!selectedAreaFilter ? 'bg-white/15' : 'bg-accent/15'}`}>
+              {!selectedAreaFilter ? <Check className="w-5 h-5" /> : <Layers className="w-5 h-5 text-accent" />}
             </div>
-          ))}
+            <span>Todas</span>
+          </button>
+
+          {eligibleAreasOptions.map((area, idx) => {
+            const isSelected = selectedAreaFilter === area;
+            const { Icon, text, bg, border } = getAreaMeta(area, idx);
+            return (
+              <div key={area} className="relative group">
+                <button
+                  onClick={() => setSelectedAreaFilter(isSelected ? null : area)}
+                  className={`relative flex items-center gap-3.5 px-5 py-4 rounded-2xl text-base font-medium transition-all duration-300 border overflow-hidden ${
+                    isSelected
+                      ? 'gradient-accent text-accent-foreground shadow-xl shadow-accent/20 border-transparent'
+                      : `glass-card text-foreground border-border/40 hover:${border} hover:shadow-lg hover:-translate-y-0.5`
+                  }`}
+                >
+                  {isSelected && <div className="absolute top-0 left-0 right-0 h-[2px] bg-white/30" />}
+                  <div className={`w-11 h-11 rounded-full flex items-center justify-center shrink-0 ${isSelected ? 'bg-white/15' : `${bg} ${border} border`}`}>
+                    <Icon className={`w-5 h-5 ${isSelected ? 'text-white' : text}`} />
+                  </div>
+                  <span className="font-display font-semibold text-base leading-tight truncate">{area}</span>
+                  {isSelected && (
+                    <div className="ml-1 w-6 h-6 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+                      <Check className="w-3.5 h-3.5" />
+                    </div>
+                  )}
+                </button>
+                {isAdmin && (
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); e.preventDefault(); if (confirm(`Remover a área "${area}"?`)) { updateContent({ eligibleAreasOptions: eligibleAreasOptions.filter(a => a !== area) }); if (selectedAreaFilter === area) setSelectedAreaFilter(null); } }}
+                    title="Remover área"
+                    className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-destructive text-destructive-foreground text-[11px] font-bold flex items-center justify-center shadow-md border border-background z-10 hover:scale-110 transition"
+                  >×</button>
+                )}
+              </div>
+            );
+          })}
         </div>
       </motion.section>
 

@@ -25,13 +25,8 @@ const RelatoriosCriadosPage = () => {
     { text: 'text-rose-300', bg: 'bg-rose-500/20', border: 'border-rose-400/40', glow: 'shadow-rose-500/20' },
     { text: 'text-violet-300', bg: 'bg-violet-500/20', border: 'border-violet-400/40', glow: 'shadow-violet-500/20' },
   ];
-  const getAreaMeta = (area: string, idx: number) => {
-    const safeIdx = idx % areaColors.length;
-    const Icon = areaIcons[safeIdx % areaIcons.length];
-    return { Icon, ...areaColors[safeIdx] };
-  };
-
-  return (
+  const biAnalysts = content.analysts.filter((a) => a.type === 'bi');
+  const eligibleAreasOptions = content.eligibleAreasOptions || [];
   const filteredReports = content.reports
     .filter((r) => !selectedAnalystId || r.creatorId === selectedAnalystId)
     .filter((r) => !selectedAreaFilter || (r.eligibleAreas || []).includes(selectedAreaFilter))
@@ -40,6 +35,11 @@ const RelatoriosCriadosPage = () => {
   const selectedReport = content.reports.find((r) => r.id === selectedReportId);
   const navigateReport = (direction: 'prev' | 'next') => { const idx = filteredReports.findIndex((r) => r.id === selectedReportId); if (idx === -1) return; const newIdx = direction === 'next' ? idx + 1 : idx - 1; if (newIdx >= 0 && newIdx < filteredReports.length) setSelectedReportId(filteredReports[newIdx].id); };
   const currentIdx = filteredReports.findIndex((r) => r.id === selectedReportId);
+  const getAreaMeta = (area: string, idx: number) => {
+    const safeIdx = idx % areaColors.length;
+    const Icon = areaIcons[safeIdx % areaIcons.length];
+    return { Icon, ...areaColors[safeIdx] };
+  };
 
   return (
     <div className="space-y-12">

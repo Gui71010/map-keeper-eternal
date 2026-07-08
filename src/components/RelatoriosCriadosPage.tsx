@@ -64,6 +64,7 @@ const RelatoriosCriadosPage = () => {
             label: selectedAnalyst ? 'Relatórios deste analista' : selectedAreaFilter ? `Relatórios em ${selectedAreaFilter}` : 'Relatórios criados',
             color: 'text-accent',
             bg: 'bg-accent/15',
+            bgImg: bgReports,
           },
           {
             icon: User,
@@ -73,6 +74,7 @@ const RelatoriosCriadosPage = () => {
             bg: 'bg-primary/15',
             isText: !!selectedAnalyst,
             avatar: selectedAnalyst?.photo,
+            bgImg: bgAnalysts,
           },
           {
             icon: BarChart3,
@@ -81,6 +83,7 @@ const RelatoriosCriadosPage = () => {
             color: 'text-emerald-400',
             bg: 'bg-emerald-500/15',
             isText: !!selectedAnalyst || !!selectedAreaFilter,
+            bgImg: bgAreas,
           },
         ];
         return (

@@ -186,7 +186,7 @@ const RelatoriosCriadosPage = () => {
       {/* Area filter */}
       <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.22, duration: 0.5 }}>
         <div className="flex items-center justify-between mb-6">
-          {isAdmin ? <input className="text-xl font-display font-bold text-foreground mb-0 bg-transparent border-b border-border outline-none focus:border-accent block" value={content.filterByAreaTitle || 'Filtrar por Área Elegível'} onChange={(e) => updateContent({ filterByAreaTitle: e.target.value })} /> : <h3 className="text-xl font-display font-bold text-foreground">{content.filterByAreaTitle || 'Filtrar por Área Elegível'}</h3>}
+          <h3 className="text-xl font-display font-bold text-foreground">Filtrar por Área Elegível</h3>
           {isAdmin && (
             <button
               onClick={() => {

@@ -23,6 +23,7 @@ export interface Report {
   metrics: string[];
   link?: string;
   eligibleAreas?: string[];
+  tools?: string[];
 }
 
 export interface Project {
@@ -130,6 +131,20 @@ interface SiteContent {
   pythonCode: string;
   pythonImpactTitle: string;
   pythonImpactItems: { id: string; t: string; d: string }[];
+  // Portfolio fields
+  profileName: string;
+  profileRole: string;
+  profileBio: string;
+  profileShortBio: string;
+  profilePhoto: string;
+  aboutMeTitle: string;
+  aboutMeText: string;
+  linkedinUrl: string;
+  githubUrl: string;
+  whatsappNumber: string;
+  contactEmail: string;
+  toolsOptions: string[];
+  homeStats: { id: string; value: string; label: string }[];
 }
 
 interface AdminContextType {

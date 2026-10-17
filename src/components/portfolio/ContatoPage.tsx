@@ -18,7 +18,7 @@ const ContatoPage = () => {
     if (!name.trim() || !message.trim()) return;
     setSending(true);
     try {
-      await supabase.from('feedback').insert({ type: 'contato', name, email, message } as any);
+      await supabase.from('feedback_site').insert({ tipo: 'contato', matricula: email || 'portfolio', comentario: `${name}: ${message}` });
     } catch (e) {
       console.error(e);
     }

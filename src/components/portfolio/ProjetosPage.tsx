@@ -101,7 +101,7 @@ const ProjetosPage = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {filteredReports.map((report, i) => (
             <motion.div key={report.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-              <ReportCard report={report} onClick={() => setSelectedReportId(report.id)} />
+              <ReportCard report={report} creatorName={content.profileName} index={i} onClick={() => setSelectedReportId(report.id)} />
             </motion.div>
           ))}
           {isAdmin && (

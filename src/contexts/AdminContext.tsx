@@ -23,6 +23,7 @@ export interface Report {
   metrics: string[];
   link?: string;
   eligibleAreas?: string[];
+  tools?: string[];
 }
 
 export interface Project {
@@ -130,6 +131,20 @@ interface SiteContent {
   pythonCode: string;
   pythonImpactTitle: string;
   pythonImpactItems: { id: string; t: string; d: string }[];
+  // Portfolio fields
+  profileName: string;
+  profileRole: string;
+  profileBio: string;
+  profileShortBio: string;
+  profilePhoto: string;
+  aboutMeTitle: string;
+  aboutMeText: string;
+  linkedinUrl: string;
+  githubUrl: string;
+  whatsappNumber: string;
+  contactEmail: string;
+  toolsOptions: string[];
+  homeStats: { id: string; value: string; label: string }[];
 }
 
 interface AdminContextType {
@@ -273,6 +288,24 @@ print(f"✓ {len(df)} registros processados")`,
     { id: '2', t: 'Zero retrabalho', d: 'Pipelines validados removem erros manuais.' },
     { id: '3', t: 'Escala sob demanda', d: 'Mesmo script atende uma ou todas as unidades.' },
     { id: '4', t: 'Integração transparente', d: 'Resultados entregues prontos para os relatórios e dashboards.' },
+  ],
+  profileName: 'Guilherme Santiago',
+  profileRole: 'Analista de Dados & Automação de Processos',
+  profileBio: 'Analista de Dados & Automação de Processos com quase 5 anos de experiência no desenvolvimento de soluções end-to-end para inteligência de negócios e analytics operacional. Especialista na criação de pipelines de dados eficientes utilizando T-SQL avançado, modelagem de dados e dashboards interativos em Power BI com personalização visual em HTML/CSS. Sólida atuação na automação de rotinas e web scraping com Python (Pandas, Selenium, Playwright, Streamlit), focando na otimização de processos, integração de sistemas e suporte à tomada de decisão estratégica.',
+  profileShortBio: 'Transformo processos complexos e grandes volumes de dados em dashboards estratégicos e automações eficientes. Apaixonado por resolver problemas de negócio através de código limpo, visualização de dados intuitiva e otimização de rotinas.',
+  profilePhoto: '/Guilherme.png',
+  aboutMeTitle: 'Sobre Mim',
+  aboutMeText: 'Sou especialista em transformar dados brutos e processos manuais em inteligência estratégica e rotinas automatizadas. Com forte bagagem em T-SQL, Power BI e Python, atuo desde a engenharia das consultas e modelagem de métricas operacionais até a construção de interfaces e robôs de automação (RPA).\n\nBusco sempre unir eficiência técnica com excelente experiência visual, utilizando desde recursos avançados de DAX até customizações visuais para entregar painéis funcionais e de alto impacto para o negócio.',
+  linkedinUrl: 'https://www.linkedin.com/in/guilherme-santiago',
+  githubUrl: 'https://github.com/guilhermesantiago',
+  whatsappNumber: '5538988690984',
+  contactEmail: 'm.guilherme.santiago@aec.com.br',
+  toolsOptions: ['Power BI', 'Python', 'T-SQL', 'Streamlit', 'DAX', 'HTML/CSS', 'Excel'],
+  homeStats: [
+    { id: '1', value: '~5', label: 'Anos de experiência' },
+    { id: '2', value: '30+', label: 'Dashboards entregues' },
+    { id: '3', value: '20+', label: 'Automações em produção' },
+    { id: '4', value: '7', label: 'Ferramentas dominadas' },
   ],
 };
 

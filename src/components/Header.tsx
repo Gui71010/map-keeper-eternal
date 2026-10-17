@@ -1,166 +1,30 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Shield, LogOut, Mail } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Shield, LogOut, Search, ArrowUpRight, LayoutGrid, Workflow, Mail, FileText } from 'lucide-react';
 import { useAdmin } from '@/contexts/AdminContext';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from '@/components/ui/command';
+import { CaseStudy } from '@/components/portfolio/ProjectCatalog';
 
-interface HeaderProps {
-  activeTab: string;
-  onTabChange: (tab: string) => void;
-}
-
-const tabs = [
-  { id: 'home', label: 'Início' },
-  { id: 'projetos', label: 'Projetos' },
-  { id: 'automacoes', label: 'Automações' },
-  { id: 'contato', label: 'Contato' },
-];
-
-const Header = ({ activeTab, onTabChange }: HeaderProps) => {
-  const { isAdmin, login, logout, content, updateContent } = useAdmin();
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState(false);
-  const [open, setOpen] = useState(false);
-
-  const handleLogin = () => {
-    if (login(password)) {
-      setOpen(false);
-      setPassword('');
-      setError(false);
-    } else {
-      setError(true);
-    }
-  };
-
-  return (
-    <header className="sticky top-0 z-50 gradient-navy galaxy-bg border-b border-navy-light/50">
-      <div className="relative z-10 w-full px-8 py-5">
-        <div className="flex items-center justify-between">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-3"
-          >
-            <div className="w-11 h-11 rounded-lg gradient-accent flex items-center justify-center">
-              <span className="font-display font-bold text-primary-foreground text-xl">GS</span>
-            </div>
-            <div>
-              <h1 className="font-display font-bold text-primary-foreground text-xl leading-tight">
-                Guilherme Santiago
-              </h1>
-              <p className="text-primary-foreground/60 text-sm">Data & Automation</p>
-            </div>
-          </motion.div>
-
-          <nav className="hidden md:flex items-center gap-1 bg-navy-light/50 rounded-xl p-1">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => onTabChange(tab.id)}
-                className={`relative px-5 py-2.5 rounded-lg text-sm font-medium transition-colors duration-200 ${
-                  activeTab === tab.id
-                    ? 'text-primary-foreground'
-                    : 'text-primary-foreground/50 hover:text-primary-foreground/80'
-                }`}
-              >
-                {activeTab === tab.id && (
-                  <motion.div
-                    layoutId="tab-bg"
-                    className="absolute inset-0 gradient-accent rounded-lg"
-                    transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-                  />
-                )}
-                <span className="relative z-10">{tab.label}</span>
-              </button>
-            ))}
-          </nav>
-
-          <nav className="flex md:hidden items-center gap-1 bg-navy-light/50 rounded-xl p-1">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => onTabChange(tab.id)}
-                className={`relative px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-200 ${
-                  activeTab === tab.id
-                    ? 'text-primary-foreground'
-                    : 'text-primary-foreground/50'
-                }`}
-              >
-                {activeTab === tab.id && (
-                  <motion.div
-                    layoutId="tab-bg-mobile"
-                    className="absolute inset-0 gradient-accent rounded-lg"
-                    transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-                  />
-                )}
-                <span className="relative z-10">{tab.label.split(' ')[0]}</span>
-              </button>
-            ))}
-          </nav>
-
-          <div className="flex items-center gap-2">
-            <div className="hidden lg:flex items-center gap-1.5 text-primary-foreground/40 text-xs">
-              <Mail className="w-3.5 h-3.5" />
-              {isAdmin ? (
-                <input
-                  className="bg-transparent border-b border-primary-foreground/20 text-primary-foreground/60 text-xs w-48 outline-none focus:border-accent"
-                  value={content.contactEmail}
-                  onChange={(e) => updateContent({ contactEmail: e.target.value })}
-                />
-              ) : (
-                <a href={`mailto:${content.contactEmail}`} className="hover:text-accent transition-colors">
-                  {content.contactEmail}
-                </a>
-              )}
-            </div>
-
-            {isAdmin ? (
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-accent font-medium">Admin</span>
-                <Button variant="ghost" size="icon" onClick={logout} className="text-primary-foreground/60 hover:text-primary-foreground hover:bg-navy-light">
-                  <LogOut className="w-4 h-4" />
-                </Button>
-              </div>
-            ) : (
-              <Dialog open={open} onOpenChange={setOpen}>
-                <DialogTrigger asChild>
-                  <Button variant="ghost" size="icon" className="text-primary-foreground/40 hover:text-primary-foreground hover:bg-navy-light">
-                    <Shield className="w-4 h-4" />
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="glass-card">
-                  <DialogHeader>
-                    <DialogTitle className="font-display">Acesso Administrativo</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4 pt-2">
-                    <Input
-                      type="password"
-                      placeholder="Digite a senha"
-                      value={password}
-                      onChange={(e) => { setPassword(e.target.value); setError(false); }}
-                      onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
-                      className={error ? 'border-destructive' : ''}
-                    />
-                    {error && <p className="text-destructive text-sm">Senha incorreta</p>}
-                    <Button onClick={handleLogin} className="w-full gradient-accent text-primary-foreground border-0">Entrar</Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
-            )}
-          </div>
-        </div>
-
-        <div className="flex lg:hidden items-center justify-center gap-1.5 text-primary-foreground/40 text-xs mt-2">
-          <Mail className="w-3 h-3" />
-          <a href={`mailto:${content.contactEmail}`} className="hover:text-accent transition-colors">
-            {content.contactEmail}
-          </a>
-        </div>
+const tabs = [{ id: 'home', label: 'Visão geral', icon: LayoutGrid }, { id: 'projetos', label: 'Projetos', icon: FileText }, { id: 'automacoes', label: 'Automações', icon: Workflow }, { id: 'contato', label: 'Contato', icon: Mail }];
+export default function Header({ activeTab, onTabChange }: { activeTab: string; onTabChange: (tab: string) => void }) {
+  const { isAdmin, login, logout, content } = useAdmin();
+  const [password, setPassword] = useState(''); const [error, setError] = useState(false); const [open, setOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false); const [selected, setSelected] = useState<string>();
+  useEffect(() => { const handle = (e: KeyboardEvent) => { if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); setSearchOpen(v => !v); } }; document.addEventListener('keydown', handle); return () => document.removeEventListener('keydown', handle); }, []);
+  const handleLogin = () => { if (login(password)) { setOpen(false); setPassword(''); setError(false); } else setError(true); };
+  return <><header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-xl">
+    <div className="portal-shell flex h-20 items-center justify-between gap-4">
+      <Button variant="ghost" onClick={() => onTabChange('home')} className="h-auto shrink-0 gap-3 p-0 hover:bg-transparent"><span className="flex size-10 items-center justify-center rounded-md border border-border bg-card font-mono text-sm text-primary">{'<gs/>'}</span><span className="hidden text-left sm:block"><span className="block text-sm font-semibold">{content.profileName}</span><span className="mt-1 block font-mono text-[10px] font-normal text-muted-foreground">DATA & AUTOMATION ENGINEER</span></span></Button>
+      <nav className="hidden items-center gap-1 lg:flex" aria-label="Navegação principal">{tabs.map(tab => <Button key={tab.id} onClick={() => onTabChange(tab.id)} variant="ghost" aria-current={activeTab === tab.id ? 'page' : undefined} className={`h-9 px-4 text-xs ${activeTab === tab.id ? 'bg-secondary text-foreground' : 'text-muted-foreground'}`}>{tab.label}</Button>)}</nav>
+      <div className="flex items-center gap-2 md:gap-4"><span className="hidden items-center gap-2 font-mono text-[10px] text-muted-foreground xl:flex"><span className="status-dot size-1.5 rounded-full bg-accent" />Available for opportunities</span><Button variant="outline" aria-label="Busca global" onClick={() => setSearchOpen(true)} className="h-9 gap-3 border-border bg-card px-3 text-xs text-muted-foreground"><Search /><span className="hidden md:inline">Buscar no portfólio</span><kbd className="hidden rounded border border-border px-1.5 font-mono text-[10px] md:inline">⌘ K</kbd></Button>
+      {isAdmin ? <Button variant="ghost" size="icon" aria-label="Sair do admin" onClick={logout}><LogOut /></Button> : <Dialog open={open} onOpenChange={setOpen}><DialogTrigger asChild><Button variant="ghost" size="icon" aria-label="Acesso administrativo" className="text-muted-foreground"><Shield /></Button></DialogTrigger><DialogContent><DialogHeader><DialogTitle>Acesso Administrativo</DialogTitle><DialogDescription>Entre para editar o conteúdo do portfólio.</DialogDescription></DialogHeader><Input type="password" aria-label="Senha administrativa" placeholder="Digite a senha" value={password} onChange={e => { setPassword(e.target.value); setError(false); }} onKeyDown={e => { if (e.key === 'Enter') handleLogin(); }} className={error ? 'border-destructive' : ''} />{error && <p className="text-sm text-destructive">Senha incorreta</p>}<Button onClick={handleLogin}>Entrar</Button></DialogContent></Dialog>}
       </div>
-    </header>
-  );
-};
-
-export default Header;
+    </div>
+    <nav className="portal-shell flex gap-1 overflow-x-auto pb-3 lg:hidden" aria-label="Navegação móvel">{tabs.map(tab => <Button key={tab.id} variant="ghost" onClick={() => onTabChange(tab.id)} aria-current={activeTab === tab.id ? 'page' : undefined} className={`h-9 flex-1 px-3 text-xs ${activeTab === tab.id ? 'bg-secondary text-foreground' : 'text-muted-foreground'}`}><tab.icon className="size-3.5" />{tab.label}</Button>)}</nav>
+  </header>
+  <Dialog open={searchOpen} onOpenChange={setSearchOpen}><DialogContent className="overflow-hidden p-0"><DialogHeader className="sr-only"><DialogTitle>Busca global</DialogTitle><DialogDescription>Encontre páginas, projetos e tecnologias.</DialogDescription></DialogHeader><Command><CommandInput placeholder="Buscar projetos, páginas ou tecnologias..." /><CommandList><CommandEmpty>Nenhum resultado encontrado.</CommandEmpty><CommandGroup heading="Páginas">{tabs.map(tab => <CommandItem key={tab.id} onSelect={() => { onTabChange(tab.id); setSearchOpen(false); }}><tab.icon className="mr-3 size-4 text-muted-foreground" />{tab.label}<ArrowUpRight className="ml-auto size-3 text-muted-foreground" /></CommandItem>)}</CommandGroup><CommandGroup heading="Projetos">{content.reports.map(report => <CommandItem key={report.id} value={`${report.name} ${report.description} ${report.tools?.join(' ')}`} onSelect={() => { setSelected(report.id); setSearchOpen(false); }}><FileText className="mr-3 size-4 shrink-0 text-primary" /><span className="truncate">{report.name}</span><ArrowUpRight className="ml-auto size-3 shrink-0 text-muted-foreground" /></CommandItem>)}</CommandGroup></CommandList></Command></DialogContent></Dialog>
+  <CaseStudy report={content.reports.find(r => r.id === selected)} onClose={() => setSelected(undefined)} />
+  </>;
+}

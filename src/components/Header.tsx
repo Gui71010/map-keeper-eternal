@@ -106,12 +106,12 @@ const Header = ({ activeTab, onTabChange }: HeaderProps) => {
               {isAdmin ? (
                 <input
                   className="bg-transparent border-b border-primary-foreground/20 text-primary-foreground/60 text-xs w-48 outline-none focus:border-accent"
-                  value={content.directoryEmail}
-                  onChange={(e) => updateContent({ directoryEmail: e.target.value })}
+                  value={content.contactEmail}
+                  onChange={(e) => updateContent({ contactEmail: e.target.value })}
                 />
               ) : (
-                <a href={`mailto:${content.directoryEmail}`} className="hover:text-accent transition-colors">
-                  {content.directoryEmail}
+                <a href={`mailto:${content.contactEmail}`} className="hover:text-accent transition-colors">
+                  {content.contactEmail}
                 </a>
               )}
             </div>
@@ -154,8 +154,8 @@ const Header = ({ activeTab, onTabChange }: HeaderProps) => {
 
         <div className="flex lg:hidden items-center justify-center gap-1.5 text-primary-foreground/40 text-xs mt-2">
           <Mail className="w-3 h-3" />
-          <a href={`mailto:${content.directoryEmail}`} className="hover:text-accent transition-colors">
-            {content.directoryEmail}
+          <a href={`mailto:${content.contactEmail}`} className="hover:text-accent transition-colors">
+            {content.contactEmail}
           </a>
         </div>
       </div>

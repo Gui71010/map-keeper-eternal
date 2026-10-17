@@ -12,9 +12,10 @@ interface HeaderProps {
 }
 
 const tabs = [
-  { id: 'area', label: 'Nossa Área' },
-  { id: 'portfolio', label: 'Relatórios Criados' },
-  { id: 'feedback', label: 'Sugestões e Elogios' },
+  { id: 'home', label: 'Início' },
+  { id: 'projetos', label: 'Projetos' },
+  { id: 'automacoes', label: 'Automações' },
+  { id: 'contato', label: 'Contato' },
 ];
 
 const Header = ({ activeTab, onTabChange }: HeaderProps) => {
@@ -43,13 +44,13 @@ const Header = ({ activeTab, onTabChange }: HeaderProps) => {
             className="flex items-center gap-3"
           >
             <div className="w-11 h-11 rounded-lg gradient-accent flex items-center justify-center">
-              <span className="font-display font-bold text-primary-foreground text-xl">BI</span>
+              <span className="font-display font-bold text-primary-foreground text-xl">GS</span>
             </div>
             <div>
               <h1 className="font-display font-bold text-primary-foreground text-xl leading-tight">
-                AeC - People Analytics
+                Guilherme Santiago
               </h1>
-              <p className="text-primary-foreground/60 text-sm">Business Intelligence</p>
+              <p className="text-primary-foreground/60 text-sm">Data & Automation</p>
             </div>
           </motion.div>
 

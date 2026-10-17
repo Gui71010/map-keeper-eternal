@@ -3,9 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Mail } from 'lucide-react';
 import { AdminProvider } from '@/contexts/AdminContext';
 import Header from '@/components/Header';
-import NossaAreaPage from '@/components/NossaAreaPage';
-import RelatoriosCriadosPage from '@/components/RelatoriosCriadosPage';
-import FeedbackPage from '@/components/FeedbackPage';
+import HomePage from '@/components/portfolio/HomePage';
+import ProjetosPage from '@/components/portfolio/ProjetosPage';
+import AutomacoesPage from '@/components/portfolio/AutomacoesPage';
+import ContatoPage from '@/components/portfolio/ContatoPage';
 import SpaceDecorations from '@/components/SpaceDecorations';
 
 const WhatsAppIcon = ({ className }: { className?: string }) => (
@@ -15,14 +16,15 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 );
 
 const Index = () => {
-  const [activeTab, setActiveTab] = useState('area');
+  const [activeTab, setActiveTab] = useState('home');
 
   const renderPage = () => {
     switch (activeTab) {
-      case 'area': return <NossaAreaPage />;
-      case 'portfolio': return <RelatoriosCriadosPage />;
-      case 'feedback': return <FeedbackPage />;
-      default: return <NossaAreaPage />;
+      case 'home': return <HomePage />;
+      case 'projetos': return <ProjetosPage />;
+      case 'automacoes': return <AutomacoesPage />;
+      case 'contato': return <ContatoPage />;
+      default: return <HomePage />;
     }
   };
 
@@ -40,9 +42,9 @@ const Index = () => {
         </main>
         <footer className="gradient-navy galaxy-bg mt-20 py-8 relative">
           <div className="relative z-10 px-6 lg:px-10 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-primary-foreground/50 text-sm">© {new Date().getFullYear()} AeC - Diretoria de Pessoas — People Analytics</p>
+            <p className="text-primary-foreground/50 text-sm">© {new Date().getFullYear()} Guilherme Santiago — Analista de Dados & Automação</p>
             <div className="flex flex-col items-end gap-1">
-              <p className="text-sm font-medium"><span className="text-primary-foreground/50">Desenvolvido por</span>{' '}<span className="text-accent font-semibold border-b border-accent/30 pb-0.5">Guilherme Santiago</span></p>
+              <p className="text-sm font-medium"><span className="text-primary-foreground/50">T-SQL • Power BI • Python • RPA</span></p>
               <div className="flex items-center gap-4 text-primary-foreground/50 text-xs">
                 <a href="https://wa.me/5538988690984" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-accent transition-colors"><WhatsAppIcon className="w-3.5 h-3.5" /><span>(38) 98869-0984</span></a>
                 <a href="mailto:m.guilherme.santiago@aec.com.br" className="flex items-center gap-1.5 hover:text-accent transition-colors"><Mail className="w-3.5 h-3.5" /><span>m.guilherme.santiago@aec.com.br</span></a>

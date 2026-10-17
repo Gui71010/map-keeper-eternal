@@ -66,9 +66,12 @@ export default {
           light: "hsl(var(--teal-light))",
         },
         cyan: "hsl(var(--cyan))",
+        signal: "hsl(var(--signal))",
+        code: "hsl(var(--code))",
       },
       fontFamily: {
-        display: ["Space Grotesk", "sans-serif"],
+        display: ["Inter", "sans-serif"],
+        mono: ["JetBrains Mono", "monospace"],
         sans: ["Inter", "sans-serif"],
       },
       borderRadius: {
